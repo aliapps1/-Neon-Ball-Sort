@@ -6,85 +6,75 @@
     <title>Neon Ball Sort Pro</title>
     <style>
         :root { --bg: #090c10; --accent: #00f2fe; --btn: #21262d; }
-        body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; touch-action: manipulation; height: 100vh; display: flex; flex-direction: column; }
+        body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         
-        /* منوی اصلی - دکمه‌های بزرگ و وسط‌چین */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .main-hero { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
-        .huge-play-btn { width: 140px; height: 140px; border-radius: 50%; background: #2ea043; border: none; color: white; font-size: 70px; cursor: pointer; box-shadow: 0 0 30px #2ea04388; }
-        
-        /* اصلاح نوار بالا برای فضای بیشتر بازی */
-        .top-bar { height: 60px; display: flex; justify-content: space-around; align-items: center; background: #161b22; padding: 0 10px; flex-shrink: 0; }
-        .level-tag { color: var(--accent); font-size: 20px; font-weight: bold; }
+        /* منوی اصلی */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        .huge-play-btn { width: 120px; height: 120px; border-radius: 50%; background: #2ea043; border: none; color: white; font-size: 60px; cursor: pointer; box-shadow: 0 0 25px #2ea04388; margin: 20px; }
 
-        /* اصلاح نمایش بطری‌ها - استفاده از Flex برای جا شدن در صفحه */
-        #board { flex-grow: 1; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 8px; padding: 10px; overflow: hidden; }
-        
-        /* تنظیم ابعاد بطری برای جلوگیری از بیرون زدن از صفحه */
+        /* نوار ابزار */
+        .top-bar { height: 50px; display: flex; justify-content: space-around; align-items: center; background: #161b22; padding: 5px; flex-shrink: 0; }
+        .level-tag { color: var(--accent); font-weight: bold; font-size: 18px; }
+
+        /* بورد بازی - تنظیم شده برای جا شدن تمام ردیف‌ها */
+        #board { flex-grow: 1; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 6px; padding: 10px; }
+
+        /* بطری‌های کوچک‌تر برای نمایش کامل */
         .tube { 
-            width: 50px; height: 180px; /* ابعاد بهینه برای موبایل */
-            border: 2px solid rgba(255,255,255,0.2); border-radius: 0 0 25px 25px; 
-            display: flex; flex-direction: column-reverse; align-items: center; 
-            padding-bottom: 5px; background: rgba(255,255,255,0.05); position: relative;
+            width: 45px; height: 155px; border: 2px solid rgba(255,255,255,0.2); 
+            border-radius: 0 0 20px 20px; display: flex; flex-direction: column-reverse; 
+            align-items: center; padding-bottom: 5px; background: rgba(255,255,255,0.03); 
         }
-        .tube.active { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); transform: translateY(-10px); }
-        
-        /* تنظیم ابعاد توپ برای حفظ شکل کروی */
-        .ball { width: 42px; height: 42px; border-radius: 50%; margin-bottom: 2px; flex-shrink: 0; box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4); }
+        .tube.active { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 0 15px var(--accent); }
 
-        .icon-btn { background: var(--btn); border: 1px solid #30363d; color: white; padding: 8px; border-radius: 10px; font-size: 18px; }
+        /* توپ‌های کاملاً گرد */
+        .ball { width: 38px; height: 38px; border-radius: 50%; margin-bottom: 2px; flex-shrink: 0; box-shadow: inset -2px -2px 5px rgba(0,0,0,0.5); }
+        .icon-btn { background: var(--btn); border: 1px solid #30363d; color: white; padding: 6px 12px; border-radius: 8px; font-size: 16px; }
     </style>
 </head>
 <body>
     <div id="main-menu" class="overlay">
-        <div class="main-hero">
-            <h1 style="color:var(--accent); text-align:center;">NEON BALL<br>SORT PRO</h1>
-            <div style="font-size:60px;">👑</div>
-            <div id="menu-level-text" style="font-size:20px;">Level 1</div>
-            <button class="huge-play-btn" onclick="startGame()">▶</button>
-            <button class="icon-btn" onclick="toggleSettings(true)" style="padding:10px 30px;">⚙️ Settings</button>
-        </div>
+        <h1 style="color:var(--accent); margin:0;">NEON BALL SORT</h1>
+        <div style="font-size:50px; margin:10px;">👑</div>
+        <button class="huge-play-btn" onclick="startGame()">▶</button>
+        <button class="icon-btn" onclick="alert('Settings logic here')">⚙️ Settings</button>
     </div>
 
     <div class="top-bar">
         <button class="icon-btn" onclick="location.reload()">🏠</button>
+        <div class="level-tag" id="lvl-txt">Level 1</div>
         <button class="icon-btn" onclick="resetLevel()">🔄</button>
-        <div class="level-tag" id="level-num">Level 1</div>
-        <button class="icon-btn" onclick="nextLevel()">⏭️</button>
     </div>
-
     <div id="board"></div>
 
     <script>
         let level = 1, tubes = [], selected = null;
-        let isSoundOn = true;
-        
-        // استفاده از صداهای سیستمی برای اطمینان از پخش
+        // استفاده از صداهای استاندارد برای تست سریع
         const sndTap = new Audio("https://actions.google.com/sounds/v1/competition_game/single_winner_not_too_loud.ogg");
         const sndWin = new Audio("https://actions.google.com/sounds/v1/cartoon/clime_up_the_ladder_fast.ogg");
 
+        function startGame() {
+            // فعال‌سازی صدا با کلیک اول
+            sndTap.play().then(() => sndTap.pause());
+            document.getElementById('main-menu').style.display = 'none';
+            init();
+        }
+
         function init() {
             level = parseInt(localStorage.getItem('neon_lvl')) || 1;
-            document.getElementById('level-num').innerText = "Level " + level;
-            document.getElementById('menu-level-text').innerText = "Level " + level;
+            document.getElementById('lvl-txt').innerText = "Level " + level;
             loadLevel();
         }
 
-        function startGame() {
-            // ترفند فعال‌سازی صدا: پخش و توقف آنی برای گرفتن اجازه از مرورگر
-            sndTap.play().then(() => { sndTap.pause(); }).catch(() => {});
-            document.getElementById('main-menu').style.display = 'none';
-        }
-
         function loadLevel() {
+            const colors = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
             const colorCount = Math.min(3 + Math.floor(level / 5), 8);
-            let colors = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
             let balls = [];
             for(let i=0; i<colorCount; i++) for(let j=0; j<4; j++) balls.push(colors[i]);
             balls.sort(() => Math.random() - 0.5);
             tubes = [];
             for(let i=0; i<colorCount; i++) tubes.push(balls.splice(0, 4));
-            tubes.push([]); tubes.push([]);
+            tubes.push([], []);
             render();
         }
 
@@ -108,36 +98,29 @@
             if (selected === null) {
                 if (tubes[i].length > 0) {
                     selected = i;
-                    if(isSoundOn) { sndTap.currentTime = 0; sndTap.play(); }
+                    sndTap.currentTime = 0; sndTap.play().catch(()=>{});
                 }
             } else {
-                moveGroup(selected, i);
+                moveBall(selected, i);
                 selected = null;
             }
             render();
         }
 
-        function moveGroup(from, to) {
+        function moveBall(from, to) {
             if (from === to) return;
             const f = tubes[from], t = tubes[to];
-            if (f.length === 0) return;
-            const color = f[f.length - 1];
-            if (t.length < 4 && (t.length === 0 || t[t.length - 1] === color)) {
-                let count = 0;
-                for (let i = f.length - 1; i >= 0; i--) {
-                    if (f[i] === color) count++; else break;
+            if (f.length > 0 && t.length < 4 && (t.length === 0 || t[t.length-1] === f[f.length-1])) {
+                t.push(f.pop());
+                if (checkWin()) {
+                    sndWin.play();
+                    setTimeout(() => { level++; localStorage.setItem('neon_lvl', level); init(); }, 1000);
                 }
-                let ballsToMove = Math.min(count, 4 - t.length);
-                for (let i = 0; i < ballsToMove; i++) t.push(f.pop());
-                if (checkWin()) { if(isSoundOn) sndWin.play(); setTimeout(nextLevel, 1000); }
             }
         }
 
         function checkWin() { return tubes.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0]))); }
-        function nextLevel() { level++; localStorage.setItem('neon_lvl', level); init(); }
         function resetLevel() { loadLevel(); }
-
-        window.onload = init;
     </script>
 </body>
 </html>
