@@ -1,158 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Neon Ball Sort Pro</title>
     <style>
-        /* کدهای استایل (CSS) */
         :root { --bg: #090c10; --accent: #00f2fe; --btn: #21262d; }
-        body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; touch-action: manipulation; }
-        body.rtl { direction: rtl; }
-
-        .game-container { width: 100%; height: 100vh; display: flex; flex-direction: column; position: relative; }
-
-        /* منوی اصلی - اصلاح شده برای پر کردن صفحه */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .main-hero { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
+        body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; touch-action: manipulation; height: 100vh; display: flex; flex-direction: column; }
         
-        .game-title { font-size: 38px; color: var(--accent); text-shadow: 0 0 20px var(--accent); text-align: center; margin: 0; }
-        .hero-crown { font-size: 80px; margin: 20px 0; }
-        .level-info { font-size: 24px; color: #8b949e; margin-bottom: 30px; }
+        /* منوی اصلی - دکمه‌های بزرگ و وسط‌چین */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .main-hero { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+        .huge-play-btn { width: 140px; height: 140px; border-radius: 50%; background: #2ea043; border: none; color: white; font-size: 70px; cursor: pointer; box-shadow: 0 0 30px #2ea04388; }
+        
+        /* اصلاح نوار بالا برای فضای بیشتر بازی */
+        .top-bar { height: 60px; display: flex; justify-content: space-around; align-items: center; background: #161b22; padding: 0 10px; flex-shrink: 0; }
+        .level-tag { color: var(--accent); font-size: 20px; font-weight: bold; }
 
-        .huge-play-btn { 
-            width: 150px; height: 150px; border-radius: 50%; 
-            background: #2ea043; border: none; color: white; 
-            font-size: 80px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 40px rgba(46, 160, 67, 0.5); transition: 0.2s;
-        }
-        .huge-play-btn:active { transform: scale(0.9); }
-
-        .huge-settings-btn { 
-            background: var(--btn); border: 1px solid #444; color: white; 
-            padding: 15px 40px; border-radius: 40px; font-size: 20px; 
-            margin-top: 40px; cursor: pointer; display: flex; align-items: center; gap: 10px;
-        }
-
-        /* نوار ابزار بالا */
-        .top-bar { display: flex; justify-content: space-around; align-items: center; padding: 15px; background: #161b22; border-bottom: 1px solid #30363d; }
-        .icon-btn { background: var(--btn); border: 1px solid #30363d; color: white; padding: 10px; border-radius: 12px; font-size: 20px; cursor: pointer; }
-        .level-tag { color: var(--accent); font-weight: bold; font-size: 22px; text-shadow: 0 0 10px var(--accent); }
-
-        /* بورد بازی و لوله‌ها */
-        #board { flex-grow: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 20px; justify-items: center; align-content: center; }
+        /* اصلاح نمایش بطری‌ها - استفاده از Flex برای جا شدن در صفحه */
+        #board { flex-grow: 1; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 8px; padding: 10px; overflow: hidden; }
+        
+        /* تنظیم ابعاد بطری برای جلوگیری از بیرون زدن از صفحه */
         .tube { 
-            width: 60px; height: 215px; border: 3px solid rgba(255,255,255,0.15); 
-            border-radius: 0 0 35px 35px; display: flex; flex-direction: column-reverse; 
-            align-items: center; padding-bottom: 10px; background: rgba(255,255,255,0.03); 
-            transition: 0.2s; cursor: pointer;
+            width: 50px; height: 180px; /* ابعاد بهینه برای موبایل */
+            border: 2px solid rgba(255,255,255,0.2); border-radius: 0 0 25px 25px; 
+            display: flex; flex-direction: column-reverse; align-items: center; 
+            padding-bottom: 5px; background: rgba(255,255,255,0.05); position: relative;
         }
-        .tube.active { border-color: var(--accent); box-shadow: 0 0 20px var(--accent); transform: translateY(-10px); }
-        .ball { 
-            width: 52px; height: 52px; border-radius: 50%; margin-bottom: 3px; 
-            flex-shrink: 0; box-shadow: inset -4px -4px 10px rgba(0,0,0,0.5); 
-        }
+        .tube.active { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); transform: translateY(-10px); }
+        
+        /* تنظیم ابعاد توپ برای حفظ شکل کروی */
+        .ball { width: 42px; height: 42px; border-radius: 50%; margin-bottom: 2px; flex-shrink: 0; box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4); }
 
-        /* صفحه تنظیمات */
-        .settings-card { background: #161b22; padding: 30px; border-radius: 30px; width: 85%; max-width: 400px; text-align: center; border: 1px solid #30363d; }
-        .lang-switch { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
-        .lang-switch button { background: #30363d; border: none; color: white; padding: 12px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .lang-switch button.active { background: var(--accent); color: black; }
-        .setting-item { background: var(--btn); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; opacity: 0.4; cursor: pointer; border: 2px solid transparent; }
-        .setting-item.active { opacity: 1; border-color: var(--accent); background: rgba(0,242,254,0.1); }
-        .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
-
-        /* انیمیشن پیروزی */
-        .win-card { background: #161b22; padding: 40px; border-radius: 30px; text-align: center; border: 2px solid #fadb14; box-shadow: 0 0 40px rgba(250,219,20,0.3); }
-        .stars { font-size: 40px; margin-top: 15px; }
+        .icon-btn { background: var(--btn); border: 1px solid #30363d; color: white; padding: 8px; border-radius: 10px; font-size: 18px; }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div id="main-menu" class="overlay">
-            <div class="main-hero">
-                <h1 class="game-title">NEON BALL<br>SORT PRO</h1>
-                <div class="hero-crown">👑</div>
-                <div class="level-info"><span id="txt-menu-lvl">Level</span> <span id="menu-level-num">1</span></div>
-                <button class="huge-play-btn" onclick="startGame()">▶</button>
-                <button class="huge-settings-btn" onclick="toggleSettings(true)">⚙️ <span id="txt-settings-btn">Settings</span></button>
-            </div>
-        </div>
-
-        <div class="top-bar">
-            <button class="icon-btn" onclick="goHome()">🏠</button>
-            <button class="icon-btn" onclick="resetLevel()">🔄</button>
-            <div class="level-tag"><span id="txt-level">Level</span> <span id="level-num">1</span></div>
-            <button class="icon-btn" onclick="nextLevel()">⏭️</button>
-        </div>
-
-        <div id="board"></div>
-
-        <div id="win-overlay" class="overlay" style="display:none;">
-            <div class="win-card">
-                <div style="font-size:60px">👑</div>
-                <h2 id="txt-win" style="color:#fadb14; font-size:32px;">FANTASTIC!</h2>
-                <div class="stars">⭐⭐⭐</div>
-            </div>
-        </div>
-
-        <div id="settings-panel" class="overlay" style="display:none;">
-            <div class="settings-card">
-                <button class="close-btn" onclick="toggleSettings(false)">✖</button>
-                <h2 id="txt-settings" style="margin-top:0">Settings</h2>
-                <div class="lang-switch">
-                    <button onclick="changeLang('en')" id="btn-en">EN</button>
-                    <button onclick="changeLang('ar')" id="btn-ar">AR</button>
-                    <button onclick="changeLang('fa')" id="btn-fa">FA</button>
-                </div>
-                <div class="setting-item active" id="sound-btn" onclick="toggleSound()">🔊 <span id="txt-sound">Sound</span></div>
-                <div class="setting-item active" id="vibrate-btn" onclick="toggleVibrate()">📳 <span id="txt-vibrate">Vibrate</span></div>
-            </div>
+    <div id="main-menu" class="overlay">
+        <div class="main-hero">
+            <h1 style="color:var(--accent); text-align:center;">NEON BALL<br>SORT PRO</h1>
+            <div style="font-size:60px;">👑</div>
+            <div id="menu-level-text" style="font-size:20px;">Level 1</div>
+            <button class="huge-play-btn" onclick="startGame()">▶</button>
+            <button class="icon-btn" onclick="toggleSettings(true)" style="padding:10px 30px;">⚙️ Settings</button>
         </div>
     </div>
 
+    <div class="top-bar">
+        <button class="icon-btn" onclick="location.reload()">🏠</button>
+        <button class="icon-btn" onclick="resetLevel()">🔄</button>
+        <div class="level-tag" id="level-num">Level 1</div>
+        <button class="icon-btn" onclick="nextLevel()">⏭️</button>
+    </div>
+
+    <div id="board"></div>
+
     <script>
-        /* کدهای منطق بازی (JavaScript) */
         let level = 1, tubes = [], selected = null;
-        let isSoundOn = true, isVibrateOn = true, currentLang = 'en';
-
-        const COLORS = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
-        const LANGS = {
-            en: { level: "Level", settings: "Settings", sound: "Sound", vibrate: "Vibrate", win: "FANTASTIC!", settingsBtn: "Settings" },
-            ar: { level: "مستوى", settings: "الإعدادات", sound: "الصوت", vibrate: "اهتزاز", win: "رائع!", settingsBtn: "الإعدادات" },
-            fa: { level: "مرحله", settings: "تنظیمات", sound: "صدا", vibrate: "لرزش", win: "عالی بود!", settingsBtn: "تنظیمات" }
-        };
-
+        let isSoundOn = true;
+        
+        // استفاده از صداهای سیستمی برای اطمینان از پخش
         const sndTap = new Audio("https://actions.google.com/sounds/v1/competition_game/single_winner_not_too_loud.ogg");
         const sndWin = new Audio("https://actions.google.com/sounds/v1/cartoon/clime_up_the_ladder_fast.ogg");
 
         function init() {
             level = parseInt(localStorage.getItem('neon_lvl')) || 1;
-            isSoundOn = localStorage.getItem('neon_sound') !== 'false';
-            isVibrateOn = localStorage.getItem('neon_vibrate') !== 'false';
-            currentLang = localStorage.getItem('neon_lang') || 'en';
-            updateUI();
+            document.getElementById('level-num').innerText = "Level " + level;
+            document.getElementById('menu-level-text').innerText = "Level " + level;
             loadLevel();
         }
 
-        function updateUI() {
-            changeLang(currentLang);
-            document.getElementById('sound-btn').classList.toggle('active', isSoundOn);
-            document.getElementById('vibrate-btn').classList.toggle('active', isVibrateOn);
-            document.getElementById('menu-level-num').innerText = level;
-            document.getElementById('level-num').innerText = level;
-        }
-
-        function startGame() { 
-            if(isSoundOn) sndTap.play().catch(()=>{});
-            document.getElementById('main-menu').style.display = 'none'; 
+        function startGame() {
+            // ترفند فعال‌سازی صدا: پخش و توقف آنی برای گرفتن اجازه از مرورگر
+            sndTap.play().then(() => { sndTap.pause(); }).catch(() => {});
+            document.getElementById('main-menu').style.display = 'none';
         }
 
         function loadLevel() {
-            document.getElementById('win-overlay').style.display = 'none';
             const colorCount = Math.min(3 + Math.floor(level / 5), 8);
+            let colors = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
             let balls = [];
-            for(let i=0; i<colorCount; i++) for(let j=0; j<4; j++) balls.push(COLORS[i]);
+            for(let i=0; i<colorCount; i++) for(let j=0; j<4; j++) balls.push(colors[i]);
             balls.sort(() => Math.random() - 0.5);
             tubes = [];
             for(let i=0; i<colorCount; i++) tubes.push(balls.splice(0, 4));
@@ -168,8 +96,9 @@
                 div.className = `tube ${selected === i ? 'active' : ''}`;
                 div.onclick = () => tap(i);
                 t.forEach(c => {
-                    const b = document.createElement('div'); b.className = 'ball';
-                    b.style.backgroundColor = c; div.appendChild(b);
+                    const b = document.createElement('div');
+                    b.className = 'ball'; b.style.backgroundColor = c;
+                    div.appendChild(b);
                 });
                 board.appendChild(div);
             });
@@ -179,7 +108,7 @@
             if (selected === null) {
                 if (tubes[i].length > 0) {
                     selected = i;
-                    if (isSoundOn) { sndTap.currentTime = 0; sndTap.play().catch(()=>{}); }
+                    if(isSoundOn) { sndTap.currentTime = 0; sndTap.play(); }
                 }
             } else {
                 moveGroup(selected, i);
@@ -200,41 +129,13 @@
                 }
                 let ballsToMove = Math.min(count, 4 - t.length);
                 for (let i = 0; i < ballsToMove; i++) t.push(f.pop());
-                if (isVibrateOn && navigator.vibrate) navigator.vibrate(40);
-                if (checkWin()) handleWin();
+                if (checkWin()) { if(isSoundOn) sndWin.play(); setTimeout(nextLevel, 1000); }
             }
         }
 
         function checkWin() { return tubes.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0]))); }
-
-        function handleWin() {
-            if (isSoundOn) sndWin.play().catch(()=>{});
-            document.getElementById('win-overlay').style.display = 'flex';
-            setTimeout(() => {
-                level++;
-                localStorage.setItem('neon_lvl', level);
-                updateUI();
-                loadLevel();
-            }, 2500);
-        }
-
-        function changeLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('neon_lang', lang);
-            const trans = LANGS[lang];
-            const map = { 'txt-level': 'level', 'txt-menu-lvl': 'level', 'txt-settings': 'settings', 'txt-sound': 'sound', 'txt-vibrate': 'vibrate', 'txt-win': 'win', 'txt-settings-btn': 'settingsBtn' };
-            for (let id in map) if (document.getElementById(id)) document.getElementById(id).innerText = trans[map[id]];
-            document.body.className = (lang === 'ar' || lang === 'fa') ? 'rtl' : '';
-            document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + lang).classList.add('active');
-        }
-
-        function toggleSound() { isSoundOn = !isSoundOn; localStorage.setItem('neon_sound', isSoundOn); updateUI(); }
-        function toggleVibrate() { isVibrateOn = !isVibrateOn; localStorage.setItem('neon_vibrate', isVibrateOn); updateUI(); }
-        function goHome() { document.getElementById('main-menu').style.display = 'flex'; }
+        function nextLevel() { level++; localStorage.setItem('neon_lvl', level); init(); }
         function resetLevel() { loadLevel(); }
-        function nextLevel() { level++; localStorage.setItem('neon_lvl', level); updateUI(); loadLevel(); }
-        function toggleSettings(s) { document.getElementById('settings-panel').style.display = s ? 'flex' : 'none'; }
 
         window.onload = init;
     </script>
