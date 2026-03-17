@@ -7,70 +7,99 @@
     <style>
         :root { --bg: #090c10; --accent: #00f2fe; --btn: #21262d; }
         body { margin: 0; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        body.rtl { direction: rtl; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .main-hero { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .huge-play-btn { width: 130px; height: 130px; border-radius: 50%; background: #2ea043; border: none; color: white; font-size: 70px; cursor: pointer; box-shadow: 0 0 30px #2ea04388; margin: 20px 0; }
         
-        /* منوی اصلی */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
-        .huge-play-btn { width: 120px; height: 120px; border-radius: 50%; background: #2ea043; border: none; color: white; font-size: 60px; cursor: pointer; box-shadow: 0 0 25px #2ea04388; margin: 20px; }
+        .top-bar { height: 55px; display: flex; justify-content: space-around; align-items: center; background: #161b22; padding: 0 10px; flex-shrink: 0; }
+        .level-tag { color: var(--accent); font-size: 20px; font-weight: bold; }
+        .icon-btn { background: var(--btn); border: 1px solid #30363d; color: white; padding: 8px; border-radius: 10px; font-size: 18px; cursor: pointer; }
 
-        /* نوار ابزار */
-        .top-bar { height: 50px; display: flex; justify-content: space-around; align-items: center; background: #161b22; padding: 5px; flex-shrink: 0; }
-        .level-tag { color: var(--accent); font-weight: bold; font-size: 18px; }
+        #board { flex-grow: 1; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 8px; padding: 10px; }
+        .tube { width: 48px; height: 165px; border: 2px solid rgba(255,255,255,0.2); border-radius: 0 0 25px 25px; display: flex; flex-direction: column-reverse; align-items: center; padding-bottom: 5px; background: rgba(255,255,255,0.05); }
+        .tube.active { border-color: var(--accent); box-shadow: 0 0 15px var(--accent); transform: translateY(-10px); }
+        .ball { width: 40px; height: 40px; border-radius: 50%; margin-bottom: 2px; flex-shrink: 0; box-shadow: inset -3px -3px 6px rgba(0,0,0,0.4); }
 
-        /* بورد بازی - تنظیم شده برای جا شدن تمام ردیف‌ها */
-        #board { flex-grow: 1; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 6px; padding: 10px; }
-
-        /* بطری‌های کوچک‌تر برای نمایش کامل */
-        .tube { 
-            width: 45px; height: 155px; border: 2px solid rgba(255,255,255,0.2); 
-            border-radius: 0 0 20px 20px; display: flex; flex-direction: column-reverse; 
-            align-items: center; padding-bottom: 5px; background: rgba(255,255,255,0.03); 
-        }
-        .tube.active { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 0 15px var(--accent); }
-
-        /* توپ‌های کاملاً گرد */
-        .ball { width: 38px; height: 38px; border-radius: 50%; margin-bottom: 2px; flex-shrink: 0; box-shadow: inset -2px -2px 5px rgba(0,0,0,0.5); }
-        .icon-btn { background: var(--btn); border: 1px solid #30363d; color: white; padding: 6px 12px; border-radius: 8px; font-size: 16px; }
+        .settings-card { background: #161b22; padding: 25px; border-radius: 25px; width: 85%; max-width: 350px; text-align: center; border: 1px solid #30363d; position: relative; }
+        .lang-switch { display: flex; justify-content: center; gap: 8px; margin: 15px 0; }
+        .lang-switch button { background: #30363d; border: none; color: white; padding: 8px 15px; border-radius: 10px; cursor: pointer; }
+        .lang-switch button.active { background: var(--accent); color: black; }
+        .setting-item { background: var(--btn); padding: 12px; border-radius: 12px; margin: 8px 0; display: flex; align-items: center; justify-content: center; gap: 10px; opacity: 0.5; cursor: pointer; }
+        .setting-item.active { opacity: 1; border: 1px solid var(--accent); }
     </style>
 </head>
 <body>
     <div id="main-menu" class="overlay">
-        <h1 style="color:var(--accent); margin:0;">NEON BALL SORT</h1>
-        <div style="font-size:50px; margin:10px;">👑</div>
-        <button class="huge-play-btn" onclick="startGame()">▶</button>
-        <button class="icon-btn" onclick="alert('Settings logic here')">⚙️ Settings</button>
+        <div class="main-hero">
+            <h1 style="color:var(--accent); margin:0;">NEON BALL SORT</h1>
+            <div style="font-size:60px;">👑</div>
+            <div id="menu-lvl-txt" style="font-size:20px;">Level 1</div>
+            <button class="huge-play-btn" onclick="startGame()">▶</button>
+            <button class="icon-btn" onclick="toggleSettings(true)" style="padding:10px 30px;">⚙️ Settings</button>
+        </div>
     </div>
 
     <div class="top-bar">
         <button class="icon-btn" onclick="location.reload()">🏠</button>
-        <div class="level-tag" id="lvl-txt">Level 1</div>
         <button class="icon-btn" onclick="resetLevel()">🔄</button>
+        <div class="level-tag" id="level-num">Level 1</div>
+        <button class="icon-btn" onclick="nextLevel()">⏭️</button>
     </div>
+
     <div id="board"></div>
+
+    <div id="settings-panel" class="overlay" style="display:none;">
+        <div class="settings-card">
+            <button onclick="toggleSettings(false)" style="position:absolute; right:15px; top:15px; background:none; border:none; color:white; font-size:20px;">✖</button>
+            <h2 id="txt-settings">Settings</h2>
+            <div class="lang-switch">
+                <button onclick="changeLang('en')" id="btn-en">EN</button>
+                <button onclick="changeLang('ar')" id="btn-ar">AR</button>
+                <button onclick="changeLang('fa')" id="btn-fa">FA</button>
+            </div>
+            <div class="setting-item active" id="sound-btn" onclick="toggleSound()">🔊 <span id="txt-sound">Sound</span></div>
+            <div class="setting-item active" id="vibrate-btn" onclick="toggleVibrate()">📳 <span id="txt-vibrate">Vibrate</span></div>
+        </div>
+    </div>
 
     <script>
         let level = 1, tubes = [], selected = null;
-        // استفاده از صداهای استاندارد برای تست سریع
+        let isSoundOn = true, isVibrateOn = true, currentLang = 'en';
+        const COLORS = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
+        const LANGS = {
+            en: { level: "Level", settings: "Settings", sound: "Sound", vibrate: "Vibrate" },
+            ar: { level: "مستوى", settings: "الإعدادات", sound: "الصوت", vibrate: "اهتزاز" },
+            fa: { level: "مرحله", settings: "تنظیمات", sound: "صدا", vibrate: "لرزش" }
+        };
+
         const sndTap = new Audio("https://actions.google.com/sounds/v1/competition_game/single_winner_not_too_loud.ogg");
         const sndWin = new Audio("https://actions.google.com/sounds/v1/cartoon/clime_up_the_ladder_fast.ogg");
 
-        function startGame() {
-            // فعال‌سازی صدا با کلیک اول
-            sndTap.play().then(() => sndTap.pause());
-            document.getElementById('main-menu').style.display = 'none';
-            init();
-        }
-
         function init() {
             level = parseInt(localStorage.getItem('neon_lvl')) || 1;
-            document.getElementById('lvl-txt').innerText = "Level " + level;
+            isSoundOn = localStorage.getItem('neon_sound') !== 'false';
+            currentLang = localStorage.getItem('neon_lang') || 'en';
+            updateUI();
             loadLevel();
         }
 
+        function updateUI() {
+            changeLang(currentLang);
+            document.getElementById('sound-btn').classList.toggle('active', isSoundOn);
+            document.getElementById('level-num').innerText = LANGS[currentLang].level + " " + level;
+            document.getElementById('menu-lvl-txt').innerText = LANGS[currentLang].level + " " + level;
+        }
+
+        function startGame() {
+            sndTap.play().then(() => sndTap.pause()).catch(()=>{});
+            document.getElementById('main-menu').style.display = 'none';
+        }
+
         function loadLevel() {
-            const colors = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
             const colorCount = Math.min(3 + Math.floor(level / 5), 8);
             let balls = [];
-            for(let i=0; i<colorCount; i++) for(let j=0; j<4; j++) balls.push(colors[i]);
+            for(let i=0; i<colorCount; i++) for(let j=0; j<4; j++) balls.push(COLORS[i]);
             balls.sort(() => Math.random() - 0.5);
             tubes = [];
             for(let i=0; i<colorCount; i++) tubes.push(balls.splice(0, 4));
@@ -86,9 +115,8 @@
                 div.className = `tube ${selected === i ? 'active' : ''}`;
                 div.onclick = () => tap(i);
                 t.forEach(c => {
-                    const b = document.createElement('div');
-                    b.className = 'ball'; b.style.backgroundColor = c;
-                    div.appendChild(b);
+                    const b = document.createElement('div'); b.className = 'ball';
+                    b.style.backgroundColor = c; div.appendChild(b);
                 });
                 board.appendChild(div);
             });
@@ -98,29 +126,52 @@
             if (selected === null) {
                 if (tubes[i].length > 0) {
                     selected = i;
-                    sndTap.currentTime = 0; sndTap.play().catch(()=>{});
+                    if(isSoundOn) { sndTap.currentTime = 0; sndTap.play().catch(()=>{}); }
                 }
             } else {
-                moveBall(selected, i);
+                moveGroup(selected, i);
                 selected = null;
             }
             render();
         }
 
-        function moveBall(from, to) {
+        function moveGroup(from, to) {
             if (from === to) return;
             const f = tubes[from], t = tubes[to];
-            if (f.length > 0 && t.length < 4 && (t.length === 0 || t[t.length-1] === f[f.length-1])) {
-                t.push(f.pop());
-                if (checkWin()) {
-                    sndWin.play();
-                    setTimeout(() => { level++; localStorage.setItem('neon_lvl', level); init(); }, 1000);
+            if (f.length === 0) return;
+            const color = f[f.length - 1];
+            if (t.length < 4 && (t.length === 0 || t[t.length - 1] === color)) {
+                let count = 0;
+                for (let i = f.length - 1; i >= 0; i--) {
+                    if (f[i] === color) count++; else break;
                 }
+                let ballsToMove = Math.min(count, 4 - t.length);
+                for (let i = 0; i < ballsToMove; i++) t.push(f.pop());
+                if (isVibrateOn && navigator.vibrate) navigator.vibrate(40);
+                if (checkWin()) { if(isSoundOn) sndWin.play(); setTimeout(nextLevel, 1200); }
             }
         }
 
         function checkWin() { return tubes.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0]))); }
+        function nextLevel() { level++; localStorage.setItem('neon_lvl', level); init(); }
         function resetLevel() { loadLevel(); }
+        function toggleSettings(s) { document.getElementById('settings-panel').style.display = s ? 'flex' : 'none'; }
+
+        function changeLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('neon_lang', lang);
+            document.getElementById('txt-settings').innerText = LANGS[lang].settings;
+            document.getElementById('txt-sound').innerText = LANGS[lang].sound;
+            document.getElementById('txt-vibrate').innerText = LANGS[lang].vibrate;
+            document.body.className = (lang === 'fa' || lang === 'ar') ? 'rtl' : '';
+            document.querySelectorAll('.lang-switch button').forEach(b => b.classList.toggle('active', b.id === 'btn-'+lang));
+            updateUI();
+        }
+
+        function toggleSound() { isSoundOn = !isSoundOn; localStorage.setItem('neon_sound', isSoundOn); updateUI(); }
+        function toggleVibrate() { isVibrateOn = !isVibrateOn; updateUI(); }
+
+        window.onload = init;
     </script>
 </body>
 </html>
