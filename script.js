@@ -1,9 +1,8 @@
 let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
-let soundEnabled = true, vibrateEnabled = true;
+let soundEnabled = true, vibrateEnabled = true, autoMove = false;
 
 const COLORS = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
 
-// سیستم صوتی
 function playSnd(f, d) {
     if(!soundEnabled) return;
     try {
@@ -17,28 +16,25 @@ function playSnd(f, d) {
     } catch(e) {}
 }
 
-// شروع اولیه
 function init() {
-    const saved = localStorage.getItem('neon_lvl');
-    if(saved) level = parseInt(saved);
+    level = parseInt(localStorage.getItem('neon_lvl')) || 1;
+    soundEnabled = localStorage.getItem('neon_snd') !== 'false';
+    vibrateEnabled = localStorage.getItem('neon_vib') !== 'false';
+    
+    if(!soundEnabled) document.getElementById('sound-toggle').classList.remove('active');
+    if(!vibrateEnabled) document.getElementById('vibrate-toggle').classList.remove('active');
+    
     showMainMenu();
 }
 
-// نمایش منوی اصلی (اصلاح شده برای دکمه خانه)
 function showMainMenu() {
     document.getElementById('start-level').innerText = level;
     document.getElementById('start-menu').style.display = 'flex';
-    // بستن پنل تنظیمات اگر باز باشد
-    toggleSettings(false);
 }
 
-// شروع بازی از منو
 function startGame() {
     document.getElementById('start-menu').style.display = 'none';
-    // اگر بورد خالی است (اولین بار)، مرحله را بارگذاری کن
-    if(tubes.length === 0) {
-        loadLevel();
-    }
+    if(tubes.length === 0) loadLevel();
 }
 
 function loadLevel() {
@@ -115,53 +111,34 @@ function nextLevel() {
     loadLevel();
 }
 
-function reset() {
-    if(confirm("إعادة تشغيل المستوى؟")) loadLevel();
-}
+function reset() { if(confirm("إعادة تشغيل المستوى؟")) loadLevel(); }
+function undo() { if(history.length > 0) { tubes = JSON.parse(history.pop()); render(); } }
+function addTube() { if(tubes.length < 12) { tubes.push([]); render(); playSnd(500, 0.1); } }
+function skipLevel() { if(confirm("هل تريد تخطي هذا المستوى؟")) nextLevel(); }
 
-function undo() {
-    if(history.length > 0) {
-        tubes = JSON.parse(history.pop());
-        render();
-    }
-}
-
-function addTube() {
-    if(tubes.length < 12) {
-        tubes.push([]);
-        render();
-        playSnd(500, 0.1);
-    }
-}
-
-function skipLevel() {
-    if(confirm("هل تريد تخطي هذا المستوى؟")) nextLevel();
-}
-
-// تابع اشتراک‌گذاری (کپی لینک)
-function shareGame() {
-    const url = "https://aliapps1.github.io/Neon-Ball-Sort/"; // لینک گیت‌هاب خود را اینجا دقیق کنید
-    navigator.clipboard.writeText(url).then(() => {
-        alert("تم نسخ رابط اللعبة بنجاح! يمكنك الآن مشاركته مع أصدقائك.");
-    }).catch(err => {
-        // روش جایگزین برای مرورگرهای قدیمی
-        const el = document.createElement('textarea');
-        el.value = url;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        alert("تم نسخ الرابط!");
-    });
-}
-
-function toggleSettings(show) {
-    document.getElementById('settings-panel').style.display = show ? 'flex' : 'none';
-}
+function toggleSettings(show) { document.getElementById('settings-panel').style.display = show ? 'flex' : 'none'; }
 
 function toggleOption(type) {
-    if(type === 'sound') { soundEnabled = !soundEnabled; document.getElementById('sound-toggle').classList.toggle('active'); }
-    if(type === 'vibrate') { vibrateEnabled = !vibrateEnabled; document.getElementById('vibrate-toggle').classList.toggle('active'); }
+    if(type === 'sound') {
+        soundEnabled = !soundEnabled;
+        document.getElementById('sound-toggle').classList.toggle('active');
+        localStorage.setItem('neon_snd', soundEnabled);
+        if(soundEnabled) playSnd(600, 0.1);
+    } 
+    else if(type === 'vibrate') {
+        vibrateEnabled = !vibrateEnabled;
+        document.getElementById('vibrate-toggle').classList.toggle('active');
+        localStorage.setItem('neon_vib', vibrateEnabled);
+        if(vibrateEnabled && window.navigator.vibrate) window.navigator.vibrate(50);
+    }
+    else if(type === 'auto') {
+        autoMove = !autoMove;
+        document.getElementById('auto-move-toggle').classList.toggle('active');
+    }
+}
+
+function shareGame() {
+    navigator.clipboard.writeText(window.location.href).then(() => alert("تم نسخ رابط اللعبة!"));
 }
 
 init();
