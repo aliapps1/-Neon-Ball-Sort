@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,7 +11,7 @@
         <div class="top-bar">
             <button class="icon-btn" onclick="showMainMenu()">🏠</button>
             <button class="icon-btn" onclick="reset()">🔄</button>
-            <div class="level-tag">مستوى <span id="level-num">1</span></div>
+            <div class="level-tag"><span id="txt-level">Level</span> <span id="level-num">1</span></div>
             <button class="icon-btn" onclick="skipLevel()">⏭️</button>
             <button class="icon-btn" onclick="undo()">↩️ <small id="undo-count">0</small></button>
             <button class="icon-btn" onclick="addTube()">+🧪</button>
@@ -23,7 +23,7 @@
             <div class="menu-card">
                 <h1 class="title-text">BALL SORT PUZZLE</h1>
                 <div class="crown-icon">👑</div>
-                <div class="level-badge">مستوى <span id="start-level">1</span></div>
+                <div class="level-badge"><span id="txt-start-level">Level</span> <span id="start-level">1</span></div>
                 <button class="play-btn" onclick="startGame()">▶</button>
                 <div class="bottom-menu-actions">
                     <button class="circle-btn" onclick="toggleSettings(true)">⚙️</button>
@@ -35,36 +35,41 @@
             <div class="settings-card">
                 <div class="settings-header">
                     <button class="close-btn" onclick="toggleSettings(false)">✖</button>
-                    <h2>الإعدادات</h2>
+                    <h2 id="txt-settings">Settings</h2>
                 </div>
+                
+                <div class="lang-switch">
+                    <button onclick="changeLang('en')" id="btn-en" class="active">EN</button>
+                    <button onclick="changeLang('ar')" id="btn-ar">AR</button>
+                    <button onclick="changeLang('fa')" id="btn-fa">FA</button>
+                </div>
+
                 <div class="settings-grid">
                     <div class="setting-item active" id="sound-toggle" onclick="toggleOption('sound')">
                         <div class="icon">🔊</div>
-                        <span>الصوت</span>
+                        <span id="txt-sound">Sound</span>
                     </div>
                     <div class="setting-item active" id="vibrate-toggle" onclick="toggleOption('vibrate')">
                         <div class="icon">📳</div>
-                        <span>اهتزاز</span>
+                        <span id="txt-vibrate">Vibrate</span>
                     </div>
                     <div class="setting-item" id="auto-move-toggle" onclick="toggleOption('auto')">
                         <div class="icon">⚙️</div>
-                        <span>التحرك التلقائي</span>
+                        <span id="txt-auto">Auto</span>
                     </div>
                 </div>
                 <div class="menu-links">
-                    <button class="link-btn">📧 تواصل معنا</button>
-                    <button class="link-btn" onclick="shareGame()">🔗 مشاركة</button>
-                    <button class="link-btn">🔒 الخصوصية</button>
+                    <button class="link-btn" id="txt-contact">Contact Us</button>
+                    <button class="link-btn" id="txt-share" onclick="shareGame()">Share Game</button>
                 </div>
-                <div class="version-text">الإصدار 4.2.1</div>
             </div>
         </div>
 
         <div id="win-overlay" class="overlay">
             <div class="win-card">
                 <div class="crown">👑</div>
-                <h2 class="win-title">FANTASTIC!</h2>
-                <button class="btn-next" onclick="nextLevel()">NEXT LEVEL</button>
+                <h2 id="txt-win" class="win-title">FANTASTIC!</h2>
+                <button class="btn-next" id="txt-next" onclick="nextLevel()">NEXT LEVEL</button>
             </div>
         </div>
     </div>
