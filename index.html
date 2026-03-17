@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Ball Sort</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="level-display">LEVEL <span id="level-num">1</span></div>
+            <div class="action-bar">
+                <button class="btn-tool" onclick="addTube()">+ TUBE</button>
+                <button class="btn-tool" onclick="undo()">UNDO</button>
+                <button class="btn-tool" onclick="reset()">RESET</button>
+            </div>
+        </div>
+        
+        <div id="board"></div>
+
+        <div id="win-overlay" class="overlay">
+            <div class="win-card">
+                <div class="crown">👑</div>
+                <h2>FANTASTIC!</h2>
+                <button class="btn-next" onclick="nextLevel()">NEXT LEVEL</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
