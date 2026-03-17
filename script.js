@@ -3,10 +3,13 @@ let isSoundOn = true, isVibrateOn = true, currentLang = 'en';
 
 const COLORS = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
 const LANGS = {
-    en: { level: "Level", settings: "Settings", sound: "Sound", vibrate: "Vibrate", share: "Share", privacy: "Privacy", win: "FANTASTIC!" },
-    ar: { level: "مستوى", settings: "الإعدادات", sound: "الصوت", vibrate: "اهتزاز", share: "مشاركة", privacy: "الخصوصية", win: "رائع!" },
-    fa: { level: "مرحله", settings: "تنظیمات", sound: "صدا", vibrate: "لرزش", share: "اشتراک‌گذاری", privacy: "حریم خصوصی", win: "عالی بود!" }
+    en: { level: "Level", settings: "Settings", sound: "Sound", vibrate: "Vibrate", share: "Share", privacy: "Privacy", win: "FANTASTIC!", settingsBtn: "Settings" },
+    ar: { level: "مستوى", settings: "الإعدادات", sound: "الصوت", vibrate: "اهتزاز", share: "مشاركة", privacy: "الخصوصية", win: "رائع!", settingsBtn: "الإعدادات" },
+    fa: { level: "مرحله", settings: "تنظیمات", sound: "صدا", vibrate: "لرزش", share: "اشتراک‌گذاری", privacy: "حریم خصوصی", win: "عالی بود!", settingsBtn: "تنظیمات" }
 };
+
+const sndTap = new Audio("https://www.soundjay.com/buttons/sounds/button-16.mp3");
+const sndWin = new Audio("https://www.soundjay.com/human/sounds/applause-01.mp3");
 
 function init() {
     level = parseInt(localStorage.getItem('neon_lvl')) || 1;
@@ -24,6 +27,13 @@ function updateUI() {
     document.getElementById('menu-level-num').innerText = level;
     document.getElementById('level-num').innerText = level;
 }
+
+function startGame() { 
+    if(isSoundOn) { sndTap.play().catch(()=>{}); }
+    document.getElementById('main-menu').style.display = 'none'; 
+}
+
+function goHome() { document.getElementById('main-menu').style.display = 'flex'; }
 
 function loadLevel() {
     document.getElementById('win-overlay').style.display = 'none';
@@ -56,50 +66,50 @@ function tap(i) {
     if (selected === null) {
         if (tubes[i].length > 0) {
             selected = i;
-            if (isSoundOn) document.getElementById('snd-tap').play();
+            if (isSoundOn) { sndTap.currentTime = 0; sndTap.play().catch(()=>{}); }
         }
     } else {
-        moveBall(selected, i);
+        moveGroup(selected, i);
         selected = null;
     }
     render();
 }
 
-function moveBall(from, to) {
+function moveGroup(from, to) {
+    if (from === to) return;
     const f = tubes[from], t = tubes[to];
-    if (from !== to && f.length > 0 && t.length < 4 && (t.length === 0 || t[t.length-1] === f[f.length-1])) {
-        t.push(f.pop());
+    if (f.length === 0) return;
+    const color = f[f.length - 1];
+    if (t.length < 4 && (t.length === 0 || t[t.length - 1] === color)) {
+        let count = 0;
+        for (let i = f.length - 1; i >= 0; i--) {
+            if (f[i] === color) count++; else break;
+        }
+        let ballsToMove = Math.min(count, 4 - t.length);
+        for (let i = 0; i < ballsToMove; i++) t.push(f.pop());
         if (isVibrateOn && navigator.vibrate) navigator.vibrate(40);
         if (checkWin()) handleWin();
     }
 }
 
-function checkWin() {
-    return tubes.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0])));
-}
+function checkWin() { return tubes.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0]))); }
 
 function handleWin() {
-    if (isSoundOn) document.getElementById('snd-win').play();
+    if (isSoundOn) sndWin.play().catch(()=>{});
     document.getElementById('win-overlay').style.display = 'flex';
     setTimeout(() => {
         level++;
         localStorage.setItem('neon_lvl', level);
         updateUI();
         loadLevel();
-    }, 2500); // ۲.۵ ثانیه نمایش تبریک و بعد لول بعدی
+    }, 2500);
 }
-
-function startGame() { document.getElementById('main-menu').style.display = 'none'; }
-function goHome() { document.getElementById('main-menu').style.display = 'flex'; }
-function resetLevel() { loadLevel(); }
-function nextLevel() { level++; localStorage.setItem('neon_lvl', level); updateUI(); loadLevel(); }
-function toggleSettings(s) { document.getElementById('settings-panel').style.display = s ? 'flex' : 'none'; }
 
 function changeLang(lang) {
     currentLang = lang;
     localStorage.setItem('neon_lang', lang);
     const trans = LANGS[lang];
-    const map = { 'txt-level': 'level', 'txt-menu-lvl': 'level', 'txt-settings': 'settings', 'txt-sound': 'sound', 'txt-vibrate': 'vibrate', 'txt-share': 'share', 'txt-privacy': 'privacy', 'txt-win': 'win' };
+    const map = { 'txt-level': 'level', 'txt-menu-lvl': 'level', 'txt-settings': 'settings', 'txt-sound': 'sound', 'txt-vibrate': 'vibrate', 'txt-share': 'share', 'txt-privacy': 'privacy', 'txt-win': 'win', 'txt-settings-btn': 'settingsBtn' };
     for (let id in map) if (document.getElementById(id)) document.getElementById(id).innerText = trans[map[id]];
     document.body.className = (lang === 'ar' || lang === 'fa') ? 'rtl' : '';
     document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
@@ -108,9 +118,9 @@ function changeLang(lang) {
 
 function toggleSound() { isSoundOn = !isSoundOn; localStorage.setItem('neon_sound', isSoundOn); updateUI(); }
 function toggleVibrate() { isVibrateOn = !isVibrateOn; localStorage.setItem('neon_vibrate', isVibrateOn); updateUI(); }
-
-async function shareGame() {
-    if (navigator.share) await navigator.share({ title: 'Neon Ball Sort', url: window.location.href });
-}
+function resetLevel() { loadLevel(); }
+function nextLevel() { level++; localStorage.setItem('neon_lvl', level); updateUI(); loadLevel(); }
+function toggleSettings(s) { document.getElementById('settings-panel').style.display = s ? 'flex' : 'none'; }
+async function shareGame() { if (navigator.share) await navigator.share({ title: 'Neon Ball Sort', url: window.location.href }); }
 
 window.onload = init;
