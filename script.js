@@ -7,20 +7,17 @@ const LANGS = {
     en: {
         level: "Level", settings: "Settings", sound: "Sound", vibrate: "Vibrate",
         auto: "Auto", contact: "Contact Us", share: "Share Game", next: "NEXT LEVEL",
-        win: "FANTASTIC!", skipQ: "Skip this level?", resetQ: "Restart level?",
-        copied: "Link Copied!"
+        win: "FANTASTIC!", skipQ: "Skip this level?", resetQ: "Restart level?", copied: "Link Copied!"
     },
     ar: {
         level: "مستوى", settings: "الإعدادات", sound: "الصوت", vibrate: "اهتزاز",
         auto: "تلقائي", contact: "تواصل معنا", share: "مشاركة", next: "المستوى التالي",
-        win: "رائع!", skipQ: "هل تريد تخطي المستوى؟", resetQ: "إعادة تشغيل المستوى؟",
-        copied: "تم نسخ الرابط!"
+        win: "رائع!", skipQ: "هل تريد تخطي المستوى؟", resetQ: "إعادة تشغيل المستوى؟", copied: "تم نسخ الرابط!"
     },
     fa: {
         level: "مرحله", settings: "تنظیمات", sound: "صدا", vibrate: "لرزش",
         auto: "خودکار", contact: "تماس با ما", share: "اشتراک‌گذاری", next: "مرحله بعد",
-        win: "عالی بود!", skipQ: "این مرحله رد شود؟", resetQ: "شروع مجدد مرحله؟",
-        copied: "لینک کپی شد!"
+        win: "عالی بود!", skipQ: "این مرحله رد شود؟", resetQ: "شروع مجدد مرحله؟", copied: "لینک کپی شد!"
     }
 };
 
@@ -28,7 +25,7 @@ function changeLang(lang) {
     currentLang = lang;
     localStorage.setItem('neon_lang', lang);
     
-    // بروزرسانی متون
+    // بروزرسانی تمام متون در صفحه
     document.getElementById('txt-level').innerText = LANGS[lang].level;
     document.getElementById('txt-start-level').innerText = LANGS[lang].level;
     document.getElementById('txt-settings').innerText = LANGS[lang].settings;
@@ -40,10 +37,10 @@ function changeLang(lang) {
     document.getElementById('txt-win').innerText = LANGS[lang].win;
     document.getElementById('txt-next').innerText = LANGS[lang].next;
 
-    // تنظیم جهت صفحه
+    // تغییر جهت صفحه (RTL برای عربی و فارسی)
     document.body.className = (lang === 'ar' || lang === 'fa') ? 'rtl' : '';
     
-    // بروزرسانی دکمه‌های انتخاب زبان
+    // فعال کردن دکمه مربوطه در تنظیمات
     document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
     document.getElementById('btn-' + lang).classList.add('active');
 }
@@ -68,6 +65,7 @@ function init() {
     const savedLang = localStorage.getItem('neon_lang') || 'en';
     
     changeLang(savedLang);
+    
     if(!soundEnabled) document.getElementById('sound-toggle').classList.remove('active');
     if(!vibrateEnabled) document.getElementById('vibrate-toggle').classList.remove('active');
     
@@ -155,10 +153,12 @@ function toggleOption(type) {
         soundEnabled = !soundEnabled;
         document.getElementById('sound-toggle').classList.toggle('active');
         localStorage.setItem('neon_snd', soundEnabled);
+        if(soundEnabled) playSnd(600, 0.1);
     } else if(type === 'vibrate') {
         vibrateEnabled = !vibrateEnabled;
         document.getElementById('vibrate-toggle').classList.toggle('active');
         localStorage.setItem('neon_vib', vibrateEnabled);
+        if(vibrateEnabled && window.navigator.vibrate) window.navigator.vibrate(50);
     }
 }
 
