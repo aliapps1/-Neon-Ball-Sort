@@ -9,12 +9,18 @@
 <body>
     <div class="game-container">
         <div id="main-menu" class="overlay">
-            <div class="menu-card">
-                <h1>BALL SORT PUZZLE</h1>
-                <div class="crown">👑</div>
-                <div class="current-lvl-display"><span id="txt-menu-lvl">Level</span> <span id="menu-level-num">1</span></div>
-                <button class="play-btn" onclick="startGame()">▶</button>
-                <button class="menu-settings-btn" onclick="toggleSettings(true)">⚙️</button>
+            <div class="menu-card main-hero">
+                <h1 class="game-title">NEON BALL<br>SORT PRO</h1>
+                <div class="hero-crown">👑</div>
+                <div class="level-info">
+                    <span id="txt-menu-lvl">Level</span> <span id="menu-level-num">1</span>
+                </div>
+                
+                <button class="huge-play-btn" onclick="startGame()">▶</button>
+                
+                <button class="huge-settings-btn" onclick="toggleSettings(true)">
+                    <span>⚙️</span> <span id="txt-settings-btn">Settings</span>
+                </button>
             </div>
         </div>
 
@@ -29,7 +35,6 @@
 
         <div id="win-overlay" class="overlay" style="display:none;">
             <div class="win-card">
-                <div class="win-glow"></div>
                 <div class="crown-win">👑</div>
                 <h2 id="txt-win">FANTASTIC!</h2>
                 <div class="stars">⭐⭐⭐</div>
@@ -55,15 +60,11 @@
                         <div class="icon">📳</div><span id="txt-vibrate">Vibrate</span>
                     </div>
                 </div>
-                <div class="menu-links">
-                    <button class="link-btn" onclick="shareGame()"><span id="txt-share">Share</span> 🔗</button>
-                    <button class="link-btn" onclick="window.location.href='privacy-policy.html'"><span id="txt-privacy">Privacy</span> 🔒</button>
-                </div>
+                <button class="link-btn" onclick="shareGame()"><span id="txt-share">Share</span> 🔗</button>
+                <button class="link-btn" onclick="window.location.href='privacy-policy.html'"><span id="txt-privacy">Privacy</span> 🔒</button>
             </div>
         </div>
     </div>
-    <audio id="snd-tap" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-    <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
     <script src="script.js"></script>
 </body>
 </html>
