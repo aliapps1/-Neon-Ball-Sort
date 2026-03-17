@@ -1,52 +1,56 @@
-let level = 1;
-let score = 0;
-let tubes = [];
-let selected = null;
-let history = [];
-let audioCtx = null;
+let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
+let soundEnabled = true, vibrateEnabled = true;
 
-const NEON_COLORS = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
+const COLORS = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
 
-// تابع ایجاد صدا بدون نیاز به فایل خارجی
-function playSound(freq, duration) {
+function playSnd(f, d) {
+    if(!soundEnabled) return;
     try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-    } catch (e) { console.log("Audio error"); }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        let o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.value = f; g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + d);
+        o.start(); o.stop(audioCtx.currentTime + d);
+    } catch(e) {}
 }
 
 function init() {
-    const savedLevel = localStorage.getItem('neonBallLevel');
-    if(savedLevel) level = parseInt(savedLevel);
+    const saved = localStorage.getItem('neon_lvl');
+    if(saved) level = parseInt(saved);
+    document.getElementById('start-level').innerText = level;
+    document.getElementById('start-menu').style.display = 'flex';
+}
+
+function startGame() {
+    document.getElementById('start-menu').style.display = 'none';
     loadLevel();
 }
 
 function loadLevel() {
     document.getElementById('level-num').innerText = level;
     document.getElementById('win-overlay').style.display = 'none';
-    history = [];
-    selected = null;
+    selected = null; history = [];
     
     let colorCount = Math.min(3 + Math.floor(level / 5), 8);
     let balls = [];
     for(let i=0; i<colorCount; i++) {
-        for(let j=0; j<4; j++) balls.push(NEON_COLORS[i]);
+        for(let j=0; j<4; j++) balls.push(COLORS[i]);
     }
-    
     balls.sort(() => Math.random() - 0.5);
     tubes = [];
     for(let i=0; i<colorCount; i++) tubes.push(balls.splice(0, 4));
-    tubes.push([]); tubes.push([]);
-    
+    tubes.push([]); tubes.push([]); 
     render();
+}
+
+// تابع جدید: پریدن به مرحله بعد
+function skipLevel() {
+    if(confirm("هل تريد تخطي هذا المستوى؟")) {
+        playSnd(800, 0.2);
+        nextLevel();
+    }
 }
 
 function render() {
@@ -60,88 +64,89 @@ function render() {
             const ball = document.createElement('div');
             ball.className = 'ball';
             ball.style.backgroundColor = color;
-            ball.style.boxShadow = `0 0 15px ${color}80`;
+            ball.style.boxShadow = `0 0 12px ${color}80, inset -3px -3px 6px rgba(0,0,0,0.4)`;
             div.appendChild(ball);
         });
         board.appendChild(div);
     });
+    document.getElementById('undo-count').innerText = history.length;
 }
 
 function tap(i) {
     if(selected === null) {
-        if(tubes[i].length > 0) {
-            selected = i;
-            playSound(400, 0.05); // صدای انتخاب
-            render();
-        }
+        if(tubes[i].length > 0) { selected = i; playSnd(440, 0.08); render(); }
     } else {
-        if (selected !== i) {
-            moveLogic(selected, i);
-        } else {
-            selected = null; // لغو انتخاب اگر دوباره روی همان لوله زد
-        }
-        selected = null;
-        render();
+        if(selected !== i) moveLogic(selected, i);
+        selected = null; render();
     }
 }
 
 function moveLogic(from, to) {
-    let fromTube = tubes[from];
-    let toTube = tubes[to];
+    let f = tubes[from], t = tubes[to];
+    if(f.length === 0) return;
+    let color = f[f.length - 1];
     
-    if (fromTube.length === 0) return;
-    
-    let colorToMove = fromTube[fromTube.length - 1];
-    
-    // بررسی قانون بازی (مقصد خالی باشد یا رنگ بالا یکی باشد)
-    if (toTube.length < 4 && (toTube.length === 0 || toTube[toTube.length - 1] === colorToMove)) {
+    if(t.length < 4 && (t.length === 0 || t[t.length-1] === color)) {
         history.push(JSON.stringify(tubes));
-        
-        // محاسبه تعداد توپ‌های همرنگ برای جابجایی یکباره
         let count = 0;
-        for (let j = fromTube.length - 1; j >= 0; j--) {
-            if (fromTube[j] === colorToMove) count++;
-            else break;
-        }
+        for(let j=f.length-1; j>=0; j--) { if(f[j] === color) count++; else break; }
+        let canMove = Math.min(count, 4 - t.length);
+        for(let k=0; k<canMove; k++) { t.push(f.pop()); }
         
-        let space = 4 - toTube.length;
-        let ballsToMove = Math.min(count, space);
-        
-        for (let k = 0; k < ballsToMove; k++) {
-            toTube.push(fromTube.pop());
-        }
-        
-        playSound(600, 0.1); // صدای جابجایی موفق
-        
-        // بررسی خودکار پیروزی
-        if(checkWin()) {
-            showWin();
-        }
-    } else {
-        playSound(150, 0.2); // صدای خطا
-    }
+        playSnd(600, 0.1);
+        if(vibrateEnabled && window.navigator.vibrate) window.navigator.vibrate(30);
+        if(checkWin()) setTimeout(() => { document.getElementById('win-overlay').style.display = 'flex'; playSnd(800, 0.4); }, 300);
+    } else { playSnd(200, 0.2); }
 }
 
 function checkWin() {
-    return tubes.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0])));
-}
-
-function showWin() {
-    playSound(800, 0.3);
-    setTimeout(() => {
-        document.getElementById('win-overlay').style.display = 'flex';
-        // ذخیره مرحله بعدی در حافظه
-        level++;
-        localStorage.setItem('neonBallLevel', level);
-    }, 300);
+    let nonEmptyTubes = tubes.filter(t => t.length > 0);
+    return nonEmptyTubes.every(t => t.length === 4 && t.every(b => b === t[0]));
 }
 
 function nextLevel() {
-    loadLevel(); // بارگذاری لول جدید که در مرحله قبل ذخیره شده بود
+    level++;
+    localStorage.setItem('neon_lvl', level);
+    loadLevel();
 }
 
-function reset() { loadLevel(); }
-function undo() { if(history.length > 0) { tubes = JSON.parse(history.pop()); render(); } }
-function addTube() { if(tubes.length < 12) { tubes.push([]); render(); } }
+function reset() {
+    if(confirm("إعادة تشغيل المستوى؟")) loadLevel();
+}
+
+function undo() {
+    if(history.length > 0) {
+        tubes = JSON.parse(history.pop());
+        render();
+    }
+}
+
+function addTube() {
+    if(tubes.length < 12) {
+        tubes.push([]);
+        render();
+        playSnd(500, 0.1);
+    }
+}
+
+function showMainMenu() {
+    document.getElementById('start-menu').style.display = 'flex';
+    document.getElementById('start-level').innerText = level;
+}
+
+function toggleSettings(show) {
+    document.getElementById('settings-panel').style.display = show ? 'flex' : 'none';
+}
+
+function toggleOption(type) {
+    if(type === 'sound') {
+        soundEnabled = !soundEnabled;
+        document.getElementById('sound-toggle').classList.toggle('active');
+    }
+    if(type === 'vibrate') {
+        vibrateEnabled = !vibrateEnabled;
+        document.getElementById('vibrate-toggle').classList.toggle('active');
+    }
+}
 
 init();
