@@ -19,6 +19,10 @@ function playSnd(f, d) {
 function init() {
     const saved = localStorage.getItem('neon_lvl');
     if(saved) level = parseInt(saved);
+    showMainMenu();
+}
+
+function showMainMenu() {
     document.getElementById('start-level').innerText = level;
     document.getElementById('start-menu').style.display = 'flex';
 }
@@ -43,14 +47,6 @@ function loadLevel() {
     for(let i=0; i<colorCount; i++) tubes.push(balls.splice(0, 4));
     tubes.push([]); tubes.push([]); 
     render();
-}
-
-// تابع جدید: پریدن به مرحله بعد
-function skipLevel() {
-    if(confirm("هل تريد تخطي هذا المستوى؟")) {
-        playSnd(800, 0.2);
-        nextLevel();
-    }
 }
 
 function render() {
@@ -129,9 +125,15 @@ function addTube() {
     }
 }
 
-function showMainMenu() {
-    document.getElementById('start-menu').style.display = 'flex';
-    document.getElementById('start-level').innerText = level;
+function skipLevel() {
+    if(confirm("هل تريد تخطي هذا المستوى؟")) nextLevel();
+}
+
+function shareGame() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        alert("تم نسخ رابط اللعبة بنجاح!");
+    });
 }
 
 function toggleSettings(show) {
@@ -139,14 +141,8 @@ function toggleSettings(show) {
 }
 
 function toggleOption(type) {
-    if(type === 'sound') {
-        soundEnabled = !soundEnabled;
-        document.getElementById('sound-toggle').classList.toggle('active');
-    }
-    if(type === 'vibrate') {
-        vibrateEnabled = !vibrateEnabled;
-        document.getElementById('vibrate-toggle').classList.toggle('active');
-    }
+    if(type === 'sound') { soundEnabled = !soundEnabled; document.getElementById('sound-toggle').classList.toggle('active'); }
+    if(type === 'vibrate') { vibrateEnabled = !vibrateEnabled; document.getElementById('vibrate-toggle').classList.toggle('active'); }
 }
 
 init();
