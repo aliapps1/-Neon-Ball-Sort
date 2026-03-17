@@ -8,8 +8,18 @@
 </head>
 <body>
     <div class="game-container">
+        <div id="main-menu" class="overlay">
+            <div class="menu-card">
+                <h1>BALL SORT PUZZLE</h1>
+                <div class="crown">👑</div>
+                <div class="current-lvl-display"><span id="txt-menu-lvl">Level</span> <span id="menu-level-num">1</span></div>
+                <button class="play-btn" onclick="startGame()">▶</button>
+                <button class="menu-settings-btn" onclick="toggleSettings(true)">⚙️</button>
+            </div>
+        </div>
+
         <div class="top-bar">
-            <button class="icon-btn" onclick="location.reload()">🏠</button>
+            <button class="icon-btn" onclick="goHome()">🏠</button>
             <button class="icon-btn" onclick="resetLevel()">🔄</button>
             <div class="level-tag"><span id="txt-level">Level</span> <span id="level-num">1</span></div>
             <button class="icon-btn" onclick="nextLevel()">⏭️</button>
@@ -23,13 +33,11 @@
                     <button class="close-btn" onclick="toggleSettings(false)">✖</button>
                     <h2 id="txt-settings">Settings</h2>
                 </div>
-                
                 <div class="lang-switch">
                     <button onclick="changeLang('en')" id="btn-en">EN</button>
                     <button onclick="changeLang('ar')" id="btn-ar">AR</button>
                     <button onclick="changeLang('fa')" id="btn-fa">FA</button>
                 </div>
-
                 <div class="settings-grid">
                     <div class="setting-item active" id="sound-btn" onclick="toggleSound()">
                         <div class="icon">🔊</div><span id="txt-sound">Sound</span>
@@ -38,24 +46,12 @@
                         <div class="icon">📳</div><span id="txt-vibrate">Vibrate</span>
                     </div>
                 </div>
-
                 <div class="menu-links">
-                    <button class="link-btn" onclick="shareGame()"><span id="txt-share">Share Game</span> 🔗</button>
+                    <button class="link-btn" onclick="shareGame()"><span id="txt-share">Share</span> 🔗</button>
                     <button class="link-btn" onclick="window.location.href='privacy-policy.html'"><span id="txt-privacy">Privacy</span> 🔒</button>
-                    <div class="version-text">Version 4.2.1</div>
                 </div>
             </div>
         </div>
-
-        <div id="win-overlay" class="overlay" style="display:none;">
-            <div class="win-card">
-                <div class="crown">👑</div>
-                <h2 id="txt-win">FANTASTIC!</h2>
-                <button class="btn-next" onclick="nextLevel()">NEXT LEVEL</button>
-            </div>
-        </div>
-
-        <button class="main-settings-btn" onclick="toggleSettings(true)">⚙️</button>
     </div>
     <script src="script.js"></script>
 </body>
