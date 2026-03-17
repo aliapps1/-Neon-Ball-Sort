@@ -1,34 +1,54 @@
-<div id="settings-panel" class="overlay">
-    <div class="settings-card">
-        <div class="settings-header">
-            <button class="close-btn" onclick="toggleSettings(false)">✖</button>
-            <h2 id="txt-settings">Settings</h2>
-        </div>
-        
-        <div class="lang-switch">
-            <button onclick="changeLang('en')" id="btn-en">EN</button>
-            <button onclick="changeLang('ar')" id="btn-ar">AR</button>
-            <button onclick="changeLang('fa')" id="btn-fa">FA</button>
-        </div>
-
-        <div class="settings-grid">
-            <div class="setting-item active" id="sound-btn" onclick="toggleSound()">
-                <div class="icon">🔊</div>
-                <span id="txt-sound">Sound</span>
-            </div>
-            <div class="setting-item active" id="vibrate-btn" onclick="toggleVibrate()">
-                <div class="icon">📳</div>
-                <span id="txt-vibrate">Vibrate</span>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Ball Sort Pro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="top-bar">
+            <button class="icon-btn" onclick="location.reload()">🏠</button>
+            <button class="icon-btn" onclick="resetLevel()">🔄</button>
+            <div class="level-tag"><span id="txt-level">Level</span> <span id="level-num">1</span></div>
+            <button class="icon-btn" onclick="nextLevel()">⏭️</button>
         </div>
 
-        <div class="menu-links">
-            <button class="link-btn" onclick="shareGame()">
-                <span id="txt-share">Share Game</span> 🔗
-            </button>
-            <button class="link-btn" onclick="window.location.href='privacy-policy.html'">
-                <span id="txt-privacy">Privacy</span> 🔒
-            </button>
+        <div id="board"></div>
+
+        <div id="settings-panel" class="overlay" style="display:none;">
+            <div class="settings-card">
+                <div class="settings-header">
+                    <button class="close-btn" onclick="toggleSettings(false)">✖</button>
+                    <h2 id="txt-settings">Settings</h2>
+                </div>
+                
+                <div class="lang-switch">
+                    <button onclick="changeLang('en')" id="btn-en">EN</button>
+                    <button onclick="changeLang('ar')" id="btn-ar">AR</button>
+                    <button onclick="changeLang('fa')" id="btn-fa">FA</button>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="setting-item active" id="sound-btn" onclick="toggleSound()">
+                        <div class="icon">🔊</div><span id="txt-sound">Sound</span>
+                    </div>
+                    <div class="setting-item active" id="vibrate-btn" onclick="toggleVibrate()">
+                        <div class="icon">📳</div><span id="txt-vibrate">Vibrate</span>
+                    </div>
+                </div>
+
+                <div class="menu-links">
+                    <button class="link-btn" onclick="shareGame()"><span id="txt-share">Share</span> 🔗</button>
+                    <button class="link-btn" onclick="window.location.href='privacy-policy.html'"><span id="txt-privacy">Privacy</span> 🔒</button>
+                    <div class="version-text">Version 4.2.1</div>
+                </div>
+            </div>
         </div>
+
+        <button class="main-settings-btn" onclick="toggleSettings(true)">⚙️</button>
     </div>
-</div>
+    <script src="script.js"></script>
+</body>
+</html>
