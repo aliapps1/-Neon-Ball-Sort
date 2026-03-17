@@ -8,8 +8,9 @@ const LANGS = {
     fa: { level: "مرحله", settings: "تنظیمات", sound: "صدا", vibrate: "لرزش", share: "اشتراک‌گذاری", privacy: "حریم خصوصی", win: "عالی بود!", settingsBtn: "تنظیمات" }
 };
 
-const sndTap = new Audio("https://www.soundjay.com/buttons/sounds/button-16.mp3");
-const sndWin = new Audio("https://www.soundjay.com/human/sounds/applause-01.mp3");
+// صداهای استاندارد گوگل برای پایداری در موبایل
+const sndTap = new Audio("https://actions.google.com/sounds/v1/competition_game/single_winner_not_too_loud.ogg");
+const sndWin = new Audio("https://actions.google.com/sounds/v1/cartoon/clime_up_the_ladder_fast.ogg");
 
 function init() {
     level = parseInt(localStorage.getItem('neon_lvl')) || 1;
@@ -29,11 +30,9 @@ function updateUI() {
 }
 
 function startGame() { 
-    if(isSoundOn) { sndTap.play().catch(()=>{}); }
+    if(isSoundOn) { sndTap.play().catch(()=>{}); } // رفع محدودیت Autoplay
     document.getElementById('main-menu').style.display = 'none'; 
 }
-
-function goHome() { document.getElementById('main-menu').style.display = 'flex'; }
 
 function loadLevel() {
     document.getElementById('win-overlay').style.display = 'none';
@@ -105,6 +104,11 @@ function handleWin() {
     }, 2500);
 }
 
+function goHome() { document.getElementById('main-menu').style.display = 'flex'; }
+function resetLevel() { loadLevel(); }
+function nextLevel() { level++; localStorage.setItem('neon_lvl', level); updateUI(); loadLevel(); }
+function toggleSettings(s) { document.getElementById('settings-panel').style.display = s ? 'flex' : 'none'; }
+
 function changeLang(lang) {
     currentLang = lang;
     localStorage.setItem('neon_lang', lang);
@@ -112,15 +116,9 @@ function changeLang(lang) {
     const map = { 'txt-level': 'level', 'txt-menu-lvl': 'level', 'txt-settings': 'settings', 'txt-sound': 'sound', 'txt-vibrate': 'vibrate', 'txt-share': 'share', 'txt-privacy': 'privacy', 'txt-win': 'win', 'txt-settings-btn': 'settingsBtn' };
     for (let id in map) if (document.getElementById(id)) document.getElementById(id).innerText = trans[map[id]];
     document.body.className = (lang === 'ar' || lang === 'fa') ? 'rtl' : '';
-    document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
-    document.getElementById('btn-' + lang).classList.add('active');
 }
 
 function toggleSound() { isSoundOn = !isSoundOn; localStorage.setItem('neon_sound', isSoundOn); updateUI(); }
 function toggleVibrate() { isVibrateOn = !isVibrateOn; localStorage.setItem('neon_vibrate', isVibrateOn); updateUI(); }
-function resetLevel() { loadLevel(); }
-function nextLevel() { level++; localStorage.setItem('neon_lvl', level); updateUI(); loadLevel(); }
-function toggleSettings(s) { document.getElementById('settings-panel').style.display = s ? 'flex' : 'none'; }
-async function shareGame() { if (navigator.share) await navigator.share({ title: 'Neon Ball Sort', url: window.location.href }); }
 
 window.onload = init;
