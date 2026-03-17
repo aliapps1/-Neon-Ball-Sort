@@ -37,30 +37,23 @@
                     <button class="close-btn" onclick="toggleSettings(false)">✖</button>
                     <h2 id="txt-settings">Settings</h2>
                 </div>
-                
                 <div class="lang-switch">
                     <button onclick="changeLang('en')" id="btn-en">EN</button>
                     <button onclick="changeLang('ar')" id="btn-ar">AR</button>
                     <button onclick="changeLang('fa')" id="btn-fa">FA</button>
                 </div>
-
                 <div class="settings-grid">
                     <div class="setting-item active" id="sound-toggle" onclick="toggleOption('sound')">
-                        <div class="icon">🔊</div>
-                        <span id="txt-sound">Sound</span>
+                        <div class="icon">🔊</div><span id="txt-sound">Sound</span>
                     </div>
                     <div class="setting-item active" id="vibrate-toggle" onclick="toggleOption('vibrate')">
-                        <div class="icon">📳</div>
-                        <span id="txt-vibrate">Vibrate</span>
-                    </div>
-                    <div class="setting-item" id="auto-move-toggle" onclick="toggleOption('auto')">
-                        <div class="icon">⚙️</div>
-                        <span id="txt-auto">Auto</span>
+                        <div class="icon">📳</div><span id="txt-vibrate">Vibrate</span>
                     </div>
                 </div>
                 <div class="menu-links">
-                    <button class="link-btn" id="txt-contact">Contact Us</button>
-                    <button class="link-btn" id="txt-share" onclick="shareGame()">Share Game</button>
+                    <button class="link-btn" onclick="window.location.href='mailto:support@aliapps1.com'"><span id="txt-contact">Contact Us</span> 📧</button>
+                    <button class="link-btn" onclick="window.location.href='privacy-policy.html'"><span id="txt-privacy">Privacy</span> 🔒</button>
+                    <div class="version-text">الإصدار 4.2.1</div>
                 </div>
             </div>
         </div>
@@ -68,7 +61,7 @@
         <div id="win-overlay" class="overlay">
             <div class="win-card">
                 <div class="crown">👑</div>
-                <h2 id="txt-win" class="win-title">FANTASTIC!</h2>
+                <h2 id="txt-win">FANTASTIC!</h2>
                 <button class="btn-next" id="txt-next" onclick="nextLevel()">NEXT LEVEL</button>
             </div>
         </div>
