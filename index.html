@@ -40,10 +40,18 @@
                 </div>
 
                 <div class="menu-links">
-                    <button class="link-btn" onclick="shareGame()"><span id="txt-share">Share</span> 🔗</button>
+                    <button class="link-btn" onclick="shareGame()"><span id="txt-share">Share Game</span> 🔗</button>
                     <button class="link-btn" onclick="window.location.href='privacy-policy.html'"><span id="txt-privacy">Privacy</span> 🔒</button>
                     <div class="version-text">Version 4.2.1</div>
                 </div>
+            </div>
+        </div>
+
+        <div id="win-overlay" class="overlay" style="display:none;">
+            <div class="win-card">
+                <div class="crown">👑</div>
+                <h2 id="txt-win">FANTASTIC!</h2>
+                <button class="btn-next" onclick="nextLevel()">NEXT LEVEL</button>
             </div>
         </div>
 
