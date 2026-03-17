@@ -3,6 +3,7 @@ let soundEnabled = true, vibrateEnabled = true;
 
 const COLORS = ['#ff0055', '#00f2fe', '#4facfe', '#fadb14', '#70e000', '#9b59b6', '#ff8c00', '#ffffff'];
 
+// سیستم صوتی
 function playSnd(f, d) {
     if(!soundEnabled) return;
     try {
@@ -16,20 +17,28 @@ function playSnd(f, d) {
     } catch(e) {}
 }
 
+// شروع اولیه
 function init() {
     const saved = localStorage.getItem('neon_lvl');
     if(saved) level = parseInt(saved);
     showMainMenu();
 }
 
+// نمایش منوی اصلی (اصلاح شده برای دکمه خانه)
 function showMainMenu() {
     document.getElementById('start-level').innerText = level;
     document.getElementById('start-menu').style.display = 'flex';
+    // بستن پنل تنظیمات اگر باز باشد
+    toggleSettings(false);
 }
 
+// شروع بازی از منو
 function startGame() {
     document.getElementById('start-menu').style.display = 'none';
-    loadLevel();
+    // اگر بورد خالی است (اولین بار)، مرحله را بارگذاری کن
+    if(tubes.length === 0) {
+        loadLevel();
+    }
 }
 
 function loadLevel() {
@@ -129,10 +138,20 @@ function skipLevel() {
     if(confirm("هل تريد تخطي هذا المستوى؟")) nextLevel();
 }
 
+// تابع اشتراک‌گذاری (کپی لینک)
 function shareGame() {
-    const url = window.location.href;
+    const url = "https://aliapps1.github.io/Neon-Ball-Sort/"; // لینک گیت‌هاب خود را اینجا دقیق کنید
     navigator.clipboard.writeText(url).then(() => {
-        alert("تم نسخ رابط اللعبة بنجاح!");
+        alert("تم نسخ رابط اللعبة بنجاح! يمكنك الآن مشاركته مع أصدقائك.");
+    }).catch(err => {
+        // روش جایگزین برای مرورگرهای قدیمی
+        const el = document.createElement('textarea');
+        el.value = url;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        alert("تم نسخ الرابط!");
     });
 }
 
