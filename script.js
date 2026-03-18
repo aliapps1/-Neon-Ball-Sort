@@ -161,27 +161,23 @@ function toggleOption(type) {
         if(vibrateEnabled && window.navigator.vibrate) window.navigator.vibrate(50);
     }
 }
-
-// این تابع را به انتهای فایل script.js اضافه کنید
 async function shareGame() {
     const shareData = {
         title: 'Neon Ball Sort Pro',
-        text: 'ببین می‌تونی این مرحله رو حل کنی؟ جذاب و فکری!',
+        text: 'این بازی فکری جذاب رو امتحان کن!',
         url: window.location.href 
     };
 
     try {
-        // باز کردن مستقیم منوی سیستم گوشی (Share Sheet)
+        // تلاش برای باز کردن منوی اصلی گوشی
         if (navigator.share) {
             await navigator.share(shareData);
         } else {
-            // اگر مرورگر از این قابلیت پشتیبانی نکند، فقط لینک را در حافظه کپی می‌کند
-            // بدون اینکه پیامی (Alert) به کاربر نشان دهد
+            // اگر مرورگر پشتیبانی نکند، فقط در حافظه کپی میکند (بدون هیچ پیامی)
             await navigator.clipboard.writeText(window.location.href);
         }
     } catch (err) {
-        // در صورت انصراف کاربر یا خطا، چیزی نشان نمی‌دهد تا بازی خراب نشود
-        console.log('Share cancelled or failed');
+        // حتی در صورت خطا هم چیزی نشان نمیدهد
+        console.log("Share failed");
     }
 }
-
