@@ -162,22 +162,30 @@ function toggleOption(type) {
     }
 }
 async function shareGame() {
+    // تعریف متن‌ها برای هر زبان
+    const messages = {
+        en: "Can you solve this puzzle? It's fun and challenging!",
+        ar: "هل يمكنك حل هذا اللغز؟ ممتعة ومحفزة للعقل!",
+        fa: "ببین می‌تونی این مرحله رو حل کنی؟ خیلی جذاب و فکریه!"
+    };
+
+    // انتخاب متن بر اساس زبانی که الان فعال است
+    // اگر currentLang تعریف نشده باشد، پیش‌فرض فارسی استفاده می‌شود
+    const selectedText = messages[currentLang] || messages.fa;
+
     const shareData = {
         title: 'Neon Ball Sort Pro',
-        text: 'این بازی فکری جذاب رو امتحان کن!',
+        text: selectedText,
         url: window.location.href 
     };
 
     try {
-        // تلاش برای باز کردن منوی اصلی گوشی
         if (navigator.share) {
             await navigator.share(shareData);
         } else {
-            // اگر مرورگر پشتیبانی نکند، فقط در حافظه کپی میکند (بدون هیچ پیامی)
             await navigator.clipboard.writeText(window.location.href);
         }
     } catch (err) {
-        // حتی در صورت خطا هم چیزی نشان نمیدهد
         console.log("Share failed");
     }
 }
