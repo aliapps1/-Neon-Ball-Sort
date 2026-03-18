@@ -162,8 +162,26 @@ function toggleOption(type) {
     }
 }
 
-function shareGame() {
-    navigator.clipboard.writeText(window.location.href).then(() => alert(LANGS[currentLang].copied));
+// این تابع را به انتهای فایل script.js اضافه کنید
+async function shareGame() {
+    const shareData = {
+        title: 'Neon Ball Sort Pro',
+        text: 'ببین می‌تونی این مرحله رو حل کنی؟ جذاب و فکری!',
+        url: window.location.href 
+    };
+
+    try {
+        // باز کردن مستقیم منوی سیستم گوشی (Share Sheet)
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else {
+            // اگر مرورگر از این قابلیت پشتیبانی نکند، فقط لینک را در حافظه کپی می‌کند
+            // بدون اینکه پیامی (Alert) به کاربر نشان دهد
+            await navigator.clipboard.writeText(window.location.href);
+        }
+    } catch (err) {
+        // در صورت انصراف کاربر یا خطا، چیزی نشان نمی‌دهد تا بازی خراب نشود
+        console.log('Share cancelled or failed');
+    }
 }
 
-init();
