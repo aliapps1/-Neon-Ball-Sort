@@ -20,18 +20,12 @@
             <span id="level-num">1</span>
         </div>
 
-        <div class="coin-box">💰 <span id="coins">0</span></div>
-
         <button onclick="skipLevel()">⏭️</button>
         <button onclick="undo()">↩️ <span id="undo-count">0</span></button>
         <button onclick="addTube()">+🧪</button>
     </div>
 
     <div id="board"></div>
-
-    <div class="ad-box">
-        <button onclick="watchAdReward()">🎥 Free Coins</button>
-    </div>
 
     <!-- START -->
     <div id="start-menu" class="overlay">
@@ -59,10 +53,13 @@
                 <button onclick="changeLang('fa')" id="btn-fa">FA</button>
             </div>
 
-            <div>
-                <div id="sound-toggle" onclick="toggleOption('sound')">🔊 <span id="txt-sound">Sound</span></div>
-                <div id="vibrate-toggle" onclick="toggleOption('vibrate')">📳 <span id="txt-vibrate">Vibrate</span></div>
-            </div>
+            <button id="sound-toggle" class="setting-btn active" onclick="toggleOption('sound')">
+                🔊 <span id="txt-sound">Sound</span>
+            </button>
+
+            <button id="vibrate-toggle" class="setting-btn active" onclick="toggleOption('vibrate')">
+                📳 <span id="txt-vibrate">Vibrate</span>
+            </button>
 
             <button id="txt-contact">Contact</button>
             <button id="txt-share" onclick="shareGame()">Share</button>
@@ -74,7 +71,6 @@
     <div id="win-overlay" class="overlay">
         <div class="win-card">
             <h2 id="txt-win">FANTASTIC</h2>
-            <p>+10 Coins</p>
             <button id="txt-next" onclick="nextLevel()">NEXT</button>
         </div>
     </div>
