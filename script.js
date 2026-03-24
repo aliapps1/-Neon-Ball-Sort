@@ -1,17 +1,41 @@
-let tubes=[], selected=null, history=[];
-let level=1, coins=100;
+let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
+let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
+let coins = parseInt(localStorage.getItem("coins")) || 100;
 
-let soundEnabled=true, vibrateEnabled=true;
+const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00'];
 
-const COLORS=['red','blue','green','yellow'];
+const LANGS = {
+    en:{level:"Level",settings:"Settings",sound:"Sound",vibrate:"Vibrate",contact:"Contact",share:"Share",next:"NEXT",win:"FANTASTIC"},
+    ar:{level:"مستوى",settings:"الإعدادات",sound:"الصوت",vibrate:"اهتزاز",contact:"تواصل",share:"مشاركة",next:"التالي",win:"رائع"},
+    fa:{level:"مرحله",settings:"تنظیمات",sound:"صدا",vibrate:"لرزش",contact:"تماس",share:"اشتراک",next:"بعدی",win:"عالی"}
+};
 
 function init(){
+    changeLang(localStorage.getItem("lang")||'en');
     updateCoins();
     showMainMenu();
 }
 
 function updateCoins(){
     document.getElementById("coins").innerText=coins;
+}
+
+function changeLang(lang){
+    currentLang=lang;
+    localStorage.setItem("lang",lang);
+
+    let t=LANGS[lang];
+    document.getElementById('txt-level').innerText=t.level;
+    document.getElementById('txt-start-level').innerText=t.level;
+    document.getElementById('txt-settings').innerText=t.settings;
+    document.getElementById('txt-sound').innerText=t.sound;
+    document.getElementById('txt-vibrate').innerText=t.vibrate;
+    document.getElementById('txt-contact').innerText=t.contact;
+    document.getElementById('txt-share').innerText=t.share;
+    document.getElementById('txt-win').innerText=t.win;
+    document.getElementById('txt-next').innerText=t.next;
+
+    document.body.dir=(lang==='fa'||lang==='ar')?'rtl':'ltr';
 }
 
 function showMainMenu(){
@@ -24,12 +48,23 @@ function startGame(){
 }
 
 function loadLevel(){
-    tubes=[
-        ['red','blue','red','blue'],
-        ['green','yellow','green','yellow'],
-        [],
-        []
-    ];
+    let colorCount=Math.min(3+Math.floor(level/3),7);
+    let balls=[];
+
+    for(let i=0;i<colorCount;i++){
+        for(let j=0;j<4;j++) balls.push(COLORS[i]);
+    }
+
+    balls.sort(()=>Math.random()-0.5);
+
+    tubes=[];
+    for(let i=0;i<colorCount;i++){
+        tubes.push(balls.splice(0,4));
+    }
+
+    tubes.push([]);
+    tubes.push([]);
+
     render();
 }
 
@@ -38,56 +73,60 @@ function render(){
     board.innerHTML='';
 
     tubes.forEach((t,i)=>{
-        let d=document.createElement('div');
-        d.className='tube';
-        if(selected===i) d.classList.add('active');
+        let div=document.createElement('div');
+        div.className='tube'+(selected===i?' active':'');
+        div.onclick=()=>tap(i);
 
-        d.onclick=()=>tap(i);
-
-        t.forEach(c=>{
+        t.forEach(color=>{
             let b=document.createElement('div');
             b.className='ball';
-            b.style.background=c;
-            d.appendChild(b);
+            b.style.background=color;
+            div.appendChild(b);
         });
 
-        board.appendChild(d);
+        board.appendChild(div);
     });
 }
 
 function tap(i){
     if(selected===null){
-        selected=i;
+        if(tubes[i].length>0) selected=i;
     }else{
-        move(selected,i);
+        if(selected!==i) move(selected,i);
         selected=null;
     }
     render();
 }
 
 function move(a,b){
-    if(tubes[a].length===0) return;
+    let f=tubes[a], t=tubes[b];
+    if(f.length===0) return;
 
-    let color=tubes[a][tubes[a].length-1];
+    let color=f[f.length-1];
 
-    while(tubes[a].length && tubes[a][tubes[a].length-1]===color){
-        tubes[b].push(tubes[a].pop());
-    }
+    if(t.length<4 && (t.length===0 || t[t.length-1]===color)){
+        while(f.length && f[f.length-1]===color && t.length<4){
+            t.push(f.pop());
+        }
 
-    if(checkWin()){
-        coins+=10;
-        updateCoins();
-        document.getElementById('win-overlay').style.display='flex';
+        if(checkWin()){
+            coins+=10;
+            localStorage.setItem("coins",coins);
+            updateCoins();
+            document.getElementById('win-overlay').style.display='flex';
+        }
     }
 }
 
 function checkWin(){
-    return tubes.every(t=>t.length===0 || t.every(x=>x===t[0]));
+    return tubes.filter(t=>t.length>0)
+        .every(t=>t.length===4 && t.every(x=>x===t[0]));
 }
 
 function nextLevel(){
-    document.getElementById('win-overlay').style.display='none';
+    level++;
     loadLevel();
+    document.getElementById('win-overlay').style.display='none';
 }
 
 function toggleSettings(x){
@@ -105,11 +144,22 @@ function toggleOption(type){
     }
 }
 
-function shareGame(){
-    alert("Share");
+async function shareGame(){
+    try{
+        if(navigator.share){
+            await navigator.share({
+                title:"Neon Ball Sort",
+                text:"Try this game!",
+                url:window.location.href
+            });
+        }else{
+            await navigator.clipboard.writeText(window.location.href);
+            alert("Link copied");
+        }
+    }catch(e){}
 }
 
 function reset(){loadLevel();}
 function undo(){}
 function addTube(){}
-function skipLevel(){}
+function skipLevel(){nextLevel();}
