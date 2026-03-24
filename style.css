@@ -209,3 +209,51 @@ body.rtl {
     cursor: pointer;
     font-weight: bold;
 }
+/* ===== START MENU IMPROVEMENT (SAFE) ===== */
+
+.menu-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* عنوان بازی */
+.title-text {
+    font-size: 22px;
+    margin-bottom: 10px;
+    opacity: 0.85;
+}
+
+/* لول */
+.level-badge {
+    font-size: 16px;
+    margin-bottom: 15px;
+    opacity: 0.7;
+}
+
+/* دکمه پلی */
+.play-btn {
+    font-size: 32px;           /* کوچکتر شد (متعادل) */
+    width: 75px;
+    height: 75px;
+    margin: 15px 0;
+    box-shadow: 0 4px 15px rgba(46,160,67,0.4); /* حس حرفه‌ای */
+}
+
+/* آیکون تنظیمات */
+.circle-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #30363d;
+    border: none;
+    font-size: 18px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.circle-btn:hover {
+    transform: scale(1.1);
+}
