@@ -1,83 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neon Ball Sort</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Ball Sort Pro</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body onload="init()">
 
 <div class="game-container">
 
+    <!-- 🔥 TOP BAR حرفه‌ای -->
     <div class="top-bar">
-        <button onclick="showMainMenu()">🏠</button>
-        <button onclick="reset()">🔄</button>
+        <button class="icon-btn" onclick="showMainMenu()">🏠</button>
+        <button class="icon-btn" onclick="reset()">🔄</button>
 
-        <div>
+        <div class="level-tag">
             <span id="txt-level">Level</span>
             <span id="level-num">1</span>
         </div>
 
-        <div class="coin-box">💰 <span id="coins">0</span></div>
+        <!-- 💰 سکه -->
+        <div class="coin-box">
+            💰 <span id="coins">0</span>
+        </div>
 
-        <button onclick="skipLevel()">⏭️</button>
-        <button onclick="undo()">↩️ <span id="undo-count">0</span></button>
-        <button onclick="addTube()">+🧪</button>
+        <button class="icon-btn" onclick="skipLevel()">⏭️</button>
+        <button class="icon-btn" onclick="undo()">↩️ <small id="undo-count">0</small></button>
+        <button class="icon-btn" onclick="addTube()">+🧪</button>
     </div>
 
+    <!-- 🎮 BOARD -->
     <div id="board"></div>
 
-    <!-- START -->
+    <!-- 🎥 دکمه تبلیغ -->
+    <div class="ad-box">
+        <button class="ad-btn" onclick="watchAdReward()">🎥 Get Free Coins</button>
+    </div>
+
+    <!-- 🏠 START MENU -->
     <div id="start-menu" class="overlay">
         <div class="menu-card">
-            <h1>NEON SORT</h1>
-            <div>
+            <h1 class="title-text">NEON SORT</h1>
+            <div class="crown-icon">👑</div>
+
+            <div class="level-badge">
                 <span id="txt-start-level">Level</span>
                 <span id="start-level">1</span>
             </div>
-            <button onclick="startGame()">▶ Start</button>
-            <button onclick="toggleSettings(true)">⚙ Settings</button>
+
+            <button class="play-btn" onclick="startGame()">▶ PLAY</button>
+
+            <div class="bottom-menu-actions">
+                <button class="circle-btn" onclick="toggleSettings(true)">⚙️</button>
+            </div>
         </div>
     </div>
 
-    <!-- SETTINGS -->
+    <!-- ⚙️ SETTINGS -->
     <div id="settings-panel" class="overlay">
         <div class="settings-card">
-            <button onclick="toggleSettings(false)">✖</button>
-            <h2 id="txt-settings">Settings</h2>
 
-            <button id="sound-toggle" onclick="toggleOption('sound')">Sound</button>
-            <button id="vibrate-toggle" onclick="toggleOption('vibrate')">Vibrate</button>
+            <div class="settings-header">
+                <button class="close-btn" onclick="toggleSettings(false)">✖</button>
+                <h2 id="txt-settings">Settings</h2>
+            </div>
 
-            <button onclick="shareGame()">Share</button>
+            <div class="lang-switch">
+                <button onclick="changeLang('en')" id="btn-en">EN</button>
+                <button onclick="changeLang('ar')" id="btn-ar">AR</button>
+                <button onclick="changeLang('fa')" id="btn-fa">FA</button>
+            </div>
+
+            <div class="settings-grid">
+                <div class="setting-item active" id="sound-toggle" onclick="toggleOption('sound')">
+                    <div class="icon">🔊</div>
+                    <span id="txt-sound">Sound</span>
+                </div>
+
+                <div class="setting-item active" id="vibrate-toggle" onclick="toggleOption('vibrate')">
+                    <div class="icon">📳</div>
+                    <span id="txt-vibrate">Vibrate</span>
+                </div>
+            </div>
+
+            <div class="menu-links">
+                <button class="link-btn">Contact</button>
+                <button class="link-btn" onclick="shareGame()">Share</button>
+            </div>
         </div>
     </div>
 
-    <!-- WIN -->
+    <!-- 🏆 WIN -->
     <div id="win-overlay" class="overlay">
         <div class="win-card">
-            <h2 id="txt-win">FANTASTIC</h2>
-            <button onclick="nextLevel()">NEXT</button>
+            <div class="crown">👑</div>
+
+            <h2 id="txt-win" class="win-title">FANTASTIC!</h2>
+
+            <!-- 🔥 انگیزه ادامه -->
+            <p class="reward-text">+10 Coins</p>
+
+            <button class="play-btn" onclick="nextLevel()">NEXT LEVEL</button>
+
+            <button class="link-btn" onclick="watchAdReward()">🎥 Double Reward</button>
         </div>
     </div>
 
 </div>
 
-<!-- 🔥 مهم: defer -->
-<script src="script.js" defer></script>
-
-<!-- 🔥 اجرای قطعی -->
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-    if(typeof init === "function"){
-        init();
-    }else{
-        console.error("script.js not loaded!");
-    }
-});
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
