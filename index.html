@@ -15,7 +15,7 @@
         <button onclick="showMainMenu()">🏠</button>
         <button onclick="reset()">🔄</button>
 
-        <div class="level-box">
+        <div>
             <span id="txt-level">Level</span>
             <span id="level-num">1</span>
         </div>
@@ -50,9 +50,9 @@
             <h2 id="txt-settings">Settings</h2>
 
             <div class="lang-switch">
-                <button onclick="changeLang('en')">EN</button>
-                <button onclick="changeLang('ar')">AR</button>
-                <button onclick="changeLang('fa')">FA</button>
+                <button onclick="changeLang('en')" id="btn-en">EN</button>
+                <button onclick="changeLang('ar')" id="btn-ar">AR</button>
+                <button onclick="changeLang('fa')" id="btn-fa">FA</button>
             </div>
 
             <button id="sound-toggle" class="setting-btn" onclick="toggleOption('sound')">
@@ -73,7 +73,6 @@
     <div id="win-overlay" class="overlay">
         <div class="win-card">
             <h2 id="txt-win">FANTASTIC</h2>
-            <p class="reward">+10 Coins</p>
             <button id="txt-next" onclick="nextLevel()">NEXT</button>
         </div>
     </div>
