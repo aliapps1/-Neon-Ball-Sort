@@ -9,21 +9,36 @@ const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff
 
 const LANGS = {
     en:{
-        level:"Level", settings:"Settings", sound:"Sound", vibrate:"Vibrate",
-        contact:"Contact", share:"Share",
-        next:"NEXT LEVEL", win:"FANTASTIC!",
+        level:"Level",
+        settings:"Settings",
+        sound:"Sound",
+        vibrate:"Vibrate",
+        contact:"Contact",
+        share:"Share",
+        next:"NEXT",
+        win:"FANTASTIC",
         resetQ:"Restart?"
     },
     ar:{
-        level:"مستوى", settings:"الإعدادات", sound:"الصوت", vibrate:"اهتزاز",
-        contact:"تواصل معنا", share:"مشاركة",
-        next:"التالي", win:"رائع!",
+        level:"مستوى",
+        settings:"الإعدادات",
+        sound:"الصوت",
+        vibrate:"اهتزاز",
+        contact:"اتصل بنا",   // 🔥 اصلاح شد
+        share:"مشاركة",       // 🔥 اصلاح شد
+        next:"التالي",
+        win:"رائع",
         resetQ:"إعادة؟"
     },
     fa:{
-        level:"مرحله", settings:"تنظیمات", sound:"صدا", vibrate:"لرزش",
-        contact:"تماس با ما", share:"اشتراک‌گذاری",
-        next:"مرحله بعد", win:"عالی!",
+        level:"مرحله",
+        settings:"تنظیمات",
+        sound:"صدا",
+        vibrate:"لرزش",
+        contact:"تماس با ما", // 🔥 اصلاح شد
+        share:"اشتراک‌گذاری", // 🔥 اصلاح شد
+        next:"بعدی",
+        win:"عالی",
         resetQ:"شروع مجدد؟"
     }
 };
