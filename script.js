@@ -1,77 +1,21 @@
-let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
-let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
-let coins = parseInt(localStorage.getItem("neon_coins")) || 100;
+let tubes=[], selected=null, history=[];
+let level=1, coins=100;
 
-function saveCoins(){ localStorage.setItem("neon_coins", coins); }
-function updateCoinsUI(){ let el=document.getElementById("coins"); if(el) el.innerText=coins; }
+let soundEnabled=true, vibrateEnabled=true;
 
-const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff'];
-
-const LANGS = {
-    en:{level:"Level",settings:"Settings",sound:"Sound",vibrate:"Vibrate",contact:"Contact",share:"Share",next:"NEXT",win:"FANTASTIC",resetQ:"Restart?"},
-    ar:{level:"مستوى",settings:"الإعدادات",sound:"الصوت",vibrate:"اهتزاز",contact:"تواصل",share:"مشاركة",next:"التالي",win:"رائع",resetQ:"إعادة؟"},
-    fa:{level:"مرحله",settings:"تنظیمات",sound:"صدا",vibrate:"لرزش",contact:"تماس",share:"اشتراک",next:"بعدی",win:"عالی",resetQ:"شروع مجدد؟"}
-};
-
-function setText(id,text){
-    let el=document.getElementById(id);
-    if(el) el.innerText=text;
-}
-
-function changeLang(lang){
-    currentLang=lang;
-    localStorage.setItem('neon_lang',lang);
-    let t=LANGS[lang];
-
-    setText('txt-level',t.level);
-    setText('txt-start-level',t.level);
-    setText('txt-settings',t.settings);
-    setText('txt-sound',t.sound);
-    setText('txt-vibrate',t.vibrate);
-    setText('txt-contact',t.contact);
-    setText('txt-share',t.share);
-    setText('txt-win',t.win);
-    setText('txt-next',t.next);
-
-    document.body.dir=(lang==='fa'||lang==='ar')?'rtl':'ltr';
-}
-
-// 🔊 صدا (اصلاح شده)
-function playSnd(f=600,d=0.1){
-    if(!soundEnabled) return;
-    try{
-        if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-        if(audioCtx.state==='suspended') audioCtx.resume();
-
-        let o=audioCtx.createOscillator();
-        let g=audioCtx.createGain();
-
-        o.connect(g);
-        g.connect(audioCtx.destination);
-
-        o.frequency.value=f;
-        g.gain.setValueAtTime(0.12,audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+d);
-
-        o.start();
-        o.stop(audioCtx.currentTime+d);
-    }catch(e){}
-}
+const COLORS=['red','blue','green','yellow'];
 
 function init(){
-    level=parseInt(localStorage.getItem('neon_lvl'))||1;
-    soundEnabled=localStorage.getItem('neon_snd')!=='false';
-    vibrateEnabled=localStorage.getItem('neon_vib')!=='false';
-    currentLang=localStorage.getItem('neon_lang')||'en';
-
-    changeLang(currentLang);
-    updateCoinsUI();
+    updateCoins();
     showMainMenu();
+}
+
+function updateCoins(){
+    document.getElementById("coins").innerText=coins;
 }
 
 function showMainMenu(){
     document.getElementById('start-menu').style.display='flex';
-    setText('start-level',level);
 }
 
 function startGame(){
@@ -79,187 +23,93 @@ function startGame(){
     loadLevel();
 }
 
-// 🎮 LEVEL
 function loadLevel(){
-    setText('level-num',level);
-    document.getElementById('win-overlay').style.display='none';
-
-    selected=null;
-    history=[];
-
-    let colorCount=Math.min(3+Math.floor(level/4),8);
-
-    let balls=[];
-    for(let i=0;i<colorCount;i++){
-        for(let j=0;j<4;j++) balls.push(COLORS[i]);
-    }
-
-    // shuffle درست
-    for(let i=balls.length-1;i>0;i--){
-        let j=Math.floor(Math.random()*(i+1));
-        [balls[i],balls[j]]=[balls[j],balls[i]];
-    }
-
-    tubes=[];
-    for(let i=0;i<colorCount;i++){
-        tubes.push(balls.splice(0,4));
-    }
-
-    tubes.push([]);
-    tubes.push([]);
-
+    tubes=[
+        ['red','blue','red','blue'],
+        ['green','yellow','green','yellow'],
+        [],
+        []
+    ];
     render();
 }
 
-// 🎨 RENDER
 function render(){
     let board=document.getElementById('board');
     board.innerHTML='';
 
     tubes.forEach((t,i)=>{
-        let div=document.createElement('div');
-        div.className='tube '+(selected===i?'active':'');
-        div.onclick=()=>tap(i);
+        let d=document.createElement('div');
+        d.className='tube';
+        if(selected===i) d.classList.add('active');
 
-        t.forEach(color=>{
+        d.onclick=()=>tap(i);
+
+        t.forEach(c=>{
             let b=document.createElement('div');
             b.className='ball';
-            b.style.backgroundColor=color;
-            div.appendChild(b);
+            b.style.background=c;
+            d.appendChild(b);
         });
 
-        board.appendChild(div);
+        board.appendChild(d);
     });
-
-    let undoEl=document.getElementById('undo-count');
-    if(undoEl) undoEl.innerText=history.length;
-
-    updateCoinsUI();
 }
 
-// 🧠 TAP
 function tap(i){
     if(selected===null){
-        if(tubes[i].length>0){
-            selected=i;
-            playSnd(400,0.05);
-        }
+        selected=i;
     }else{
-        if(selected!==i){
-            moveLogic(selected,i);
-        }
+        move(selected,i);
         selected=null;
     }
     render();
 }
 
-// 🔥 MULTI MOVE (اصلاح اصلی)
-function moveLogic(from,to){
-    let f=tubes[from];
-    let t=tubes[to];
+function move(a,b){
+    if(tubes[a].length===0) return;
 
-    if(f.length===0) return;
+    let color=tubes[a][tubes[a].length-1];
 
-    let color=f[f.length-1];
+    while(tubes[a].length && tubes[a][tubes[a].length-1]===color){
+        tubes[b].push(tubes[a].pop());
+    }
 
-    if(t.length<4 && (t.length===0 || t[t.length-1]===color)){
-
-        history.push(JSON.stringify(tubes));
-
-        // چندتا توپ باهم
-        while(f.length>0 && f[f.length-1]===color && t.length<4){
-            t.push(f.pop());
-        }
-
-        playSnd(600,0.1);
-
-        if(vibrateEnabled && navigator.vibrate){
-            navigator.vibrate(30);
-        }
-
-        if(checkWin()){
-            coins+=10;
-            saveCoins();
-
-            setTimeout(()=>{
-                document.getElementById('win-overlay').style.display='flex';
-                playSnd(800,0.3);
-            },300);
-        }
+    if(checkWin()){
+        coins+=10;
+        updateCoins();
+        document.getElementById('win-overlay').style.display='flex';
     }
 }
 
 function checkWin(){
-    return tubes.filter(t=>t.length>0)
-        .every(t=>t.length===4 && t.every(b=>b===t[0]));
+    return tubes.every(t=>t.length===0 || t.every(x=>x===t[0]));
 }
 
 function nextLevel(){
-    level++;
-    localStorage.setItem('neon_lvl',level);
+    document.getElementById('win-overlay').style.display='none';
     loadLevel();
 }
 
-function reset(){
-    if(confirm(LANGS[currentLang].resetQ)) loadLevel();
-}
-
-function undo(){
-    if(history.length>0){
-        tubes=JSON.parse(history.pop());
-        render();
-    }
-}
-
-function addTube(){
-    if(tubes.length<12){
-        tubes.push([]);
-        render();
-    }
-}
-
-function skipLevel(){
-    nextLevel();
-}
-
-function toggleSettings(show){
-    document.getElementById('settings-panel').style.display=show?'flex':'none';
+function toggleSettings(x){
+    document.getElementById('settings-panel').style.display=x?'flex':'none';
 }
 
 function toggleOption(type){
     if(type==='sound'){
         soundEnabled=!soundEnabled;
-        localStorage.setItem('neon_snd',soundEnabled);
-        if(soundEnabled) playSnd();
+        document.getElementById('sound-toggle').classList.toggle('active',soundEnabled);
     }
-
     if(type==='vibrate'){
         vibrateEnabled=!vibrateEnabled;
-        localStorage.setItem('neon_vib',vibrateEnabled);
-        if(vibrateEnabled && navigator.vibrate){
-            navigator.vibrate(50);
-        }
+        document.getElementById('vibrate-toggle').classList.toggle('active',vibrateEnabled);
     }
 }
 
-// 📤 SHARE (اصلاح شده)
-async function shareGame(){
-    const text={
-        en:"Try this puzzle!",
-        ar:"جرب اللعبة!",
-        fa:"این بازی رو امتحان کن!"
-    };
-
-    try{
-        if(navigator.share){
-            await navigator.share({
-                title:"Neon Ball Sort",
-                text:text[currentLang],
-                url:window.location.href
-            });
-        }else{
-            await navigator.clipboard.writeText(window.location.href);
-            alert("Link copied");
-        }
-    }catch(e){}
+function shareGame(){
+    alert("Share");
 }
+
+function reset(){loadLevel();}
+function undo(){}
+function addTube(){}
+function skipLevel(){}
