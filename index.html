@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body onload="init()">
+<body>
 
 <div class="game-container">
 
@@ -37,35 +37,21 @@
                 <span id="txt-start-level">Level</span>
                 <span id="start-level">1</span>
             </div>
-            <button onclick="startGame()">▶</button>
-            <button onclick="toggleSettings(true)">⚙️</button>
+            <button onclick="startGame()">▶ Start</button>
+            <button onclick="toggleSettings(true)">⚙ Settings</button>
         </div>
     </div>
 
     <!-- SETTINGS -->
     <div id="settings-panel" class="overlay">
         <div class="settings-card">
-
             <button onclick="toggleSettings(false)">✖</button>
             <h2 id="txt-settings">Settings</h2>
 
-            <div class="lang-switch">
-                <button onclick="changeLang('en')" id="btn-en">EN</button>
-                <button onclick="changeLang('ar')" id="btn-ar">AR</button>
-                <button onclick="changeLang('fa')" id="btn-fa">FA</button>
-            </div>
+            <button id="sound-toggle" onclick="toggleOption('sound')">Sound</button>
+            <button id="vibrate-toggle" onclick="toggleOption('vibrate')">Vibrate</button>
 
-            <button id="sound-toggle" class="setting-btn" onclick="toggleOption('sound')">
-                🔊 <span id="txt-sound">Sound</span>
-            </button>
-
-            <button id="vibrate-toggle" class="setting-btn" onclick="toggleOption('vibrate')">
-                📳 <span id="txt-vibrate">Vibrate</span>
-            </button>
-
-            <button id="txt-contact">Contact</button>
-            <button id="txt-share" onclick="shareGame()">Share</button>
-
+            <button onclick="shareGame()">Share</button>
         </div>
     </div>
 
@@ -73,12 +59,25 @@
     <div id="win-overlay" class="overlay">
         <div class="win-card">
             <h2 id="txt-win">FANTASTIC</h2>
-            <button id="txt-next" onclick="nextLevel()">NEXT</button>
+            <button onclick="nextLevel()">NEXT</button>
         </div>
     </div>
 
 </div>
 
-<script src="script.js"></script>
+<!-- 🔥 مهم: defer -->
+<script src="script.js" defer></script>
+
+<!-- 🔥 اجرای قطعی -->
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    if(typeof init === "function"){
+        init();
+    }else{
+        console.error("script.js not loaded!");
+    }
+});
+</script>
+
 </body>
 </html>
