@@ -1,11 +1,23 @@
+:root {
+    --bg: #07090d;
+    --panel: #12161c;
+    --accent: #00f2fe;
+    --accent2: #ff00c8;
+    --btn-bg: #1c222a;
+    --win-color: #2ea043;
+}
+
 body {
     margin: 0;
-    background: #070a0f;
+    background: radial-gradient(circle at top, #0b0f15, #05070a);
     color: white;
     font-family: sans-serif;
     display: flex;
     justify-content: center;
+    overflow: hidden;
 }
+
+body.rtl { direction: rtl; }
 
 .game-container {
     width: 100%;
@@ -13,119 +25,164 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    position: relative; /* 🔥 مهم */
 }
 
-/* TOP */
+/* 🔥 TOP BAR */
 .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    background: #111;
-    z-index: 1;
+    padding: 12px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
 }
 
-.top-bar button {
-    background: #222;
-    border: none;
+.icon-btn {
+    background: var(--btn-bg);
+    border: 1px solid #30363d;
     color: white;
     padding: 8px;
-    border-radius: 10px;
-}
-
-/* BOARD */
-#board {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 10px;
-    padding: 10px;
-    overflow-y: auto;
-}
-
-/* TUBE */
-.tube {
-    width: 50px;
-    height: 140px;
-    border: 2px solid #444;
-    border-radius: 0 0 25px 25px;
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
-}
-
-.tube.active {
-    border-color: #00f2fe;
-}
-
-.ball {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    margin-bottom: 3px;
-}
-
-/* COINS */
-.coin-box {
-    background: gold;
-    color: black;
-    padding: 5px 10px;
-    border-radius: 15px;
-}
-
-/* SETTINGS BUTTON */
-.setting-btn {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: none;
-    background: #333;
-    color: #aaa;
-    border-radius: 15px;
+    border-radius: 12px;
+    min-width: 45px;
+    cursor: pointer;
     transition: 0.2s;
 }
 
-.setting-btn.active {
-    background: #00f2fe;
-    color: black;
-    box-shadow: 0 0 10px #00f2fe;
+.icon-btn:hover {
+    transform: scale(1.1);
 }
 
-/* 🔥 OVERLAY FIX */
+/* 💰 سکه */
+.coin-box {
+    background: linear-gradient(45deg, #ffd700, #ffae00);
+    color: black;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(255,215,0,0.6);
+}
+
+/* 🎮 BOARD */
+#board {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 20px 10px;
+    justify-items: center;
+}
+
+/* 🧪 TUBE */
+.tube {
+    width: 50px;
+    height: 170px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 0 0 30px 30px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    padding-bottom: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tube.active {
+    border-color: var(--accent);
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 0 15px var(--accent);
+}
+
+/* 🔮 BALL */
+.ball {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    margin-bottom: 4px;
+    box-shadow: 0 0 10px currentColor, inset -3px -3px 6px rgba(0,0,0,0.5);
+    animation: pop 0.2s ease;
+}
+
+@keyframes pop {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* 🎥 تبلیغ */
+.ad-box {
+    padding: 10px;
+    text-align: center;
+}
+
+.ad-btn {
+    width: 90%;
+    padding: 12px;
+    border-radius: 30px;
+    border: none;
+    font-weight: bold;
+    background: linear-gradient(45deg, #00f2fe, #ff00c8);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0,242,254,0.6);
+    transition: 0.2s;
+}
+
+.ad-btn:hover {
+    transform: scale(1.05);
+}
+
+/* 🪟 OVERLAY */
 .overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0,0,0,0.95);
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 999; /* 🔥 مشکل اصلی همین بود */
+    z-index: 100;
 }
 
-/* CARDS */
+/* 🧾 CARDS */
 .menu-card, .settings-card, .win-card {
-    background: #111;
-    padding: 25px;
-    border-radius: 20px;
+    background: var(--panel);
+    padding: 30px;
+    border-radius: 25px;
     text-align: center;
+    width: 85%;
+    border: 1px solid #30363d;
+    box-shadow: 0 0 20px rgba(0,242,254,0.2);
 }
 
-/* BUTTONS */
-.menu-card button,
-.settings-card button,
-.win-card button {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-    padding: 12px;
-    border-radius: 15px;
-    border: none;
-    background: #333;
+/* ▶ PLAY */
+.play-btn {
+    background: linear-gradient(45deg, #2ea043, #00ff88);
     color: white;
-    font-size: 16px;
+    font-size: 35px;
+    border: none;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 20px 0;
     cursor: pointer;
+    box-shadow: 0 0 15px #2ea043;
+}
+
+/* 🔗 لینک */
+.link-btn {
+    width: 100%;
+    background: #30363d;
+    color: white;
+    border: none;
+    padding: 12px;
+    margin: 5px 0;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+/* 🏆 WIN */
+.reward-text {
+    color: gold;
+    font-size: 20px;
+    margin: 10px 0;
+    text-shadow: 0 0 10px gold;
 }
