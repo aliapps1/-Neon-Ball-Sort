@@ -243,23 +243,8 @@ function loadLevel(){
 
     let colorCount=Math.min(3+Math.floor(level/4),8);
 
-    let balls=[];
-    for(let i=0;i<colorCount;i++){
-        for(let j=0;j<4;j++) balls.push(COLORS[i]);
-    }
-
-    for(let i=balls.length-1;i>0;i--){
-        let j=Math.floor(Math.random()*(i+1));
-        [balls[i],balls[j]]=[balls[j],balls[i]];
-    }
-
-    tubes=[];
-    for(let i=0;i<colorCount;i++){
-        tubes.push(balls.splice(0,4));
-    }
-
-    tubes.push([]);
-    tubes.push([]);
+    let config = getLevelConfig(level);
+tubes = generateLevel(config.colors, 2, config.moves);
 
     render();
 }
