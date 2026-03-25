@@ -48,7 +48,19 @@ function saveCoins(){ localStorage.setItem("neon_coins", coins); }
 function updateCoinsUI(){ let el=document.getElementById("coins"); if(el) el.innerText=coins; }
 
 const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff'];
-
+function getLevelConfig(level) {
+    if (level < 20) {
+        return { colors: 3, moves: 15 };
+    } else if (level < 50) {
+        return { colors: 4, moves: 25 };
+    } else if (level < 100) {
+        return { colors: 5, moves: 35 };
+    } else if (level < 200) {
+        return { colors: 6, moves: 45 };
+    } else {
+        return { colors: 7, moves: 60 };
+    }
+}
 const LANGS = {
     en:{
         level:"Level",
