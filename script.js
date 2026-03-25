@@ -329,7 +329,6 @@ function moveLogic(from,to){
         document.getElementById('win-overlay').style.display='flex';
         playSnd(800,0.3);
     },300);
-            
         }
     
 
