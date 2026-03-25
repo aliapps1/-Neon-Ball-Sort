@@ -1,3 +1,31 @@
+function generateLevel(colors, emptyTubes = 2, moves = 30) {
+    let tubes = [];
+
+    // حالت حل شده
+    for (let i = 0; i < colors; i++) {
+        tubes.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
+    }
+
+    // لوله خالی
+    for (let i = 0; i < emptyTubes; i++) {
+        tubes.push([]);
+    }
+
+    // شافل با حرکت واقعی
+    for (let m = 0; m < moves; m++) {
+        let from = Math.floor(Math.random() * tubes.length);
+        let to = Math.floor(Math.random() * tubes.length);
+
+        if (from === to) continue;
+        if (tubes[from].length === 0) continue;
+        if (tubes[to].length >= 4) continue;
+
+        let ball = tubes[from].pop();
+        tubes[to].push(ball);
+    }
+
+    return tubes;
+}
 let startTime = 0;
 let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
 let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
