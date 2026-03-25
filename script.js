@@ -202,6 +202,7 @@ function startGame(){
 
 function loadLevel(){
     setText('level-num',level);
+    startTime = Date.now();
 
     let winOverlay = document.getElementById('win-overlay');
     if(winOverlay) winOverlay.style.display='none';
