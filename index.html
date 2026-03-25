@@ -24,15 +24,17 @@
             💰 <span id="coins">0</span>
         </div>
 
-        <button class="icon-btn" onclick="skipLevel()">⏭️</button>
+        <button class="icon-btn" onclick="useHint()">💡</button>
         <button class="icon-btn" onclick="undo()">↩️ <small id="undo-count">0</small></button>
+        <button class="icon-btn" onclick="skipLevel()">⏭️</button>
         <button class="icon-btn" onclick="addTube()">+🧪</button>
     </div>
 
     <div id="board"></div>
 
     <div class="ad-box">
-        <button class="ad-btn" onclick="watchAdReward()">🎥 Get Free Coins</button>
+        <button class="ad-btn" id="txt-hint-btn" onclick="useHint()">💡 Hint (8)</button>
+        <button class="ad-btn" id="txt-free-coins" onclick="watchCoinsReward()">🎥 Get Coins</button>
     </div>
 
     <div id="start-menu" class="overlay">
@@ -89,14 +91,12 @@
     <div id="win-overlay" class="overlay">
         <div class="win-card">
             <div class="crown">👑</div>
-
             <h2 id="txt-win" class="win-title">FANTASTIC!</h2>
-
             <p id="txt-reward" class="reward-text">+10 Coins</p>
 
             <button class="win-next-btn" id="txt-next" onclick="nextLevel()">NEXT</button>
 
-            <button class="link-btn win-reward-btn" id="txt-double-reward" onclick="watchAdReward()">🎥 Double Reward</button>
+            <button class="link-btn" id="txt-double-reward" onclick="watchAdReward()">🎥 Double Reward</button>
         </div>
     </div>
 
