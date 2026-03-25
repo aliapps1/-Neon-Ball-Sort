@@ -305,16 +305,33 @@ function moveLogic(from,to){
         }
 
         if(checkWin()){
-            coins+=COSTS.win;
-            saveCoins();
-            updateCoinsUI();
 
-            setTimeout(()=>{
-                let winOverlay = document.getElementById('win-overlay');
-                if(winOverlay) winOverlay.style.display='flex';
-                playSnd(800,0.3);
-            },300);
+    // پاداش پایه
+    coins += COSTS.win;
+
+    // PERFECT (بدون Undo)
+    let perfect = history.length === 0;
+    if(perfect){
+        coins += 20;
+        alert("🔥 PERFECT! +20");
+    }
+
+    // Speed Bonus
+    let time = (Date.now() - startTime) / 1000;
+    if(time < 20){
+        coins += 15;
+    }
+
+    saveCoins();
+    updateCoinsUI();
+
+    setTimeout(()=>{
+        document.getElementById('win-overlay').style.display='flex';
+        playSnd(800,0.3);
+    },300);
+            
         }
+    
 
         return true;
     }
