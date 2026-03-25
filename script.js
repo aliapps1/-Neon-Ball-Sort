@@ -446,9 +446,8 @@ function useHint(){
         return;
     }
 
-    hintFrom = hint.from;
-    hintTo = hint.to;
-    render();
+    moveLogic(hint.from, hint.to);
+render();
 
     setTimeout(()=>{
         hintFrom = null;
@@ -467,7 +466,7 @@ function watchAdReward(){
     if(rewardUsed) return;
     rewardUsed = true;
 
-    coins += COSTS.doubleReward;
+    coins += COSTS.win * 2;
     saveCoins();
     updateCoinsUI();
 
