@@ -338,3 +338,9 @@ body.rtl {
     direction: ltr;
     display: inline-block;
 }
+#btn-double-reward {
+    background: linear-gradient(45deg, #fadb14, #ffcc00);
+    color: black;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(250,219,20,0.8);
+}
