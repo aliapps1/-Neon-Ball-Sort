@@ -1,6 +1,19 @@
 let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
 let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
 let coins = parseInt(localStorage.getItem("neon_coins")) || 100;
+let rewardUsed = false;
+let hintFrom = null;
+let hintTo = null;
+
+const COSTS = {
+    undo: 5,
+    hint: 8,
+    addTube: 15,
+    skip: 25,
+    freeCoins: 5,
+    win: 10,
+    doubleReward: 10
+};
 
 function saveCoins(){ localStorage.setItem("neon_coins", coins); }
 function updateCoinsUI(){ let el=document.getElementById("coins"); if(el) el.innerText=coins; }
@@ -19,6 +32,10 @@ const LANGS = {
         win:"FANTASTIC",
         reward:"+10 Coins",
         doubleReward:"🎥 Double Reward",
+        freeCoins:"🎥 Get Coins",
+        hintBtn:"💡 Hint (8)",
+        noCoins:"Not enough coins",
+        noHint:"No hint available",
         resetQ:"Restart?"
     },
     ar:{
@@ -32,6 +49,10 @@ const LANGS = {
         win:"رائع",
         reward:"+10 عملات",
         doubleReward:"🎥 مضاعفة الجائزة",
+        freeCoins:"🎥 احصل على عملات",
+        hintBtn:"💡 تلميح (8)",
+        noCoins:"لا توجد عملات كافية",
+        noHint:"لا يوجد تلميح متاح",
         resetQ:"إعادة؟"
     },
     fa:{
@@ -45,6 +66,10 @@ const LANGS = {
         win:"عالی",
         reward:"+10 سکه",
         doubleReward:"🎥 دوبرابر کردن جایزه",
+        freeCoins:"🎥 دریافت سکه",
+        hintBtn:"💡 راهنما (8)",
+        noCoins:"سکه کافی نداری",
+        noHint:"راهنمایی پیدا نشد",
         resetQ:"شروع مجدد؟"
     }
 };
@@ -111,6 +136,8 @@ function changeLang(lang){
     setText('txt-next',t.next);
     setText('txt-reward',t.reward);
     setText('txt-double-reward',t.doubleReward);
+    setText('txt-free-coins',t.freeCoins);
+    setText('txt-hint-btn',t.hintBtn);
 
     updateStartRank();
 
@@ -152,6 +179,13 @@ function init(){
 
     changeLang(currentLang);
     updateCoinsUI();
+
+    let s=document.getElementById('sound-toggle');
+    if(s) s.classList.toggle('active',soundEnabled);
+
+    let v=document.getElementById('vibrate-toggle');
+    if(v) v.classList.toggle('active',vibrateEnabled);
+
     showMainMenu();
 }
 
@@ -173,6 +207,9 @@ function loadLevel(){
 
     selected=null;
     history=[];
+    hintFrom=null;
+    hintTo=null;
+    rewardUsed=false;
 
     let colorCount=Math.min(3+Math.floor(level/4),8);
 
@@ -203,7 +240,10 @@ function render(){
 
     tubes.forEach((t,i)=>{
         let div=document.createElement('div');
-        div.className='tube '+(selected===i?'active':'');
+        let classes = ['tube'];
+        if(selected===i) classes.push('active');
+        if(hintFrom===i || hintTo===i) classes.push('hint');
+        div.className=classes.join(' ');
         div.onclick=()=>tap(i);
 
         t.forEach(color=>{
@@ -241,7 +281,7 @@ function moveLogic(from,to){
     let f=tubes[from];
     let t=tubes[to];
 
-    if(f.length===0) return;
+    if(f.length===0) return false;
 
     let color=f[f.length-1];
 
@@ -253,6 +293,9 @@ function moveLogic(from,to){
             t.push(f.pop());
         }
 
+        hintFrom=null;
+        hintTo=null;
+
         playSnd(600,0.1);
 
         if(vibrateEnabled && navigator.vibrate){
@@ -260,7 +303,7 @@ function moveLogic(from,to){
         }
 
         if(checkWin()){
-            coins+=10;
+            coins+=COSTS.win;
             saveCoins();
             updateCoinsUI();
 
@@ -270,7 +313,11 @@ function moveLogic(from,to){
                 playSnd(800,0.3);
             },300);
         }
+
+        return true;
     }
+
+    return false;
 }
 
 function checkWin(){
@@ -291,20 +338,25 @@ function reset(){
 }
 
 function undo(){
-    if(history.length>0){
-        tubes=JSON.parse(history.pop());
-        render();
-    }
+    if(history.length===0) return;
+    if(!spendCoins(COSTS.undo)) return;
+
+    tubes=JSON.parse(history.pop());
+    hintFrom=null;
+    hintTo=null;
+    render();
 }
 
 function addTube(){
-    if(tubes.length<12){
-        tubes.push([]);
-        render();
-    }
+    if(tubes.length>=12) return;
+    if(!spendCoins(COSTS.addTube)) return;
+
+    tubes.push([]);
+    render();
 }
 
 function skipLevel(){
+    if(!spendCoins(COSTS.skip)) return;
     nextLevel();
 }
 
@@ -337,11 +389,84 @@ function toggleOption(type){
     }
 }
 
-function watchAdReward(){
-    coins += 10;
+function spendCoins(amount){
+    if(coins < amount){
+        alert(LANGS[currentLang].noCoins);
+        return false;
+    }
+    coins -= amount;
     saveCoins();
     updateCoinsUI();
+    return true;
+}
+
+function findHintMove(){
+    for(let from=0; from<tubes.length; from++){
+        let f=tubes[from];
+        if(f.length===0) continue;
+
+        let color=f[f.length-1];
+
+        for(let to=0; to<tubes.length; to++){
+            if(from===to) continue;
+
+            let t=tubes[to];
+            if(t.length<4 && (t.length===0 || t[t.length-1]===color)){
+                return { from, to };
+            }
+        }
+    }
+    return null;
+}
+
+function useHint(){
+    if(!spendCoins(COSTS.hint)) return;
+
+    const hint = findHintMove();
+    if(!hint){
+        alert(LANGS[currentLang].noHint);
+        return;
+    }
+
+    hintFrom = hint.from;
+    hintTo = hint.to;
+    render();
+
+    setTimeout(()=>{
+        hintFrom = null;
+        hintTo = null;
+        render();
+    }, 1200);
+}
+
+function watchCoinsReward(){
+    coins += COSTS.freeCoins;
+    saveCoins();
+    updateCoinsUI();
+}
+
+function watchAdReward(){
+    if(rewardUsed) return;
+    rewardUsed = true;
+
+    coins += COSTS.doubleReward;
+    saveCoins();
+    updateCoinsUI();
+
+    let btn = document.getElementById('txt-double-reward');
+    if(btn){
+        btn.style.opacity = '0.6';
+        btn.style.pointerEvents = 'none';
+    }
+
     nextLevel();
+
+    setTimeout(()=>{
+        if(btn){
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        }
+    }, 50);
 }
 
 async function shareGame(){
