@@ -37,7 +37,7 @@ body.rtl {
     justify-content: space-around;
     align-items: center;
     padding: 10px;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .icon-btn {
@@ -50,6 +50,15 @@ body.rtl {
     cursor: pointer;
 }
 
+/* COINS */
+.coin-box {
+    background: gold;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-weight: bold;
+}
+
 /* BOARD */
 #board {
     flex-grow: 1;
@@ -58,15 +67,15 @@ body.rtl {
     gap: 15px;
     padding: 20px 10px;
     justify-items: center;
-    overflow-y: auto; /* ✅ مشکل لوله‌ها */
+    overflow-y: auto;
 }
 
 /* TUBE */
 .tube {
     width: 48px;
-    height: 150px; /* کمی کمتر برای جا شدن */
-    background: rgba(255,255,255,0.05);
-    border: 2px solid rgba(255,255,255,0.2);
+    height: 150px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0 0 30px 30px;
     display: flex;
     flex-direction: column-reverse;
@@ -80,21 +89,20 @@ body.rtl {
     transform: translateY(-6px);
 }
 
-/* BALL — 🔥 اصلاح نور */
+/* BALL */
 .ball {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-bottom: 3px;
-    /* ❌ حذف glow سنگین */
-    box-shadow: inset -2px -2px 4px rgba(0,0,0,0.4);
+    box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* OVERLAY */
 .overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.96);
+    background: rgba(0, 0, 0, 0.96);
     display: none;
     justify-content: center;
     align-items: center;
@@ -110,6 +118,82 @@ body.rtl {
     text-align: center;
     width: 85%;
     border: 1px solid #30363d;
+}
+
+/* START MENU */
+.menu-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.title-text {
+    font-size: 22px;
+    margin-bottom: 10px;
+    opacity: 0.85;
+}
+
+.level-badge {
+    font-size: 16px;
+    margin-bottom: 15px;
+    opacity: 0.7;
+}
+
+.level-badge span {
+    display: block;
+    text-align: center;
+}
+
+#txt-start-level {
+    font-weight: 700;
+    font-size: 22px;
+    color: gold;
+    letter-spacing: 1px;
+}
+
+/* START PLAY BUTTON ONLY */
+#start-play-btn {
+    background: var(--win-color);
+    color: white;
+    border: none;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    margin: 15px 0;
+    cursor: pointer;
+    font-size: 28px;
+    box-shadow: 0 4px 15px rgba(46, 160, 67, 0.4);
+}
+
+/* WIN / GENERAL PLAY BUTTON */
+.play-btn {
+    background: var(--win-color);
+    color: white;
+    border: none;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 20px 0;
+    cursor: pointer;
+    font-size: 32px;
+    box-shadow: 0 4px 15px rgba(46, 160, 67, 0.4);
+}
+
+.circle-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #30363d;
+    border: none;
+    font-size: 18px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.circle-btn:hover {
+    transform: scale(1.1);
 }
 
 /* LANGUAGE */
@@ -139,18 +223,18 @@ body.rtl {
 
 /* SETTINGS */
 .settings-grid {
-    display: flex;              /* 🔥 تغییر از grid به flex */
-    justify-content: center;    /* وسط چین */
+    display: flex;
+    justify-content: center;
     gap: 20px;
     margin-bottom: 20px;
 }
 
 .setting-item {
-    width: 110px;               /* یکدست شدن سایز */
+    width: 110px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;    /* وسط چین عمودی */
+    justify-content: center;
     padding: 12px;
     border-radius: 15px;
     background: #21262d;
@@ -163,41 +247,10 @@ body.rtl {
 .setting-item.active {
     border-color: var(--accent);
     color: var(--accent);
-    background: rgba(0,242,254,0.1);
+    background: rgba(0, 242, 254, 0.1);
 }
 
-.setting-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    border-radius: 15px;
-    background: #21262d;
-    cursor: pointer;
-    font-size: 12px;
-    color: #8b949e;
-    border: 2px solid transparent;
-}
-
-.setting-item.active {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(0,242,254,0.1);
-}
-
-/* BUTTONS */
-.play-btn {
-    background: var(--win-color);
-    color: white;
-    font-size: 40px;
-    border: none;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin: 20px 0;
-    cursor: pointer;
-}
-
+/* LINKS */
 .link-btn {
     width: 100%;
     background: #30363d;
@@ -208,84 +261,4 @@ body.rtl {
     border-radius: 30px;
     cursor: pointer;
     font-weight: bold;
-}
-/* ===== START MENU IMPROVEMENT (SAFE) ===== */
-
-.menu-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-/* عنوان بازی */
-.title-text {
-    font-size: 22px;
-    margin-bottom: 10px;
-    opacity: 0.85;
-}
-
-/* لول */
-.level-badge {
-    font-size: 16px;
-    margin-bottom: 15px;
-    opacity: 0.7;
-}
-
-/* دکمه پلی */
-.play-btn {
-    font-size: 32px;           /* کوچکتر شد (متعادل) */
-    width: 75px;
-    height: 75px;
-    margin: 15px 0;
-    box-shadow: 0 4px 15px rgba(46,160,67,0.4); /* حس حرفه‌ای */
-}
-
-/* آیکون تنظیمات */
-.circle-btn {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: #30363d;
-    border: none;
-    font-size: 18px;
-    margin-top: 10px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.circle-btn:hover {
-    transform: scale(1.1);
-}
-.level-badge span {
-    display: block;
-    text-align: center;
-}
-/* کوچکتر و حرفه‌ای‌تر شدن PLAY */
-.play-btn {
-    transform: scale(0.9);
-}
-
-/* برجسته شدن رانک */
-#txt-start-level {
-    font-weight: bold;
-    font-size: 20px;
-    color: gold;
-    letter-spacing: 1px;
-}
-.play-btn {
-    width: 68px !important;
-    height: 68px !important;
-    font-size: 28px !important;
-}
-
-#txt-start-level {
-    font-weight: 700 !important;
-    font-size: 22px !important;
-    color: gold !important;
-}
-#start-play-btn {
-    width: 68px !important;
-    height: 68px !important;
-    font-size: 28px !important;
 }
