@@ -262,6 +262,21 @@ body.rtl {
     cursor: pointer;
     font-weight: bold;
 }
+/* فشار دادن دکمه (قابل‌دید روی موبایل) */
+#start-play-btn {
+    transition: transform 0.08s ease;
+}
+
 #start-play-btn:active {
-    transform: scale(0.9);
+    transform: scale(0.92);
+}
+
+/* برای موبایل: وقتی انگشت روشه */
+#start-play-btn:focus-visible,
+#start-play-btn:focus {
+    transform: scale(0.92);
+}
+#start-play-btn:active {
+    transform: scale(0.92);
+    filter: brightness(0.9);
 }
