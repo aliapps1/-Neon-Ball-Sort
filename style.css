@@ -319,3 +319,18 @@ body.rtl {
     cursor: pointer;
     font-weight: bold;
 }
+.win-next-btn {
+    animation: pulseGlow 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 10px rgba(46,160,67,0.4);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(46,160,67,0.9);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(46,160,67,0.4);
+    }
+}
