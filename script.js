@@ -100,11 +100,10 @@ function init(){
     currentLang=localStorage.getItem('neon_lang')||'en';
 
     changeLang(currentLang);
+
+    setText('start-level', level); // ✅ اضافه شد
+
     updateCoinsUI();
-
-    document.getElementById('sound-toggle')?.classList.toggle('active',soundEnabled);
-    document.getElementById('vibrate-toggle')?.classList.toggle('active',vibrateEnabled);
-
     showMainMenu();
 }
 
