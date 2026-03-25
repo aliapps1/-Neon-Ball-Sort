@@ -24,8 +24,8 @@ const LANGS = {
         settings:"الإعدادات",
         sound:"الصوت",
         vibrate:"اهتزاز",
-        contact:"اتصل بنا",   // 🔥 اصلاح شد
-        share:"مشاركة",       // 🔥 اصلاح شد
+        contact:"اتصل بنا",
+        share:"مشاركة",
         next:"التالي",
         win:"رائع",
         resetQ:"إعادة؟"
@@ -35,17 +35,59 @@ const LANGS = {
         settings:"تنظیمات",
         sound:"صدا",
         vibrate:"لرزش",
-        contact:"تماس با ما", // 🔥 اصلاح شد
-        share:"اشتراک‌گذاری", // 🔥 اصلاح شد
+        contact:"تماس با ما",
+        share:"اشتراک‌گذاری",
         next:"بعدی",
         win:"عالی",
         resetQ:"شروع مجدد؟"
     }
 };
 
+const RANKS = {
+    en: [
+        { min: 1, label: "Beginner" },
+        { min: 21, label: "Skilled" },
+        { min: 101, label: "Pro" },
+        { min: 301, label: "Master" },
+        { min: 701, label: "Legend" }
+    ],
+    ar: [
+        { min: 1, label: "مبتدئ" },
+        { min: 21, label: "ماهر" },
+        { min: 101, label: "محترف" },
+        { min: 301, label: "خبير" },
+        { min: 701, label: "أسطورة" }
+    ],
+    fa: [
+        { min: 1, label: "مبتدی" },
+        { min: 21, label: "ماهر" },
+        { min: 101, label: "حرفه‌ای" },
+        { min: 301, label: "استاد" },
+        { min: 701, label: "افسانه‌ای" }
+    ]
+};
+
 function setText(id,text){
     let el=document.getElementById(id);
     if(el) el.innerText=text;
+}
+
+function getRank(lvl){
+    const rankList = RANKS[currentLang] || RANKS.en;
+    let current = rankList[0].label;
+
+    for(let i=0;i<rankList.length;i++){
+        if(lvl >= rankList[i].min){
+            current = rankList[i].label;
+        }
+    }
+
+    return current;
+}
+
+function updateStartRank(){
+    setText('txt-start-level', `👑 ${getRank(level)}`);
+    setText('start-level', `${LANGS[currentLang].level} ${level}`);
 }
 
 function changeLang(lang){
@@ -54,7 +96,6 @@ function changeLang(lang){
     let t=LANGS[lang];
 
     setText('txt-level',t.level);
-    setText('txt-start-level',t.level);
     setText('txt-settings',t.settings);
     setText('txt-sound',t.sound);
     setText('txt-vibrate',t.vibrate);
@@ -62,6 +103,8 @@ function changeLang(lang){
     setText('txt-share',t.share);
     setText('txt-win',t.win);
     setText('txt-next',t.next);
+
+    updateStartRank();
 
     document.body.dir=(lang==='fa'||lang==='ar')?'rtl':'ltr';
 }
@@ -101,13 +144,12 @@ function init(){
 
     changeLang(currentLang);
 
-    setText('start-level', level); // ✅ اضافه شد
-
     updateCoinsUI();
     showMainMenu();
 }
 
 function showMainMenu(){
+    updateStartRank();
     document.getElementById('start-menu').style.display='flex';
 }
 
@@ -228,6 +270,7 @@ function checkWin(){
 function nextLevel(){
     level++;
     localStorage.setItem('neon_lvl',level);
+    updateStartRank();
     loadLevel();
 }
 
@@ -254,6 +297,7 @@ function skipLevel(){
 }
 
 function toggleSettings(show){
+    document.getElementById('settings-panel').style.display='flex' === show;
     document.getElementById('settings-panel').style.display=show?'flex':'none';
 }
 
