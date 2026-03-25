@@ -1,3 +1,4 @@
+let startTime = 0;
 let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
 let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
 let coins = parseInt(localStorage.getItem("neon_coins")) || 100;
