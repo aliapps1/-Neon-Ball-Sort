@@ -262,3 +262,6 @@ body.rtl {
     cursor: pointer;
     font-weight: bold;
 }
+#start-play-btn:active {
+    transform: scale(0.9);
+}
