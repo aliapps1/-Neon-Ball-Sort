@@ -179,7 +179,7 @@ body.rtl {
     filter: brightness(0.9);
 }
 
-/* WIN / GENERAL PLAY BUTTON */
+/* GENERAL ROUND BUTTON */
 .play-btn {
     background: var(--win-color);
     color: white;
@@ -191,6 +191,44 @@ body.rtl {
     cursor: pointer;
     font-size: 32px;
     box-shadow: 0 4px 15px rgba(46, 160, 67, 0.4);
+}
+
+/* WIN SCREEN ONLY */
+.win-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.crown {
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.win-title {
+    margin: 0 0 10px;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+.reward-text {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 700;
+    color: gold;
+}
+
+.win-next-btn {
+    width: 180px;
+    height: auto;
+    border-radius: 18px;
+    padding: 14px 18px;
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+.win-reward-btn {
+    margin-top: 8px;
 }
 
 /* SETTINGS BUTTON */
