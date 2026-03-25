@@ -273,3 +273,14 @@ body.rtl {
     color: gold;
     letter-spacing: 1px;
 }
+.play-btn {
+    width: 68px !important;
+    height: 68px !important;
+    font-size: 28px !important;
+}
+
+#txt-start-level {
+    font-weight: 700 !important;
+    font-size: 22px !important;
+    color: gold !important;
+}
