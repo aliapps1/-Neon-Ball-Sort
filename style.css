@@ -284,3 +284,8 @@ body.rtl {
     font-size: 22px !important;
     color: gold !important;
 }
+#start-play-btn {
+    width: 68px !important;
+    height: 68px !important;
+    font-size: 28px !important;
+}
