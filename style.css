@@ -219,12 +219,17 @@ body.rtl {
 }
 
 .win-next-btn {
+    background: var(--win-color);
+    color: white;
+    border: none;
     width: 180px;
     height: auto;
     border-radius: 18px;
     padding: 14px 18px;
     font-size: 20px;
     margin: 10px 0;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(46, 160, 67, 0.4);
 }
 
 .win-reward-btn {
