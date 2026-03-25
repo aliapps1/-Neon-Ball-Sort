@@ -334,3 +334,7 @@ body.rtl {
         box-shadow: 0 0 10px rgba(46,160,67,0.4);
     }
 }
+#txt-reward {
+    direction: ltr;
+    display: inline-block;
+}
