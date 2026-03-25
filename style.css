@@ -38,6 +38,8 @@ body.rtl {
     align-items: center;
     padding: 10px;
     background: rgba(0, 0, 0, 0.4);
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 .icon-btn {
@@ -82,11 +84,17 @@ body.rtl {
     align-items: center;
     padding-bottom: 8px;
     cursor: pointer;
+    transition: 0.15s ease;
 }
 
 .tube.active {
     border-color: var(--accent);
     transform: translateY(-6px);
+}
+
+.tube.hint {
+    border-color: gold;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
 }
 
 /* BALL */
@@ -193,7 +201,7 @@ body.rtl {
     box-shadow: 0 4px 15px rgba(46, 160, 67, 0.4);
 }
 
-/* WIN SCREEN ONLY */
+/* WIN SCREEN */
 .win-card {
     display: flex;
     flex-direction: column;
@@ -218,6 +226,12 @@ body.rtl {
     color: gold;
 }
 
+#txt-reward {
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+    display: inline-block;
+}
+
 .win-next-btn {
     background: var(--win-color);
     color: white;
@@ -230,10 +244,21 @@ body.rtl {
     margin: 10px 0;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(46, 160, 67, 0.4);
+    animation: pulseGlow 1.5s infinite;
 }
 
-.win-reward-btn {
-    margin-top: 8px;
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 10px rgba(46,160,67,0.4); }
+    50% { box-shadow: 0 0 25px rgba(46,160,67,0.9); }
+    100% { box-shadow: 0 0 10px rgba(46,160,67,0.4); }
+}
+
+#txt-double-reward {
+    background: linear-gradient(45deg, #fadb14, #ffcc00) !important;
+    color: #111 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 15px rgba(250, 219, 20, 0.8) !important;
+    border: 2px solid #ffd700 !important;
 }
 
 /* SETTINGS BUTTON */
@@ -319,28 +344,21 @@ body.rtl {
     cursor: pointer;
     font-weight: bold;
 }
-.win-next-btn {
-    animation: pulseGlow 1.5s infinite;
+
+/* ACTION BUTTONS */
+.ad-box {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
 }
 
-@keyframes pulseGlow {
-    0% {
-        box-shadow: 0 0 10px rgba(46,160,67,0.4);
-    }
-    50% {
-        box-shadow: 0 0 25px rgba(46,160,67,0.9);
-    }
-    100% {
-        box-shadow: 0 0 10px rgba(46,160,67,0.4);
-    }
-}
-#txt-reward {
-    direction: ltr;
-    display: inline-block;
-}
-#btn-double-reward {
-    background: linear-gradient(45deg, #fadb14, #ffcc00);
-    color: black;
+.ad-btn {
+    flex: 1;
+    background: #30363d;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 16px;
+    cursor: pointer;
     font-weight: bold;
-    box-shadow: 0 0 15px rgba(250,219,20,0.8);
 }
