@@ -11,7 +11,6 @@
 
 <div class="game-container">
 
-    <!-- 🔥 TOP BAR حرفه‌ای -->
     <div class="top-bar">
         <button class="icon-btn" onclick="showMainMenu()">🏠</button>
         <button class="icon-btn" onclick="reset()">🔄</button>
@@ -21,7 +20,6 @@
             <span id="level-num">1</span>
         </div>
 
-        <!-- 💰 سکه -->
         <div class="coin-box">
             💰 <span id="coins">0</span>
         </div>
@@ -31,15 +29,12 @@
         <button class="icon-btn" onclick="addTube()">+🧪</button>
     </div>
 
-    <!-- 🎮 BOARD -->
     <div id="board"></div>
 
-    <!-- 🎥 دکمه تبلیغ -->
     <div class="ad-box">
         <button class="ad-btn" onclick="watchAdReward()">🎥 Get Free Coins</button>
     </div>
 
-    <!-- 🏠 START MENU -->
     <div id="start-menu" class="overlay">
         <div class="menu-card">
             <h1 class="title-text">NEON SORT</h1>
@@ -50,7 +45,7 @@
                 <span id="start-level">1</span>
             </div>
 
-            <button class="play-btn" onclick="startGame()">▶ PLAY</button>
+            <button id="start-play-btn" class="play-btn" onclick="startGame()">▶ PLAY</button>
 
             <div class="bottom-menu-actions">
                 <button class="circle-btn" onclick="toggleSettings(true)">⚙️</button>
@@ -58,7 +53,6 @@
         </div>
     </div>
 
-    <!-- ⚙️ SETTINGS -->
     <div id="settings-panel" class="overlay">
         <div class="settings-card">
 
@@ -87,25 +81,22 @@
 
             <div class="menu-links">
                 <button class="link-btn" id="txt-contact">Contact</button>
-
-<button class="link-btn" id="txt-share" onclick="shareGame()">Share</button>
+                <button class="link-btn" id="txt-share" onclick="shareGame()">Share</button>
             </div>
         </div>
     </div>
 
-    <!-- 🏆 WIN -->
     <div id="win-overlay" class="overlay">
         <div class="win-card">
             <div class="crown">👑</div>
 
             <h2 id="txt-win" class="win-title">FANTASTIC!</h2>
 
-            <!-- 🔥 انگیزه ادامه -->
-            <p class="reward-text">+10 Coins</p>
+            <p id="txt-reward" class="reward-text">+10 Coins</p>
 
-            <button id="start-play-btn" class="play-btn" onclick="startGame()">▶ PLAY</button>
+            <button class="play-btn win-next-btn" id="txt-next" onclick="nextLevel()">NEXT</button>
 
-            <button class="link-btn" onclick="watchAdReward()">🎥 Double Reward</button>
+            <button class="link-btn win-reward-btn" id="txt-double-reward" onclick="watchAdReward()">🎥 Double Reward</button>
         </div>
     </div>
 
