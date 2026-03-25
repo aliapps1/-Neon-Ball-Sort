@@ -17,8 +17,6 @@ const LANGS = {
         share:"Share",
         next:"NEXT",
         win:"FANTASTIC",
-        reward:"+10 Coins",
-        doubleReward:"🎥 Double Reward",
         resetQ:"Restart?"
     },
     ar:{
@@ -30,8 +28,6 @@ const LANGS = {
         share:"مشاركة",
         next:"التالي",
         win:"رائع",
-        reward:"+10 عملات",
-        doubleReward:"🎥 مضاعفة الجائزة",
         resetQ:"إعادة؟"
     },
     fa:{
@@ -43,8 +39,6 @@ const LANGS = {
         share:"اشتراک‌گذاری",
         next:"بعدی",
         win:"عالی",
-        reward:"+10 سکه",
-        doubleReward:"🎥 دوبرابر کردن جایزه",
         resetQ:"شروع مجدد؟"
     }
 };
@@ -109,8 +103,6 @@ function changeLang(lang){
     setText('txt-share',t.share);
     setText('txt-win',t.win);
     setText('txt-next',t.next);
-    setText('txt-reward',t.reward);
-    setText('txt-double-reward',t.doubleReward);
 
     updateStartRank();
 
@@ -151,7 +143,6 @@ function init(){
     currentLang=localStorage.getItem('neon_lang')||'en';
 
     changeLang(currentLang);
-
     updateCoinsUI();
     showMainMenu();
 }
@@ -168,7 +159,9 @@ function startGame(){
 
 function loadLevel(){
     setText('level-num',level);
-    document.getElementById('win-overlay').style.display='none';
+
+    let winOverlay = document.getElementById('win-overlay');
+    if(winOverlay) winOverlay.style.display='none';
 
     selected=null;
     history=[];
@@ -264,7 +257,8 @@ function moveLogic(from,to){
             updateCoinsUI();
 
             setTimeout(()=>{
-                document.getElementById('win-overlay').style.display='flex';
+                let winOverlay = document.getElementById('win-overlay');
+                if(winOverlay) winOverlay.style.display='flex';
                 playSnd(800,0.3);
             },300);
         }
@@ -272,8 +266,9 @@ function moveLogic(from,to){
 }
 
 function checkWin(){
-    return tubes.filter(t=>t.length>0)
-        .every(t=>t.length===4 && t.every(b=>b===t[0]));
+    return tubes.every(t => {
+        return t.length === 0 || (t.length === 4 && t.every(b => b === t[0]));
+    });
 }
 
 function nextLevel(){
