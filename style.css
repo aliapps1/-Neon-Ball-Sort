@@ -257,3 +257,7 @@ body.rtl {
 .circle-btn:hover {
     transform: scale(1.1);
 }
+.level-badge span {
+    display: block;
+    text-align: center;
+}
