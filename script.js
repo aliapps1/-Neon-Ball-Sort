@@ -86,7 +86,7 @@ function getRank(lvl){
 }
 
 function updateStartRank(){
-    setText('txt-start-level', `👑 ${getRank(level)}`);
+    setText('txt-start-level', getRank(level));
     setText('start-level', `${LANGS[currentLang].level} ${level}`);
 }
 
