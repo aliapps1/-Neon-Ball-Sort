@@ -261,3 +261,15 @@ body.rtl {
     display: block;
     text-align: center;
 }
+/* کوچکتر و حرفه‌ای‌تر شدن PLAY */
+.play-btn {
+    transform: scale(0.9);
+}
+
+/* برجسته شدن رانک */
+#txt-start-level {
+    font-weight: bold;
+    font-size: 20px;
+    color: gold;
+    letter-spacing: 1px;
+}
