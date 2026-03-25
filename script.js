@@ -17,6 +17,8 @@ const LANGS = {
         share:"Share",
         next:"NEXT",
         win:"FANTASTIC",
+        reward:"+10 Coins",
+        doubleReward:"🎥 Double Reward",
         resetQ:"Restart?"
     },
     ar:{
@@ -28,6 +30,8 @@ const LANGS = {
         share:"مشاركة",
         next:"التالي",
         win:"رائع",
+        reward:"+10 عملات",
+        doubleReward:"🎥 مضاعفة الجائزة",
         resetQ:"إعادة؟"
     },
     fa:{
@@ -39,6 +43,8 @@ const LANGS = {
         share:"اشتراک‌گذاری",
         next:"بعدی",
         win:"عالی",
+        reward:"+10 سکه",
+        doubleReward:"🎥 دوبرابر کردن جایزه",
         resetQ:"شروع مجدد؟"
     }
 };
@@ -103,6 +109,8 @@ function changeLang(lang){
     setText('txt-share',t.share);
     setText('txt-win',t.win);
     setText('txt-next',t.next);
+    setText('txt-reward',t.reward);
+    setText('txt-double-reward',t.doubleReward);
 
     updateStartRank();
 
@@ -253,6 +261,7 @@ function moveLogic(from,to){
         if(checkWin()){
             coins+=10;
             saveCoins();
+            updateCoinsUI();
 
             setTimeout(()=>{
                 document.getElementById('win-overlay').style.display='flex';
@@ -297,7 +306,6 @@ function skipLevel(){
 }
 
 function toggleSettings(show){
-    document.getElementById('settings-panel').style.display='flex' === show;
     document.getElementById('settings-panel').style.display=show?'flex':'none';
 }
 
@@ -324,6 +332,13 @@ function toggleOption(type){
             navigator.vibrate(50);
         }
     }
+}
+
+function watchAdReward(){
+    coins += 10;
+    saveCoins();
+    updateCoinsUI();
+    nextLevel();
 }
 
 async function shareGame(){
