@@ -252,7 +252,6 @@ function loadLevel(){
     hintTo=null;
     rewardUsed=false;
 
-    let colorCount=Math.min(3+Math.floor(level/4),8);
 
     let config = getLevelConfig(level);
 tubes = generateLevel(config.colors, 2, config.moves);
