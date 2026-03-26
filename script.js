@@ -19,11 +19,14 @@ function updateCoinsUI() { let el = document.getElementById("coins"); if (el) el
 const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff'];
 
 function getLevelConfig(level) {
-    if (level < 20)       return { colors: 3, emptyTubes: 2 };
-    else if (level < 50)  return { colors: 4, emptyTubes: 2 };
-    else if (level < 100) return { colors: 5, emptyTubes: 2 };
-    else if (level < 200) return { colors: 6, emptyTubes: 2 };
-    else                  return { colors: 7, emptyTubes: 2 };
+    if (level <= 5)        return { colors: 3, emptyTubes: 2 };
+    else if (level <= 15)  return { colors: 4, emptyTubes: 2 };
+    else if (level <= 30)  return { colors: 5, emptyTubes: 2 };
+    else if (level <= 60)  return { colors: 6, emptyTubes: 2 };
+    else if (level <= 100) return { colors: 6, emptyTubes: 1 };
+    else if (level <= 150) return { colors: 7, emptyTubes: 2 };
+    else if (level <= 220) return { colors: 7, emptyTubes: 1 };
+    else                   return { colors: 8, emptyTubes: 1 };
 }
 
 // جلوگیری از لوله‌های نیمه‌آماده (3 تا از یه رنگ)
