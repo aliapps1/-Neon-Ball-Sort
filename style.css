@@ -35,7 +35,7 @@ body[dir="rtl"] { direction: rtl; }
     flex-direction: column;
 }
 
-/* ── TOP BAR (خلوت‌شده) ── */
+/* ── TOP BAR ── */
 .top-bar {
     display: flex;
     justify-content: space-between;
@@ -141,7 +141,7 @@ body[dir="rtl"] { direction: rtl; }
         inset 2px 2px 5px rgba(255,255,255,0.2);
 }
 
-/* ── BOTTOM BAR (skip, addTube, hint, coins) ── */
+/* ── BOTTOM BAR ── */
 .ad-box {
     display: flex;
     gap: 6px;
