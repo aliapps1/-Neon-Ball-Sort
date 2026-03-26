@@ -432,7 +432,7 @@ function toggleOption(type){
 
 function spendCoins(amount){
     if(coins < amount){
-        alert(LANGS[currentLang].noCoins);
+        showCoinPopup();
         return false;
     }
     coins -= amount;
