@@ -1,31 +1,3 @@
-function generateLevel(colors, emptyTubes = 2, moves = 30) {
-    let tubes = [];
-
-    // حالت حل شده
-    for (let i = 0; i < colors; i++) {
-        tubes.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
-    }
-
-    // لوله خالی
-    for (let i = 0; i < emptyTubes; i++) {
-        tubes.push([]);
-    }
-
-    // شافل با حرکت واقعی
-    for (let m = 0; m < moves; m++) {
-        let from = Math.floor(Math.random() * tubes.length);
-        let to = Math.floor(Math.random() * tubes.length);
-
-        if (from === to) continue;
-        if (tubes[from].length === 0) continue;
-        if (tubes[to].length >= 4) continue;
-
-        let ball = tubes[from].pop();
-        tubes[to].push(ball);
-    }
-
-    return tubes;
-}
 let startTime = 0;
 let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
 let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
@@ -48,6 +20,7 @@ function saveCoins(){ localStorage.setItem("neon_coins", coins); }
 function updateCoinsUI(){ let el=document.getElementById("coins"); if(el) el.innerText=coins; }
 
 const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff'];
+
 function getLevelConfig(level) {
     if (level < 20) {
         return { colors: 3, moves: 15 };
@@ -60,6 +33,32 @@ function getLevelConfig(level) {
     } else {
         return { colors: 7, moves: 60 };
     }
+}
+
+function generateLevel(colors, emptyTubes = 2, moves = 30) {
+    let tubes = [];
+
+    for (let i = 0; i < colors; i++) {
+        tubes.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
+    }
+
+    for (let i = 0; i < emptyTubes; i++) {
+        tubes.push([]);
+    }
+
+    for (let m = 0; m < moves; m++) {
+        let from = Math.floor(Math.random() * tubes.length);
+        let to = Math.floor(Math.random() * tubes.length);
+
+        if (from === to) continue;
+        if (tubes[from].length === 0) continue;
+        if (tubes[to].length >= 4) continue;
+
+        let ball = tubes[from].pop();
+        tubes[to].push(ball);
+    }
+
+    return tubes;
 }
 const LANGS = {
     en:{
