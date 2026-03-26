@@ -11,7 +11,6 @@
 <body>
 <div class="game-container">
 
-    <!-- ✅ FIX 1: top bar خلوت شد — skip و addTube به bottom bar رفتن -->
     <div class="top-bar">
         <button class="icon-btn" onclick="showMainMenu()">🏠</button>
         <button class="icon-btn" onclick="reset()">🔄</button>
@@ -28,8 +27,6 @@
 
     <div id="board"></div>
 
-    <!-- ✅ FIX 2: فقط یک hint در اینجا — hint تکراری بالا حذف شد -->
-    <!-- skip و addTube هم اینجا اومدن — منطقی‌تره -->
     <div class="ad-box">
         <button class="ad-btn" id="txt-hint-btn" onclick="useHint()">💡 Hint</button>
         <button class="ad-btn" id="txt-skip-btn" onclick="skipLevel()">⏭️ Skip</button>
@@ -39,7 +36,6 @@
 
     <div id="toast" class="toast"></div>
 
-    <!-- START MENU -->
     <div id="start-menu" class="overlay">
         <div class="menu-card">
             <h1 class="title-text">NEON SORT</h1>
@@ -52,7 +48,6 @@
         </div>
     </div>
 
-    <!-- SETTINGS -->
     <div id="settings-panel" class="overlay">
         <div class="settings-card">
             <div class="settings-header">
@@ -81,7 +76,6 @@
         </div>
     </div>
 
-    <!-- WIN SCREEN -->
     <div id="win-overlay" class="overlay">
         <div class="win-card">
             <div class="crown">👑</div>
@@ -92,7 +86,6 @@
         </div>
     </div>
 
-    <!-- COIN POPUP -->
     <div id="coin-popup" class="popup">
         <div class="popup-box">
             <p id="popup-text">Not enough coins</p>
