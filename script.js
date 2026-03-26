@@ -26,45 +26,26 @@ function getLevelConfig(level) {
     else                  return { colors: 7, emptyTubes: 2 };
 }
 
-// ✅ FIX 3: generateLevel حرفه‌ای
-// از حالت حل‌شده شروع میکنه و با حرکت‌های معکوس shuffle میکنه
-// این تضمین میکنه پازل همیشه قابل حل باشه
+// Fisher-Yates shuffle — قوانین بازی رو نگه نمیداره، همه توپها رو میریزه
 function generateLevel(colors, emptyTubes = 2) {
-    let state = [];
-    for (let i = 0; i < colors; i++) {
-        state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
+    let allBalls = [];
+    for (let i = 0; i < colors; i++)
+        for (let j = 0; j < 4; j++) allBalls.push(COLORS[i]);
+
+    // Fisher-Yates کامل
+    for (let i = allBalls.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [allBalls[i], allBalls[j]] = [allBalls[j], allBalls[i]];
     }
+
+    let state = [];
+    for (let i = 0; i < colors; i++)
+        state.push(allBalls.slice(i * 4, i * 4 + 4));
     for (let i = 0; i < emptyTubes; i++) state.push([]);
 
-    const totalTubes = colors + emptyTubes;
-    const moves = 200 + colors * 30;
-
-    for (let m = 0; m < moves; m++) {
-        let candidates = [];
-
-        for (let from = 0; from < totalTubes; from++) {
-            if (state[from].length === 0) continue;
-            let topFrom = state[from][state[from].length - 1];
-
-            for (let to = 0; to < totalTubes; to++) {
-                if (from === to) continue;
-                if (state[to].length >= 4) continue;
-
-                let topTo = state[to].length > 0 ? state[to][state[to].length - 1] : null;
-                if (topTo !== null && topTo !== topFrom) continue;
-
-                candidates.push({ from, to });
-            }
-        }
-
-        if (candidates.length === 0) break;
-        let move = candidates[Math.floor(Math.random() * candidates.length)];
-        state[move.to].push(state[move.from].pop());
-    }
-
-    // ✅ اگه بیشتر از یه لوله کامل داشت یا solved بود، دوباره تولید کن
-    let completeTubes = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
-    if (isSolved(state) || completeTubes > 1) return generateLevel(colors, emptyTubes);
+    // اگه بیشتر از یه لوله کامل یا solved بود دوباره تولید کن
+    let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
+    if (isSolved(state) || complete > 1) return generateLevel(colors, emptyTubes);
 
     return state;
 }
@@ -78,7 +59,7 @@ const LANGS = {
         level:"Level", settings:"Settings", sound:"Sound", vibrate:"Vibrate",
         contact:"Contact", share:"Share", next:"NEXT", win:"FANTASTIC",
         reward:"+10 Coins", doubleReward:"🎥 Double Reward",
-        freeCoins:"🎥 Get Coins", hintBtn:"💡 Hint",
+        freeCoins:"🎥 Get Coins", hintBtn:"💡 Hint", skip:"⏭️ Skip",
         noCoins:"Not enough coins", noHint:"No hint available",
         perfect:"🔥 PERFECT! +20", speedBonus:"⚡ Speed Bonus! +15"
     },
@@ -86,7 +67,7 @@ const LANGS = {
         level:"مستوى", settings:"الإعدادات", sound:"الصوت", vibrate:"اهتزاز",
         contact:"اتصل بنا", share:"مشاركة", next:"التالي", win:"رائع",
         reward:"+10 عملات", doubleReward:"🎥 مضاعفة الجائزة",
-        freeCoins:"🎥 احصل على عملات", hintBtn:"💡 تلميح",
+        freeCoins:"🎥 احصل على عملات", hintBtn:"💡 تلميح", skip:"⏭️ تخطي",
         noCoins:"لا توجد عملات كافية", noHint:"لا يوجد تلميح متاح",
         perfect:"🔥 مثالي! +20", speedBonus:"⚡ مكافأة السرعة! +15"
     },
@@ -94,7 +75,7 @@ const LANGS = {
         level:"مرحله", settings:"تنظیمات", sound:"صدا", vibrate:"لرزش",
         contact:"تماس با ما", share:"اشتراک‌گذاری", next:"بعدی", win:"عالی",
         reward:"+10 سکه", doubleReward:"🎥 دوبرابر جایزه",
-        freeCoins:"🎥 دریافت سکه", hintBtn:"💡 راهنما",
+        freeCoins:"🎥 دریافت سکه", hintBtn:"💡 راهنما", skip:"⏭️ رد کردن",
         noCoins:"سکه کافی نداری", noHint:"راهنمایی پیدا نشد",
         perfect:"🔥 بی‌نقص! +20", speedBonus:"⚡ جایزه سرعت! +15"
     }
@@ -131,6 +112,7 @@ function changeLang(lang) {
     setText('txt-win', t.win);             setText('txt-next', t.next);
     setText('txt-reward', t.reward);       setText('txt-double-reward', t.doubleReward);
     setText('txt-free-coins', t.freeCoins);
+    setText('txt-skip-btn', t.skip);
     setText('txt-hint-btn', t.hintBtn); // ✅ فقط یک hint button در ad-box
 
     ['en','ar','fa'].forEach(l => {
