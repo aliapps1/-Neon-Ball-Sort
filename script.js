@@ -47,28 +47,40 @@ function hasEasyStack(tubes) {
     return pairsOnTop > 1;
 }
 
+// Reverse simulation — از solved شروع میکنه
+// هر حرکتی که انجام میشه معتبره → مسیر برگشت همیشه وجود داره → همیشه قابل حله
 function generateLevel(colors, emptyTubes = 2) {
-    // Fisher-Yates — همیشه قابل حله چون تعداد هر رنگ ثابته و لوله خالی هست
-    let allBalls = [];
-    for (let i = 0; i < colors; i++)
-        for (let j = 0; j < 4; j++) allBalls.push(COLORS[i]);
-
-    for (let i = allBalls.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [allBalls[i], allBalls[j]] = [allBalls[j], allBalls[i]];
-    }
-
     let state = [];
     for (let i = 0; i < colors; i++)
-        state.push(allBalls.slice(i * 4, i * 4 + 4));
+        state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
     for (let i = 0; i < emptyTubes; i++) state.push([]);
 
-    // رد اگه لوله کامل داشت
+    const total = state.length;
+    // حرکت‌های زیاد = shuffle عمیق‌تر
+    const moves = 500 + colors * 30;
+
+    for (let m = 0; m < moves; m++) {
+        // همه حرکت‌های ممکن رو پیدا کن (بدون محدودیت رنگ - فقط ظرفیت)
+        let candidates = [];
+        for (let from = 0; from < total; from++) {
+            if (state[from].length === 0) continue;
+            for (let to = 0; to < total; to++) {
+                if (from === to) continue;
+                if (state[to].length >= 4) continue;
+                candidates.push({ from, to });
+            }
+        }
+        if (candidates.length === 0) break;
+        let mv = candidates[Math.floor(Math.random() * candidates.length)];
+        state[mv.to].push(state[mv.from].pop());
+    }
+
+    // اگه کاملاً solved موند دوباره تلاش کن
+    if (isSolved(state)) return generateLevel(colors, emptyTubes);
+
+    // چک کیفی — لوله کامل نباشه
     let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
     if (complete > 0) return generateLevel(colors, emptyTubes);
-
-    // رد اگه خیلی ساده بود
-    if (hasEasyStack(state)) return generateLevel(colors, emptyTubes);
 
     return state;
 }
@@ -423,4 +435,4 @@ async function shareGame() {
             showToast("Link copied!");
         }
     } catch(e) {}
-                                                                   }
+                }
