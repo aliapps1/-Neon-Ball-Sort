@@ -508,6 +508,13 @@ function watchAdReward(){
         }
     }, 50);
 }
+function showCoinPopup(){
+    document.getElementById('coin-popup').style.display = 'flex';
+}
+
+function closeCoinPopup(){
+    document.getElementById('coin-popup').style.display = 'none';
+}
 
 async function shareGame(){
     const text={
