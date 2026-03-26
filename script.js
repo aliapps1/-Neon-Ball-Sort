@@ -29,13 +29,19 @@ function getLevelConfig(level) {
     else                   return { colors: 8, emptyTubes: 1 };
 }
 
-// جلوگیری از لوله‌های نیمه‌آماده (3 تا از یه رنگ)
+// جلوگیری از لوله‌های نیمه‌آماده
 function hasEasyStack(tubes) {
-    return tubes.some(t => {
-        if (t.length < 3) return false;
+    let pairsOnTop = 0;
+    for (let t of tubes) {
+        if (t.length < 2) continue;
         let c = t[t.length - 1];
-        return t.filter(x => x === c).length >= 3;
-    });
+        // 3تایی یا بیشتر از یه رنگ در لوله
+        if (t.filter(x => x === c).length >= 3) return true;
+        // 2تایی بالای لوله
+        if (t[t.length - 2] === c) pairsOnTop++;
+    }
+    // بیشتر از 2 لوله با 2تایی بالا قبول نیست
+    return pairsOnTop > 2;
 }
 
 // Fisher-Yates shuffle — قوانین بازی رو نگه نمیداره، همه توپها رو میریزه
