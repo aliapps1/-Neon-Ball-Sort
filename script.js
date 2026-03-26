@@ -3,6 +3,7 @@ let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
 let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
 let coins = parseInt(localStorage.getItem("neon_coins")) || 100;
 let rewardUsed = false;
+let undoUsed = false;
 let hintFrom = null, hintTo = null;
 
 // ✅ FIX 4: ذخیره snapshot اولیه برای reset واقعی
@@ -34,18 +35,31 @@ function hasEasyStack(tubes) {
     let pairsOnTop = 0;
     for (let t of tubes) {
         if (t.length < 2) continue;
-        let c = t[t.length - 1];
-        // 3تایی یا بیشتر از یه رنگ در لوله
-        if (t.filter(x => x === c).length >= 3) return true;
+        let top = t[t.length - 1];
+
+        // شمارش consecutive از بالا (نه کل لوله)
+        let streak = 1;
+        for (let i = t.length - 2; i >= 0; i--) {
+            if (t[i] === top) streak++;
+            else break;
+        }
+
+        // 3تایی consecutive از بالا → رد
+        if (streak >= 3) return true;
+
         // 2تایی بالای لوله
-        if (t[t.length - 2] === c) pairsOnTop++;
+        if (streak === 2) pairsOnTop++;
     }
-    // بیشتر از 2 لوله با 2تایی بالا قبول نیست
-    return pairsOnTop > 2;
+    // حداکثر 1 pair روی لبه مجازه
+    return pairsOnTop > 1;
 }
 
 // Fisher-Yates shuffle — قوانین بازی رو نگه نمیداره، همه توپها رو میریزه
-function generateLevel(colors, emptyTubes = 2) {
+function generateLevel(colors, emptyTubes = 2, attempt = 0) {
+    if (attempt > 200) {
+        // سقف امنیتی — اگه بعد از 200 بار stage مناسب نیافت، شرط‌ها رو شل کن
+        return generateLevelRelaxed(colors, emptyTubes);
+    }
     let allBalls = [];
     for (let i = 0; i < colors; i++)
         for (let j = 0; j < 4; j++) allBalls.push(COLORS[i]);
@@ -63,8 +77,25 @@ function generateLevel(colors, emptyTubes = 2) {
 
     // اگه solved، بیشتر از یه لوله کامل، یا لوله نیمه‌آماده داشت — دوباره تولید کن
     let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
-    if (isSolved(state) || complete > 0 || hasEasyStack(state)) return generateLevel(colors, emptyTubes);
+    if (isSolved(state) || complete > 0 || hasEasyStack(state)) return generateLevel(colors, emptyTubes, attempt + 1);
 
+    return state;
+}
+
+// نسخه شل‌شده برای وقتی generator بیش از حد loop خورد
+function generateLevelRelaxed(colors, emptyTubes = 2) {
+    let allBalls = [];
+    for (let i = 0; i < colors; i++)
+        for (let j = 0; j < 4; j++) allBalls.push(COLORS[i]);
+    for (let i = allBalls.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [allBalls[i], allBalls[j]] = [allBalls[j], allBalls[i]];
+    }
+    let state = [];
+    for (let i = 0; i < colors; i++)
+        state.push(allBalls.slice(i * 4, i * 4 + 4));
+    for (let i = 0; i < emptyTubes; i++) state.push([]);
+    if (isSolved(state)) return generateLevelRelaxed(colors, emptyTubes);
     return state;
 }
 
@@ -201,7 +232,7 @@ function loadLevel() {
     let drBtn = document.getElementById('txt-double-reward');
     if (drBtn) { drBtn.style.opacity = ''; drBtn.style.pointerEvents = ''; }
 
-    selected = null; history = []; hintFrom = null; hintTo = null;
+    selected = null; history = []; hintFrom = null; hintTo = null; undoUsed = false;
 
     let config = getLevelConfig(level);
     tubes = generateLevel(config.colors, config.emptyTubes);
@@ -272,7 +303,7 @@ function moveLogic(from, to) {
 function handleWin() {
     coins += COSTS.win;
 
-    if (history.length === 0) {
+    if (!undoUsed) {
         coins += 20;
         setTimeout(() => showToast(LANGS[currentLang].perfect), 350);
     }
@@ -302,7 +333,7 @@ function nextLevel() {
 function reset() {
     if (!initialTubes) { loadLevel(); return; }
     tubes = JSON.parse(initialTubes);
-    selected = null; history = []; hintFrom = null; hintTo = null;
+    selected = null; history = []; hintFrom = null; hintTo = null; undoUsed = false;
     startTime = Date.now();
     render();
 }
@@ -312,6 +343,7 @@ function undo() {
     if (!spendCoins(COSTS.undo)) return;
     tubes = JSON.parse(history.pop());
     hintFrom = null; hintTo = null;
+    undoUsed = true;
     render();
 }
 
