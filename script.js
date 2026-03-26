@@ -54,50 +54,102 @@ function hasEasyStack(tubes) {
     return pairsOnTop > 1;
 }
 
-// Fisher-Yates shuffle — قوانین بازی رو نگه نمیداره، همه توپها رو میریزه
-function generateLevel(colors, emptyTubes = 2, attempt = 0) {
-    if (attempt > 200) {
-        // سقف امنیتی — اگه بعد از 200 بار stage مناسب نیافت، شرط‌ها رو شل کن
-        return generateLevelRelaxed(colors, emptyTubes);
+// شمارش حرکت‌های مفید — حرکتی که توپ رو به لوله هم‌رنگ میبره (نه فقط خالی)
+function countUsefulMoves(state) {
+    let useful = 0;
+    for (let from = 0; from < state.length; from++) {
+        let f = state[from];
+        if (f.length === 0) continue;
+        let topFrom = f[f.length - 1];
+        for (let to = 0; to < state.length; to++) {
+            if (from === to) continue;
+            let t = state[to];
+            if (t.length === 0 || t.length >= 4) continue;
+            if (t[t.length - 1] === topFrom) {
+                useful++;
+                break; // یه حرکت مفید از این from کافیه
+            }
+        }
     }
-    let allBalls = [];
-    for (let i = 0; i < colors; i++)
-        for (let j = 0; j < 4; j++) allBalls.push(COLORS[i]);
+    return useful;
+}
 
-    // Fisher-Yates کامل
-    for (let i = allBalls.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [allBalls[i], allBalls[j]] = [allBalls[j], allBalls[i]];
-    }
+// Reverse simulation — از solved شروع، با حرکت‌های معتبر بهم میریزه
+// تنها روشی که solvability رو 100% تضمین میکنه
+function generateLevel(colors, emptyTubes = 2, attempt = 0) {
+    if (attempt > 150) return generateLevelRelaxed(colors, emptyTubes);
 
     let state = [];
     for (let i = 0; i < colors; i++)
-        state.push(allBalls.slice(i * 4, i * 4 + 4));
+        state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
     for (let i = 0; i < emptyTubes; i++) state.push([]);
 
-    // اگه solved، بیشتر از یه لوله کامل، یا لوله نیمه‌آماده داشت — دوباره تولید کن
+    const total = colors + emptyTubes;
+    const moves = 300 + colors * 20;
+    let lastFrom = -1, lastTo = -1;
+
+    for (let m = 0; m < moves; m++) {
+        let candidates = [];
+        for (let from = 0; from < total; from++) {
+            if (state[from].length === 0) continue;
+            if (from === lastTo) continue;
+            let topFrom = state[from][state[from].length - 1];
+            for (let to = 0; to < total; to++) {
+                if (from === to || to === lastFrom) continue;
+                if (state[to].length >= 4) continue;
+                let topTo = state[to].length > 0 ? state[to][state[to].length - 1] : null;
+                if (topTo !== null && topTo !== topFrom) continue;
+                candidates.push({ from, to });
+            }
+        }
+        if (candidates.length === 0) break;
+        let move = candidates[Math.floor(Math.random() * candidates.length)];
+        state[move.to].push(state[move.from].pop());
+        lastFrom = move.from;
+        lastTo = move.to;
+    }
+
+    if (isSolved(state)) return generateLevel(colors, emptyTubes, attempt + 1);
     let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
-    if (isSolved(state) || complete > 0 || hasEasyStack(state)) return generateLevel(colors, emptyTubes, attempt + 1);
+    if (complete > 0 || hasEasyStack(state)) return generateLevel(colors, emptyTubes, attempt + 1);
+
+    // حداقل ۲ حرکت مفید در شروع — جلوگیری از low-mobility deadlock
+    if (countUsefulMoves(state) < 2) return generateLevel(colors, emptyTubes, attempt + 1);
 
     return state;
 }
 
-// نسخه شل‌شده برای وقتی generator بیش از حد loop خورد
+// fallback بدون شرط سخت‌گیرانه
 function generateLevelRelaxed(colors, emptyTubes = 2) {
-    let allBalls = [];
-    for (let i = 0; i < colors; i++)
-        for (let j = 0; j < 4; j++) allBalls.push(COLORS[i]);
-    for (let i = allBalls.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [allBalls[i], allBalls[j]] = [allBalls[j], allBalls[i]];
-    }
     let state = [];
     for (let i = 0; i < colors; i++)
-        state.push(allBalls.slice(i * 4, i * 4 + 4));
+        state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
     for (let i = 0; i < emptyTubes; i++) state.push([]);
+
+    const total = colors + emptyTubes;
+    let lastFrom = -1, lastTo = -1;
+    for (let m = 0; m < 250; m++) {
+        let candidates = [];
+        for (let from = 0; from < total; from++) {
+            if (state[from].length === 0 || from === lastTo) continue;
+            let topFrom = state[from][state[from].length - 1];
+            for (let to = 0; to < total; to++) {
+                if (from === to || to === lastFrom) continue;
+                if (state[to].length >= 4) continue;
+                let topTo = state[to].length > 0 ? state[to][state[to].length - 1] : null;
+                if (topTo !== null && topTo !== topFrom) continue;
+                candidates.push({ from, to });
+            }
+        }
+        if (candidates.length === 0) break;
+        let move = candidates[Math.floor(Math.random() * candidates.length)];
+        state[move.to].push(state[move.from].pop());
+        lastFrom = move.from; lastTo = move.to;
+    }
     if (isSolved(state)) return generateLevelRelaxed(colors, emptyTubes);
     return state;
 }
+
 
 function isSolved(state) {
     return state.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0])));
