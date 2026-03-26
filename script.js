@@ -375,7 +375,7 @@ function nextLevel(){
 }
 
 function reset(){
-    if(confirm(LANGS[currentLang].resetQ)) loadLevel();
+    loadLevel();
 }
 
 function undo(){
