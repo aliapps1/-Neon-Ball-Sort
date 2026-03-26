@@ -36,25 +36,17 @@ function hasEasyStack(tubes) {
     for (let t of tubes) {
         if (t.length < 2) continue;
         let top = t[t.length - 1];
-
-        // شمارش consecutive از بالا (نه کل لوله)
         let streak = 1;
         for (let i = t.length - 2; i >= 0; i--) {
             if (t[i] === top) streak++;
             else break;
         }
-
-        // 3تایی consecutive از بالا → رد
         if (streak >= 3) return true;
-
-        // 2تایی بالای لوله
         if (streak === 2) pairsOnTop++;
     }
-    // حداکثر 1 pair روی لبه مجازه
     return pairsOnTop > 1;
 }
 
-// شمارش حرکت‌های مفید — حرکتی که توپ رو به لوله هم‌رنگ میبره (نه فقط خالی)
 function countUsefulMoves(state) {
     let useful = 0;
     for (let from = 0; from < state.length; from++) {
@@ -65,88 +57,69 @@ function countUsefulMoves(state) {
             if (from === to) continue;
             let t = state[to];
             if (t.length === 0 || t.length >= 4) continue;
-            if (t[t.length - 1] === topFrom) {
-                useful++;
-                break; // یه حرکت مفید از این from کافیه
-            }
+            if (t[t.length - 1] === topFrom) { useful++; break; }
         }
     }
     return useful;
 }
 
-// Reverse simulation — از solved شروع، با حرکت‌های معتبر بهم میریزه
-// تنها روشی که solvability رو 100% تضمین میکنه
-function generateLevel(colors, emptyTubes = 2, attempt = 0) {
-    if (attempt > 50) return generateLevelRelaxed(colors, emptyTubes);
-
+function generateLevel(colors, emptyTubes = 2) {
+    // شروع از solved — solvability تضمینه
     let state = [];
     for (let i = 0; i < colors; i++)
         state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
     for (let i = 0; i < emptyTubes; i++) state.push([]);
 
-    const total = colors + emptyTubes;
-    const moves = 300 + colors * 20;
-    let lastFrom = -1, lastTo = -1;
+    const total = state.length;
 
-    for (let m = 0; m < moves; m++) {
+    // shuffle با حرکت‌های معتبر بازی
+    for (let m = 0; m < 400; m++) {
         let candidates = [];
         for (let from = 0; from < total; from++) {
             if (state[from].length === 0) continue;
-            if (from === lastTo) continue;
-            let topFrom = state[from][state[from].length - 1];
+            let top = state[from][state[from].length - 1];
             for (let to = 0; to < total; to++) {
-                if (from === to || to === lastFrom) continue;
-                if (state[to].length >= 4) continue;
+                if (from === to || state[to].length >= 4) continue;
                 let topTo = state[to].length > 0 ? state[to][state[to].length - 1] : null;
-                if (topTo !== null && topTo !== topFrom) continue;
-                candidates.push({ from, to });
+                if (topTo === null || topTo === top) candidates.push({ from, to });
             }
         }
         if (candidates.length === 0) break;
-        let move = candidates[Math.floor(Math.random() * candidates.length)];
-        state[move.to].push(state[move.from].pop());
-        lastFrom = move.from;
-        lastTo = move.to;
+        let mv = candidates[Math.floor(Math.random() * candidates.length)];
+        state[mv.to].push(state[mv.from].pop());
     }
 
-    if (isSolved(state)) return generateLevel(colors, emptyTubes, attempt + 1);
-    let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
-    if (complete > 0 || hasEasyStack(state)) return generateLevel(colors, emptyTubes, attempt + 1);
+    // فقط solved بودن رو چک کن — بقیه شرط‌ها اختیاری
+    if (isSolved(state)) return generateLevel(colors, emptyTubes);
 
-    return state;
-}
-
-// fallback بدون شرط سخت‌گیرانه
-function generateLevelRelaxed(colors, emptyTubes = 2) {
-    let state = [];
-    for (let i = 0; i < colors; i++)
-        state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
-    for (let i = 0; i < emptyTubes; i++) state.push([]);
-
-    const total = colors + emptyTubes;
-    let lastFrom = -1, lastTo = -1;
-    for (let m = 0; m < 250; m++) {
-        let candidates = [];
-        for (let from = 0; from < total; from++) {
-            if (state[from].length === 0 || from === lastTo) continue;
-            let topFrom = state[from][state[from].length - 1];
-            for (let to = 0; to < total; to++) {
-                if (from === to || to === lastFrom) continue;
-                if (state[to].length >= 4) continue;
-                let topTo = state[to].length > 0 ? state[to][state[to].length - 1] : null;
-                if (topTo !== null && topTo !== topFrom) continue;
-                candidates.push({ from, to });
+    // شرط‌های کیفی — اگه بعد از ۵ بار نشد، همین رو برگردون
+    let tries = 0;
+    while (tries < 5) {
+        let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
+        if (complete === 0 && !hasEasyStack(state)) return state;
+        // دوباره shuffle کن
+        for (let m = 0; m < 100; m++) {
+            let candidates = [];
+            for (let from = 0; from < total; from++) {
+                if (state[from].length === 0) continue;
+                let top = state[from][state[from].length - 1];
+                for (let to = 0; to < total; to++) {
+                    if (from === to || state[to].length >= 4) continue;
+                    let topTo = state[to].length > 0 ? state[to][state[to].length - 1] : null;
+                    if (topTo === null || topTo === top) candidates.push({ from, to });
+                }
             }
+            if (candidates.length === 0) break;
+            let mv = candidates[Math.floor(Math.random() * candidates.length)];
+            state[mv.to].push(state[mv.from].pop());
         }
-        if (candidates.length === 0) break;
-        let move = candidates[Math.floor(Math.random() * candidates.length)];
-        state[move.to].push(state[move.from].pop());
-        lastFrom = move.from; lastTo = move.to;
+        tries++;
     }
-    if (isSolved(state)) return generateLevelRelaxed(colors, emptyTubes);
+
+    // fallback — هر چیزی که solved نیست قبوله
+    if (isSolved(state)) return generateLevel(colors, emptyTubes);
     return state;
 }
-
 
 function isSolved(state) {
     return state.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0])));
