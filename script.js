@@ -53,9 +53,7 @@ function generateLevel(colors, emptyTubes = 2) {
                 let topTo = state[to].length > 0 ? state[to][state[to].length - 1] : null;
                 if (topTo !== null && topTo !== topFrom) continue;
 
-                // جلوگیری از کامل کردن یه لوله (که بعداً reverse کنه به solved)
-                let wouldComplete = state[to].length === 3 && state[to].every(b => b === topFrom);
-                if (!wouldComplete) candidates.push({ from, to });
+                candidates.push({ from, to });
             }
         }
 
@@ -418,4 +416,4 @@ async function shareGame() {
             showToast("Link copied!");
         }
     } catch(e) {}
-        }
+}
