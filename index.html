@@ -4,83 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Neon Ball Sort Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-
-<body onload="init()">
-
+<body>
 <div class="game-container">
 
+    <!-- ✅ FIX 1: top bar خلوت شد — skip و addTube به bottom bar رفتن -->
     <div class="top-bar">
         <button class="icon-btn" onclick="showMainMenu()">🏠</button>
         <button class="icon-btn" onclick="reset()">🔄</button>
 
         <div class="level-tag">
-            <span id="txt-level">Level</span>
-            <span id="level-num">1</span>
+            <span id="txt-level">Level</span>&nbsp;<span id="level-num">1</span>
         </div>
 
-        <div class="coin-box">
-            💰 <span id="coins">0</span>
-        </div>
+        <div class="coin-box">💰 <span id="coins">0</span></div>
 
-        <button class="icon-btn" onclick="useHint()">💡</button>
         <button class="icon-btn" onclick="undo()">↩️ <small id="undo-count">0</small></button>
-        <button class="icon-btn" onclick="skipLevel()">⏭️</button>
-        <button class="icon-btn" onclick="addTube()">+🧪</button>
+        <button class="icon-btn" onclick="toggleSettings(true)">⚙️</button>
     </div>
 
     <div id="board"></div>
 
+    <!-- ✅ FIX 2: فقط یک hint در اینجا — hint تکراری بالا حذف شد -->
+    <!-- skip و addTube هم اینجا اومدن — منطقی‌تره -->
     <div class="ad-box">
-        <button class="ad-btn" id="txt-hint-btn" onclick="useHint()">💡 Hint (8)</button>
-        <button class="ad-btn" id="txt-free-coins" onclick="watchCoinsReward()">🎥 Get Coins</button>
+        <button class="ad-btn" id="txt-hint-btn" onclick="useHint()">💡 Hint</button>
+        <button class="ad-btn" onclick="skipLevel()">⏭️ Skip</button>
+        <button class="ad-btn" onclick="addTube()">+🧪</button>
+        <button class="ad-btn" id="txt-free-coins" onclick="watchCoinsReward()">🎥 Coins</button>
     </div>
 
+    <div id="toast" class="toast"></div>
+
+    <!-- START MENU -->
     <div id="start-menu" class="overlay">
         <div class="menu-card">
             <h1 class="title-text">NEON SORT</h1>
             <div class="crown-icon">👑</div>
-
             <div class="level-badge">
                 <span id="txt-start-level">Level</span>
                 <span id="start-level">1</span>
             </div>
-
-            <button id="start-play-btn" class="play-btn" onclick="startGame()">▶ PLAY</button>
-
-            <div class="bottom-menu-actions">
-                <button class="circle-btn" onclick="toggleSettings(true)">⚙️</button>
-            </div>
+            <button id="start-play-btn" onclick="startGame()">▶</button>
         </div>
     </div>
 
+    <!-- SETTINGS -->
     <div id="settings-panel" class="overlay">
         <div class="settings-card">
-
             <div class="settings-header">
                 <button class="close-btn" onclick="toggleSettings(false)">✖</button>
                 <h2 id="txt-settings">Settings</h2>
             </div>
-
             <div class="lang-switch">
                 <button onclick="changeLang('en')" id="btn-en">EN</button>
                 <button onclick="changeLang('ar')" id="btn-ar">AR</button>
                 <button onclick="changeLang('fa')" id="btn-fa">FA</button>
             </div>
-
             <div class="settings-grid">
                 <div class="setting-item active" id="sound-toggle" onclick="toggleOption('sound')">
                     <div class="icon">🔊</div>
                     <span id="txt-sound">Sound</span>
                 </div>
-
                 <div class="setting-item active" id="vibrate-toggle" onclick="toggleOption('vibrate')">
                     <div class="icon">📳</div>
                     <span id="txt-vibrate">Vibrate</span>
                 </div>
             </div>
-
             <div class="menu-links">
                 <button class="link-btn" id="txt-contact">Contact</button>
                 <button class="link-btn" id="txt-share" onclick="shareGame()">Share</button>
@@ -88,35 +81,27 @@
         </div>
     </div>
 
+    <!-- WIN SCREEN -->
     <div id="win-overlay" class="overlay">
         <div class="win-card">
             <div class="crown">👑</div>
             <h2 id="txt-win" class="win-title">FANTASTIC!</h2>
             <p id="txt-reward" class="reward-text">+10 Coins</p>
-
             <button class="win-next-btn" id="txt-next" onclick="nextLevel()">NEXT</button>
-
             <button class="link-btn" id="txt-double-reward" onclick="watchAdReward()">🎥 Double Reward</button>
         </div>
     </div>
 
-</div>
-
-<script src="script.js"></script>
+    <!-- COIN POPUP -->
     <div id="coin-popup" class="popup">
-  <div class="popup-box">
-    <p id="popup-text">Not enough coins</p>
+        <div class="popup-box">
+            <p id="popup-text">Not enough coins</p>
+            <button onclick="watchCoinsReward()" class="btn-ad">🎥 Get Coins</button>
+            <button onclick="closeCoinPopup()" class="btn-close">Close</button>
+        </div>
+    </div>
 
-    <button onclick="watchCoinsReward()" class="btn-ad">
-      🎥 Get Coins
-    </button>
-
-    <button onclick="closeCoinPopup()" class="btn-close">
-      Close
-    </button>
-  </div>
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>
