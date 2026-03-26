@@ -82,26 +82,27 @@ body[dir="rtl"] { direction: rtl; }
     flex: 1 1 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    padding: 16px 8px;
+    gap: 8px;
+    padding: 12px 8px 16px;
     justify-items: center;
     align-content: start;
     overflow-y: auto;
     min-height: 0;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* ── TUBE ── */
 .tube {
-    width: 52px;
-    height: 185px;
+    width: 46px;
+    height: 160px;
     background: rgba(255,255,255,0.04);
     border: 2px solid rgba(255,255,255,0.15);
-    border-radius: 0 0 30px 30px;
+    border-radius: 0 0 26px 26px;
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
-    padding-bottom: 8px;
-    gap: 3px;
+    padding-bottom: 6px;
+    gap: 2px;
     cursor: pointer;
     transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
 }
@@ -131,14 +132,13 @@ body[dir="rtl"] { direction: rtl; }
 
 /* ── BALL ── */
 .ball {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     flex-shrink: 0;
     box-shadow:
         inset -3px -3px 6px rgba(0,0,0,0.45),
-        inset 2px 2px 5px rgba(255,255,255,0.25),
-        0 0 10px var(--ball-color, rgba(255,255,255,0.3));
+        inset 2px 2px 5px rgba(255,255,255,0.2);
 }
 
 /* ── BOTTOM BAR (skip, addTube, hint, coins) ── */
