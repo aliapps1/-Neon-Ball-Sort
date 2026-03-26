@@ -37,7 +37,7 @@ function generateLevel(colors, emptyTubes = 2) {
     for (let i = 0; i < emptyTubes; i++) state.push([]);
 
     const totalTubes = colors + emptyTubes;
-    const moves = Math.min(60 + level * 2, 200);
+    const moves = 200 + colors * 30;
 
     for (let m = 0; m < moves; m++) {
         let candidates = [];
@@ -62,8 +62,9 @@ function generateLevel(colors, emptyTubes = 2) {
         state[move.to].push(state[move.from].pop());
     }
 
-    // اگه اتفاقاً solved بود، دوباره تلاش کن
-    if (isSolved(state)) return generateLevel(colors, emptyTubes);
+    // ✅ اگه بیشتر از یه لوله کامل داشت یا solved بود، دوباره تولید کن
+    let completeTubes = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
+    if (isSolved(state) || completeTubes > 1) return generateLevel(colors, emptyTubes);
 
     return state;
 }
