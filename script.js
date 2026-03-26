@@ -47,77 +47,29 @@ function hasEasyStack(tubes) {
     return pairsOnTop > 1;
 }
 
-function countUsefulMoves(state) {
-    let useful = 0;
-    for (let from = 0; from < state.length; from++) {
-        let f = state[from];
-        if (f.length === 0) continue;
-        let topFrom = f[f.length - 1];
-        for (let to = 0; to < state.length; to++) {
-            if (from === to) continue;
-            let t = state[to];
-            if (t.length === 0 || t.length >= 4) continue;
-            if (t[t.length - 1] === topFrom) { useful++; break; }
-        }
-    }
-    return useful;
-}
-
 function generateLevel(colors, emptyTubes = 2) {
-    // شروع از solved — solvability تضمینه
+    // Fisher-Yates — همیشه قابل حله چون تعداد هر رنگ ثابته و لوله خالی هست
+    let allBalls = [];
+    for (let i = 0; i < colors; i++)
+        for (let j = 0; j < 4; j++) allBalls.push(COLORS[i]);
+
+    for (let i = allBalls.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [allBalls[i], allBalls[j]] = [allBalls[j], allBalls[i]];
+    }
+
     let state = [];
     for (let i = 0; i < colors; i++)
-        state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
+        state.push(allBalls.slice(i * 4, i * 4 + 4));
     for (let i = 0; i < emptyTubes; i++) state.push([]);
 
-    const total = state.length;
+    // رد اگه لوله کامل داشت
+    let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
+    if (complete > 0) return generateLevel(colors, emptyTubes);
 
-    // shuffle با حرکت‌های معتبر بازی
-    for (let m = 0; m < 400; m++) {
-        let candidates = [];
-        for (let from = 0; from < total; from++) {
-            if (state[from].length === 0) continue;
-            let top = state[from][state[from].length - 1];
-            for (let to = 0; to < total; to++) {
-                if (from === to || state[to].length >= 4) continue;
-                let topTo = state[to].length > 0 ? state[to][state[to].length - 1] : null;
-                if (topTo === null || topTo === top) candidates.push({ from, to });
-            }
-        }
-        if (candidates.length === 0) break;
-        let mv = candidates[Math.floor(Math.random() * candidates.length)];
-        state[mv.to].push(state[mv.from].pop());
-    }
+    // رد اگه خیلی ساده بود
+    if (hasEasyStack(state)) return generateLevel(colors, emptyTubes);
 
-    // فقط solved بودن رو چک کن — بقیه شرط‌ها اختیاری
-    if (isSolved(state)) return generateLevel(colors, emptyTubes);
-
-    // شرط‌های کیفی — اگه بعد از ۵ بار نشد، همین رو برگردون
-    let tries = 0;
-    while (tries < 5) {
-        let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
-        if (complete === 0 && !hasEasyStack(state)) return state;
-        // دوباره shuffle کن
-        for (let m = 0; m < 100; m++) {
-            let candidates = [];
-            for (let from = 0; from < total; from++) {
-                if (state[from].length === 0) continue;
-                let top = state[from][state[from].length - 1];
-                for (let to = 0; to < total; to++) {
-                    if (from === to || state[to].length >= 4) continue;
-                    let topTo = state[to].length > 0 ? state[to][state[to].length - 1] : null;
-                    if (topTo === null || topTo === top) candidates.push({ from, to });
-                }
-            }
-            if (candidates.length === 0) break;
-            let mv = candidates[Math.floor(Math.random() * candidates.length)];
-            state[mv.to].push(state[mv.from].pop());
-        }
-        tries++;
-    }
-
-    // fallback — هر چیزی که solved نیست قبوله
-    if (isSolved(state)) return generateLevel(colors, emptyTubes);
     return state;
 }
 
@@ -471,4 +423,4 @@ async function shareGame() {
             showToast("Link copied!");
         }
     } catch(e) {}
-}
+                                                                   }
