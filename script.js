@@ -26,6 +26,15 @@ function getLevelConfig(level) {
     else                  return { colors: 7, emptyTubes: 2 };
 }
 
+// جلوگیری از لوله‌های نیمه‌آماده (3 تا از یه رنگ)
+function hasEasyStack(tubes) {
+    return tubes.some(t => {
+        if (t.length < 3) return false;
+        let c = t[t.length - 1];
+        return t.filter(x => x === c).length >= 3;
+    });
+}
+
 // Fisher-Yates shuffle — قوانین بازی رو نگه نمیداره، همه توپها رو میریزه
 function generateLevel(colors, emptyTubes = 2) {
     let allBalls = [];
@@ -43,9 +52,9 @@ function generateLevel(colors, emptyTubes = 2) {
         state.push(allBalls.slice(i * 4, i * 4 + 4));
     for (let i = 0; i < emptyTubes; i++) state.push([]);
 
-    // اگه بیشتر از یه لوله کامل یا solved بود دوباره تولید کن
+    // اگه solved، بیشتر از یه لوله کامل، یا لوله نیمه‌آماده داشت — دوباره تولید کن
     let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
-    if (isSolved(state) || complete > 1) return generateLevel(colors, emptyTubes);
+    if (isSolved(state) || complete > 0 || hasEasyStack(state)) return generateLevel(colors, emptyTubes);
 
     return state;
 }
