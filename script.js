@@ -77,7 +77,7 @@ function countUsefulMoves(state) {
 // Reverse simulation — از solved شروع، با حرکت‌های معتبر بهم میریزه
 // تنها روشی که solvability رو 100% تضمین میکنه
 function generateLevel(colors, emptyTubes = 2, attempt = 0) {
-    if (attempt > 150) return generateLevelRelaxed(colors, emptyTubes);
+    if (attempt > 50) return generateLevelRelaxed(colors, emptyTubes);
 
     let state = [];
     for (let i = 0; i < colors; i++)
@@ -112,9 +112,6 @@ function generateLevel(colors, emptyTubes = 2, attempt = 0) {
     if (isSolved(state)) return generateLevel(colors, emptyTubes, attempt + 1);
     let complete = state.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
     if (complete > 0 || hasEasyStack(state)) return generateLevel(colors, emptyTubes, attempt + 1);
-
-    // حداقل ۲ حرکت مفید در شروع — جلوگیری از low-mobility deadlock
-    if (countUsefulMoves(state) < 2) return generateLevel(colors, emptyTubes, attempt + 1);
 
     return state;
 }
