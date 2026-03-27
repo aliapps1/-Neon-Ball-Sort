@@ -63,7 +63,7 @@ function isBadLevel(state) {
 
 // ✅ FIX: Reverse simulation با حرکت‌های معتبر بازی
 // از solved شروع میکنه → فقط حرکت معتبر میزنه → همیشه قابل حله
-function generateLevel(colors, emptyTubes = 2) {
+function generateLevel(colors, emptyTubes = 2, attempt = 0) {
     let state = [];
     for (let i = 0; i < colors; i++)
         state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
@@ -80,7 +80,6 @@ function generateLevel(colors, emptyTubes = 2) {
             for (let to = 0; to < total; to++) {
                 if (from === to) continue;
                 if (state[to].length >= 4) continue;
-                // فقط حرکت معتبر: لوله خالی یا رنگ یکسان بالا
                 if (state[to].length === 0 || state[to][state[to].length - 1] === topFrom) {
                     candidates.push({ from, to });
                 }
@@ -91,7 +90,13 @@ function generateLevel(colors, emptyTubes = 2) {
         state[mv.to].push(state[mv.from].pop());
     }
 
-    if (isSolved(state) || isBadLevel(state)) return generateLevel(colors, emptyTubes);
+    // بعد از 80 بار تلاش، فقط solved بودن رو چک کن
+    if (attempt > 80) {
+        if (isSolved(state)) return generateLevel(colors, emptyTubes, attempt + 1);
+        return state;
+    }
+
+    if (isSolved(state) || isBadLevel(state)) return generateLevel(colors, emptyTubes, attempt + 1);
 
     return state;
 }
