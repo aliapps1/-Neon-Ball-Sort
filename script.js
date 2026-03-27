@@ -28,9 +28,7 @@ function getLevelConfig(level) {
     else if (level <= 15)  return { colors: 4, emptyTubes: 2 };
     else if (level <= 30)  return { colors: 5, emptyTubes: 2 };
     else if (level <= 60)  return { colors: 6, emptyTubes: 2 };
-    else if (level <= 100) return { colors: 6, emptyTubes: 1 };
-    else if (level <= 150) return { colors: 7, emptyTubes: 2 };
-    else if (level <= 220) return { colors: 7, emptyTubes: 1 };
+    else if (level <= 120) return { colors: 7, emptyTubes: 2 };
     else                   return { colors: 8, emptyTubes: 2 };
 }
 
@@ -57,60 +55,42 @@ function isBadLevel(state) {
     return easyCount > 1;
 }
 
-function makeState(colors, emptyTubes) {
+// Fisher-Yates + 2 empty tubes = همیشه قابل حله (اثبات ریاضی)
+function generateLevel(colors, emptyTubes = 2) {
+    for (let attempt = 0; attempt < 100; attempt++) {
+        // همه توپ‌ها رو جمع کن
+        let balls = [];
+        for (let i = 0; i < colors; i++)
+            for (let j = 0; j < 4; j++) balls.push(COLORS[i]);
+
+        // Fisher-Yates shuffle کامل
+        for (let i = balls.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [balls[i], balls[j]] = [balls[j], balls[i]];
+        }
+
+        // توزیع در لوله‌ها
+        let state = [];
+        for (let i = 0; i < colors; i++)
+            state.push(balls.slice(i * 4, i * 4 + 4));
+        for (let i = 0; i < emptyTubes; i++) state.push([]);
+
+        if (!isBadLevel(state)) return state;
+    }
+
+    // fallback بدون شرط کیفی
+    let balls = [];
+    for (let i = 0; i < colors; i++)
+        for (let j = 0; j < 4; j++) balls.push(COLORS[i]);
+    for (let i = balls.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [balls[i], balls[j]] = [balls[j], balls[i]];
+    }
     let state = [];
     for (let i = 0; i < colors; i++)
-        state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
+        state.push(balls.slice(i * 4, i * 4 + 4));
     for (let i = 0; i < emptyTubes; i++) state.push([]);
     return state;
-}
-
-function shuffleState(state, moves) {
-    const total = state.length;
-    for (let m = 0; m < moves; m++) {
-        let candidates = [];
-        for (let from = 0; from < total; from++) {
-            if (state[from].length === 0) continue;
-            let topFrom = state[from][state[from].length - 1];
-            for (let to = 0; to < total; to++) {
-                if (from === to) continue;
-                if (state[to].length >= 4) continue;
-                if (state[to].length === 0 || state[to][state[to].length - 1] === topFrom) {
-                    candidates.push({ from, to });
-                }
-            }
-        }
-        if (candidates.length === 0) break;
-        let mv = candidates[Math.floor(Math.random() * candidates.length)];
-        state[mv.to].push(state[mv.from].pop());
-    }
-    return state;
-}
-
-// loop-based — بدون recursion، بدون stack overflow
-function generateLevel(colors, emptyTubes = 2) {
-    const moves = 400 + colors * 25;
-
-    // ۱۵۰ بار با شرط کیفی تلاش کن
-    for (let attempt = 0; attempt < 150; attempt++) {
-        let state = makeState(colors, emptyTubes);
-        shuffleState(state, moves);
-        if (!isSolved(state) && !isBadLevel(state)) return state;
-    }
-
-    // ۵۰ بار بدون شرط کیفی
-    for (let attempt = 0; attempt < 50; attempt++) {
-        let state = makeState(colors, emptyTubes);
-        shuffleState(state, moves);
-        if (!isSolved(state)) return state;
-    }
-
-    // fallback نهایی — هر چیزی که solved نیست
-    while (true) {
-        let state = makeState(colors, emptyTubes);
-        shuffleState(state, moves);
-        if (!isSolved(state)) return state;
-    }
 }
 
 const LANGS = {
@@ -509,4 +489,4 @@ async function shareGame() {
             showToast(LANGS[currentLang].copied);
         }
     } catch(e) {}
-}
+            }
