@@ -73,6 +73,35 @@ function countCompleteTubes(tubesState) {
     return tubesState.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
 }
 
+function isBadLevel(state) {
+    let complete = 0;
+
+    for (let t of state) {
+        if (t.length === 4 && t.every(b => b === t[0])) {
+            complete++;
+        }
+    }
+
+    // ❌ اگر حتی 1 لوله کامل باشد → رد
+    if (complete > 0) return true;
+
+    // ❌ اگر خیلی ساده باشد
+    let easy = 0;
+    for (let t of state) {
+        if (t.length >= 2) {
+            let top = t[t.length - 1];
+            let count = 1;
+            for (let i = t.length - 2; i >= 0; i--) {
+                if (t[i] === top) count++;
+                else break;
+            }
+            if (count >= 2) easy++;
+        }
+    }
+
+    return easy > 2;
+}
+
 function getLegalReverseMoves(state) {
     const moves = [];
 
