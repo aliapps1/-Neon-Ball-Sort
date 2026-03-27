@@ -106,14 +106,12 @@ function isBadLevel(state) {
 function generateLevel(colors, emptyTubes = 2) {
     let balls = [];
 
-    // ساخت توپ‌ها
     for (let i = 0; i < colors; i++) {
         for (let j = 0; j < 4; j++) {
             balls.push(COLORS[i]);
         }
     }
 
-    // شافل قوی (واقعی، نه نمایشی)
     for (let i = balls.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         [balls[i], balls[j]] = [balls[j], balls[i]];
@@ -126,7 +124,6 @@ function generateLevel(colors, emptyTubes = 2) {
         state.push([]);
     }
 
-    // پخش توپ‌ها در لوله‌ها
     let index = 0;
     for (let i = 0; i < colors; i++) {
         for (let j = 0; j < 4; j++) {
@@ -134,17 +131,15 @@ function generateLevel(colors, emptyTubes = 2) {
         }
     }
 
-    // خالی‌ها
     for (let i = colors; i < totalTubes; i++) {
         state[i] = [];
     }
 
-    // 🔥 فیلتر کیفیت (خیلی مهم)
     if (isBadLevel(state)) {
-        return generateLevel(colors, emptyTubes); // دوباره بساز
+        return generateLevel(colors, emptyTubes);
     }
 
-    return generateLevelRelaxed(colors, emptyTubes);
+    return state;
 }
 
 const LANGS = {
