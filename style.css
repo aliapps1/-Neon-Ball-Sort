@@ -290,6 +290,11 @@ body[dir="rtl"] { direction: rtl; }
     animation: pulseGlow 1.5s infinite;
 }
 
+.tube.complete {
+    border-color: #2ea043;
+    box-shadow: 0 0 12px rgba(46,160,67,0.6);
+}
+
 @keyframes pulseGlow {
     0%,100% { box-shadow: 0 0 10px rgba(46,160,67,0.4); }
     50%      { box-shadow: 0 0 28px rgba(46,160,67,0.9); }
