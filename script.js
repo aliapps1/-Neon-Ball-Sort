@@ -110,7 +110,7 @@ function generateLevelRelaxed(colors, emptyTubes = 2) {
             state.push([]);
         }
 
-        const moves = 180 + colors * 20 + (2 - emptyTubes) * 30;
+        const moves = 200 + colors * 25 + (2 - emptyTubes) * 35;
 
         for (let m = 0; m < moves; m++) {
             const candidates = getLegalReverseMoves(state);
@@ -124,15 +124,37 @@ function generateLevelRelaxed(colors, emptyTubes = 2) {
         }
     }
 
-    let fallback = [];
+    // fallback جدید: هیچوقت لول حل‌شده برنمی‌گردونه
+    let state = [];
     for (let i = 0; i < colors; i++) {
-        fallback.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
+        state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
     }
     for (let i = 0; i < emptyTubes; i++) {
-        fallback.push([]);
+        state.push([]);
     }
 
-    return fallback;
+    for (let m = 0; m < 30; m++) {
+        const moves = getLegalReverseMoves(state);
+        if (!moves.length) break;
+        const mv = moves[Math.floor(Math.random() * moves.length)];
+        applyMove(state, mv.from, mv.to);
+    }
+
+    if (isSolved(state) || countCompleteTubes(state) > 0) {
+        // یک خراب‌سازی ساده اجباری
+        outer:
+        for (let from = 0; from < state.length; from++) {
+            if (state[from].length === 0) continue;
+            for (let to = 0; to < state.length; to++) {
+                if (from === to) continue;
+                if (state[to].length >= 4) continue;
+                state[to].push(state[from].pop());
+                break outer;
+            }
+        }
+    }
+
+    return state;
 }
 
 function generateLevel(colors, emptyTubes = 2) {
