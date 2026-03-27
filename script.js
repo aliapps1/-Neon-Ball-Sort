@@ -23,6 +23,7 @@ function updateCoinsUI() {
 
 const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff'];
 
+// ✅ FIX: emptyTubes: 2 برای لول ۲۲۱+ — با 1 لوله خالی deadlock میده
 function getLevelConfig(level) {
     if (level <= 5)        return { colors: 3, emptyTubes: 2 };
     else if (level <= 15)  return { colors: 4, emptyTubes: 2 };
@@ -31,113 +32,66 @@ function getLevelConfig(level) {
     else if (level <= 100) return { colors: 6, emptyTubes: 1 };
     else if (level <= 150) return { colors: 7, emptyTubes: 2 };
     else if (level <= 220) return { colors: 7, emptyTubes: 1 };
-    else                   return { colors: 8, emptyTubes: 1 };
+    else                   return { colors: 8, emptyTubes: 2 };
 }
 
 function isSolved(state) {
     return state.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0])));
 }
 
-function countTopPairs(tubesState) {
-    let pairs = 0;
-    for (let t of tubesState) {
-        if (t.length < 2) continue;
-        let top = t[t.length - 1];
-        if (t[t.length - 2] === top) pairs++;
+function isBadLevel(state) {
+    // ❌ لوله کامل
+    for (let t of state) {
+        if (t.length === 4 && t.every(b => b === t[0])) return true;
     }
-    return pairs;
-}
 
-function hasEasyStack(tubesState) {
-    let pairsOnTop = 0;
-
-    for (let t of tubesState) {
+    // ❌ خیلی ساده (بیشتر از ۱ لوله با ۲تایی یا بیشتر consecutive بالا)
+    let easyCount = 0;
+    for (let t of state) {
         if (t.length < 2) continue;
-
         let top = t[t.length - 1];
         let streak = 1;
-
         for (let i = t.length - 2; i >= 0; i--) {
             if (t[i] === top) streak++;
             else break;
         }
-
         if (streak >= 3) return true;
-        if (streak === 2) pairsOnTop++;
+        if (streak === 2) easyCount++;
     }
-
-    return pairsOnTop > 1;
+    return easyCount > 1;
 }
 
-function countCompleteTubes(tubesState) {
-    return tubesState.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
-}
-
-function isBadLevel(state) {
-    let complete = 0;
-
-    for (let t of state) {
-        if (t.length === 4 && t.every(b => b === t[0])) {
-            complete++;
-        }
-    }
-
-    // ❌ اگر حتی 1 لوله کامل باشد → رد
-    if (complete > 0) return true;
-
-    // ❌ اگر خیلی ساده باشد
-    let easy = 0;
-    for (let t of state) {
-        if (t.length >= 2) {
-            let top = t[t.length - 1];
-            let count = 1;
-            for (let i = t.length - 2; i >= 0; i--) {
-                if (t[i] === top) count++;
-                else break;
-            }
-            if (count >= 2) easy++;
-        }
-    }
-
-    return easy > 2;
-}
-
-
+// ✅ FIX: Reverse simulation با حرکت‌های معتبر بازی
+// از solved شروع میکنه → فقط حرکت معتبر میزنه → همیشه قابل حله
 function generateLevel(colors, emptyTubes = 2) {
-    let balls = [];
-
-    for (let i = 0; i < colors; i++) {
-        for (let j = 0; j < 4; j++) {
-            balls.push(COLORS[i]);
-        }
-    }
-
-    for (let i = balls.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [balls[i], balls[j]] = [balls[j], balls[i]];
-    }
-
-    let totalTubes = colors + emptyTubes;
     let state = [];
+    for (let i = 0; i < colors; i++)
+        state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
+    for (let i = 0; i < emptyTubes; i++) state.push([]);
 
-    for (let i = 0; i < totalTubes; i++) {
-        state.push([]);
-    }
+    const total = state.length;
+    const moves = 400 + colors * 25;
 
-    let index = 0;
-    for (let i = 0; i < colors; i++) {
-        for (let j = 0; j < 4; j++) {
-            state[i].push(balls[index++]);
+    for (let m = 0; m < moves; m++) {
+        let candidates = [];
+        for (let from = 0; from < total; from++) {
+            if (state[from].length === 0) continue;
+            let topFrom = state[from][state[from].length - 1];
+            for (let to = 0; to < total; to++) {
+                if (from === to) continue;
+                if (state[to].length >= 4) continue;
+                // فقط حرکت معتبر: لوله خالی یا رنگ یکسان بالا
+                if (state[to].length === 0 || state[to][state[to].length - 1] === topFrom) {
+                    candidates.push({ from, to });
+                }
+            }
         }
+        if (candidates.length === 0) break;
+        let mv = candidates[Math.floor(Math.random() * candidates.length)];
+        state[mv.to].push(state[mv.from].pop());
     }
 
-    for (let i = colors; i < totalTubes; i++) {
-        state[i] = [];
-    }
-
-    if (isBadLevel(state)) {
-        return generateLevel(colors, emptyTubes);
-    }
+    if (isSolved(state) || isBadLevel(state)) return generateLevel(colors, emptyTubes);
 
     return state;
 }
@@ -296,7 +250,6 @@ function loadLevel() {
 
     let config = getLevelConfig(level);
     tubes = generateLevel(config.colors, config.emptyTubes);
-
     initialTubes = JSON.stringify(tubes);
 
     render();
@@ -320,7 +273,6 @@ function render() {
             b.className = 'ball';
             b.style.backgroundColor = color;
             b.style.setProperty('--ball-color', color);
-            b.style.boxShadow = `inset -3px -3px 6px rgba(0,0,0,0.45), inset 2px 2px 5px rgba(255,255,255,0.2), 0 0 8px ${color}88`;
             div.appendChild(b);
         });
 
@@ -401,10 +353,7 @@ function nextLevel() {
 }
 
 function reset() {
-    if (!initialTubes) {
-        loadLevel();
-        return;
-    }
+    if (!initialTubes) { loadLevel(); return; }
     tubes = JSON.parse(initialTubes);
     selected = null;
     history = [];
@@ -463,10 +412,7 @@ function toggleOption(type) {
 }
 
 function spendCoins(amount) {
-    if (coins < amount) {
-        showCoinPopup();
-        return false;
-    }
+    if (coins < amount) { showCoinPopup(); return false; }
     coins -= amount;
     saveCoins();
     updateCoinsUI();
@@ -477,9 +423,7 @@ function findHintMove() {
     for (let from = 0; from < tubes.length; from++) {
         let f = tubes[from];
         if (f.length === 0) continue;
-
         let color = f[f.length - 1];
-
         for (let to = 0; to < tubes.length; to++) {
             if (from === to) continue;
             let t = tubes[to];
@@ -493,10 +437,7 @@ function findHintMove() {
 
 function useHint() {
     const hint = findHintMove();
-    if (!hint) {
-        showToast(LANGS[currentLang].noHint);
-        return;
-    }
+    if (!hint) { showToast(LANGS[currentLang].noHint); return; }
     if (!spendCoins(COSTS.hint)) return;
     hintUsed = true;
     hintFrom = hint.from;
