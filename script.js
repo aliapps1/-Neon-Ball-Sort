@@ -23,7 +23,6 @@ function updateCoinsUI() {
 
 const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff'];
 
-// ✅ FIX: emptyTubes: 2 برای لول ۲۲۱+ — با 1 لوله خالی deadlock میده
 function getLevelConfig(level) {
     if (level <= 5)        return { colors: 3, emptyTubes: 2 };
     else if (level <= 15)  return { colors: 4, emptyTubes: 2 };
@@ -40,12 +39,9 @@ function isSolved(state) {
 }
 
 function isBadLevel(state) {
-    // ❌ لوله کامل
     for (let t of state) {
         if (t.length === 4 && t.every(b => b === t[0])) return true;
     }
-
-    // ❌ خیلی ساده (بیشتر از ۱ لوله با ۲تایی یا بیشتر consecutive بالا)
     let easyCount = 0;
     for (let t of state) {
         if (t.length < 2) continue;
@@ -61,17 +57,16 @@ function isBadLevel(state) {
     return easyCount > 1;
 }
 
-// ✅ FIX: Reverse simulation با حرکت‌های معتبر بازی
-// از solved شروع میکنه → فقط حرکت معتبر میزنه → همیشه قابل حله
-function generateLevel(colors, emptyTubes = 2, attempt = 0) {
+function makeState(colors, emptyTubes) {
     let state = [];
     for (let i = 0; i < colors; i++)
         state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
     for (let i = 0; i < emptyTubes; i++) state.push([]);
+    return state;
+}
 
+function shuffleState(state, moves) {
     const total = state.length;
-    const moves = 400 + colors * 25;
-
     for (let m = 0; m < moves; m++) {
         let candidates = [];
         for (let from = 0; from < total; from++) {
@@ -89,16 +84,33 @@ function generateLevel(colors, emptyTubes = 2, attempt = 0) {
         let mv = candidates[Math.floor(Math.random() * candidates.length)];
         state[mv.to].push(state[mv.from].pop());
     }
+    return state;
+}
 
-    // بعد از 80 بار تلاش، فقط solved بودن رو چک کن
-    if (attempt > 80) {
-        if (isSolved(state)) return generateLevel(colors, emptyTubes, attempt + 1);
-        return state;
+// loop-based — بدون recursion، بدون stack overflow
+function generateLevel(colors, emptyTubes = 2) {
+    const moves = 400 + colors * 25;
+
+    // ۱۵۰ بار با شرط کیفی تلاش کن
+    for (let attempt = 0; attempt < 150; attempt++) {
+        let state = makeState(colors, emptyTubes);
+        shuffleState(state, moves);
+        if (!isSolved(state) && !isBadLevel(state)) return state;
     }
 
-    if (isSolved(state) || isBadLevel(state)) return generateLevel(colors, emptyTubes, attempt + 1);
+    // ۵۰ بار بدون شرط کیفی
+    for (let attempt = 0; attempt < 50; attempt++) {
+        let state = makeState(colors, emptyTubes);
+        shuffleState(state, moves);
+        if (!isSolved(state)) return state;
+    }
 
-    return state;
+    // fallback نهایی — هر چیزی که solved نیست
+    while (true) {
+        let state = makeState(colors, emptyTubes);
+        shuffleState(state, moves);
+        if (!isSolved(state)) return state;
+    }
 }
 
 const LANGS = {
