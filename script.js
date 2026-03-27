@@ -144,9 +144,6 @@ function generateLevel(colors, emptyTubes = 2) {
         return generateLevel(colors, emptyTubes); // دوباره بساز
     }
 
-    return state;
-}
-
     return generateLevelRelaxed(colors, emptyTubes);
 }
 
