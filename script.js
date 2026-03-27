@@ -31,7 +31,7 @@ function getLevelConfig(level) {
     else if (level <= 100) return { colors: 6, emptyTubes: 1 };
     else if (level <= 150) return { colors: 7, emptyTubes: 2 };
     else if (level <= 220) return { colors: 7, emptyTubes: 1 };
-    else                   return { colors: 8, emptyTubes: 1 };
+    else                   return { colors: 8, emptyTubes: 2 };
 }
 
 function isSolved(state) {
