@@ -28,68 +28,117 @@ function getLevelConfig(level) {
     else if (level <= 15)  return { colors: 4, emptyTubes: 2 };
     else if (level <= 30)  return { colors: 5, emptyTubes: 2 };
     else if (level <= 60)  return { colors: 6, emptyTubes: 2 };
-    else if (level <= 120) return { colors: 7, emptyTubes: 2 };
-    else                   return { colors: 8, emptyTubes: 2 };
+    else if (level <= 100) return { colors: 6, emptyTubes: 1 };
+    else if (level <= 150) return { colors: 7, emptyTubes: 2 };
+    else if (level <= 220) return { colors: 7, emptyTubes: 1 };
+    else                   return { colors: 8, emptyTubes: 1 };
 }
 
 function isSolved(state) {
     return state.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0])));
 }
 
-function isBadLevel(state) {
-    for (let t of state) {
-        if (t.length === 4 && t.every(b => b === t[0])) return true;
-    }
-    let easyCount = 0;
-    for (let t of state) {
+function countTopPairs(tubesState) {
+    let pairs = 0;
+    for (let t of tubesState) {
         if (t.length < 2) continue;
         let top = t[t.length - 1];
+        if (t[t.length - 2] === top) pairs++;
+    }
+    return pairs;
+}
+
+function hasEasyStack(tubesState) {
+    let pairsOnTop = 0;
+
+    for (let t of tubesState) {
+        if (t.length < 2) continue;
+
+        let top = t[t.length - 1];
         let streak = 1;
+
         for (let i = t.length - 2; i >= 0; i--) {
             if (t[i] === top) streak++;
             else break;
         }
+
         if (streak >= 3) return true;
-        if (streak === 2) easyCount++;
+        if (streak === 2) pairsOnTop++;
     }
-    return easyCount > 1;
+
+    return pairsOnTop > 1;
 }
 
-// Fisher-Yates + 2 empty tubes = همیشه قابل حله (اثبات ریاضی)
-function generateLevel(colors, emptyTubes = 2) {
-    for (let attempt = 0; attempt < 100; attempt++) {
-        // همه توپ‌ها رو جمع کن
-        let balls = [];
-        for (let i = 0; i < colors; i++)
-            for (let j = 0; j < 4; j++) balls.push(COLORS[i]);
+function countCompleteTubes(tubesState) {
+    return tubesState.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
+}
 
-        // Fisher-Yates shuffle کامل
-        for (let i = balls.length - 1; i > 0; i--) {
-            let j = Math.floor(Math.random() * (i + 1));
-            [balls[i], balls[j]] = [balls[j], balls[i]];
+function isBadLevel(state) {
+    let complete = 0;
+
+    for (let t of state) {
+        if (t.length === 4 && t.every(b => b === t[0])) {
+            complete++;
         }
-
-        // توزیع در لوله‌ها
-        let state = [];
-        for (let i = 0; i < colors; i++)
-            state.push(balls.slice(i * 4, i * 4 + 4));
-        for (let i = 0; i < emptyTubes; i++) state.push([]);
-
-        if (!isBadLevel(state)) return state;
     }
 
-    // fallback بدون شرط کیفی
+    // ❌ اگر حتی 1 لوله کامل باشد → رد
+    if (complete > 0) return true;
+
+    // ❌ اگر خیلی ساده باشد
+    let easy = 0;
+    for (let t of state) {
+        if (t.length >= 2) {
+            let top = t[t.length - 1];
+            let count = 1;
+            for (let i = t.length - 2; i >= 0; i--) {
+                if (t[i] === top) count++;
+                else break;
+            }
+            if (count >= 2) easy++;
+        }
+    }
+
+    return easy > 2;
+}
+
+
+function generateLevel(colors, emptyTubes = 2) {
     let balls = [];
-    for (let i = 0; i < colors; i++)
-        for (let j = 0; j < 4; j++) balls.push(COLORS[i]);
+
+    for (let i = 0; i < colors; i++) {
+        for (let j = 0; j < 4; j++) {
+            balls.push(COLORS[i]);
+        }
+    }
+
     for (let i = balls.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         [balls[i], balls[j]] = [balls[j], balls[i]];
     }
+
+    let totalTubes = colors + emptyTubes;
     let state = [];
-    for (let i = 0; i < colors; i++)
-        state.push(balls.slice(i * 4, i * 4 + 4));
-    for (let i = 0; i < emptyTubes; i++) state.push([]);
+
+    for (let i = 0; i < totalTubes; i++) {
+        state.push([]);
+    }
+
+    let index = 0;
+    for (let i = 0; i < colors; i++) {
+        for (let j = 0; j < 4; j++) {
+            state[i].push(balls[index++]);
+        }
+    }
+
+    for (let i = colors; i < totalTubes; i++) {
+        state[i] = [];
+    }
+
+    if (isBadLevel(state)) {
+        return generateLevel(colors, emptyTubes);
+    }
+
     return state;
 }
 
@@ -247,6 +296,7 @@ function loadLevel() {
 
     let config = getLevelConfig(level);
     tubes = generateLevel(config.colors, config.emptyTubes);
+
     initialTubes = JSON.stringify(tubes);
 
     render();
@@ -270,6 +320,7 @@ function render() {
             b.className = 'ball';
             b.style.backgroundColor = color;
             b.style.setProperty('--ball-color', color);
+            b.style.boxShadow = `inset -3px -3px 6px rgba(0,0,0,0.45), inset 2px 2px 5px rgba(255,255,255,0.2), 0 0 8px ${color}88`;
             div.appendChild(b);
         });
 
@@ -350,7 +401,10 @@ function nextLevel() {
 }
 
 function reset() {
-    if (!initialTubes) { loadLevel(); return; }
+    if (!initialTubes) {
+        loadLevel();
+        return;
+    }
     tubes = JSON.parse(initialTubes);
     selected = null;
     history = [];
@@ -409,7 +463,10 @@ function toggleOption(type) {
 }
 
 function spendCoins(amount) {
-    if (coins < amount) { showCoinPopup(); return false; }
+    if (coins < amount) {
+        showCoinPopup();
+        return false;
+    }
     coins -= amount;
     saveCoins();
     updateCoinsUI();
@@ -420,7 +477,9 @@ function findHintMove() {
     for (let from = 0; from < tubes.length; from++) {
         let f = tubes[from];
         if (f.length === 0) continue;
+
         let color = f[f.length - 1];
+
         for (let to = 0; to < tubes.length; to++) {
             if (from === to) continue;
             let t = tubes[to];
@@ -434,7 +493,10 @@ function findHintMove() {
 
 function useHint() {
     const hint = findHintMove();
-    if (!hint) { showToast(LANGS[currentLang].noHint); return; }
+    if (!hint) {
+        showToast(LANGS[currentLang].noHint);
+        return;
+    }
     if (!spendCoins(COSTS.hint)) return;
     hintUsed = true;
     hintFrom = hint.from;
@@ -489,4 +551,4 @@ async function shareGame() {
             showToast(LANGS[currentLang].copied);
         }
     } catch(e) {}
-            }
+}
