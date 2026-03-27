@@ -158,32 +158,48 @@ function generateLevelRelaxed(colors, emptyTubes = 2) {
 }
 
 function generateLevel(colors, emptyTubes = 2) {
-    const maxAttempts = 220;
+    let balls = [];
 
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-        let state = [];
-        for (let i = 0; i < colors; i++) {
-            state.push([COLORS[i], COLORS[i], COLORS[i], COLORS[i]]);
+    // ساخت توپ‌ها
+    for (let i = 0; i < colors; i++) {
+        for (let j = 0; j < 4; j++) {
+            balls.push(COLORS[i]);
         }
-        for (let i = 0; i < emptyTubes; i++) {
-            state.push([]);
-        }
-
-        const moves = 220 + colors * 25 + (2 - emptyTubes) * 35;
-
-        for (let m = 0; m < moves; m++) {
-            const candidates = getLegalReverseMoves(state);
-            if (!candidates.length) break;
-            const mv = candidates[Math.floor(Math.random() * candidates.length)];
-            applyMove(state, mv.from, mv.to);
-        }
-
-        if (isSolved(state)) continue;
-        if (countCompleteTubes(state) > 0) continue;
-        if (hasEasyStack(state)) continue;
-
-        return state;
     }
+
+    // شافل قوی (واقعی، نه نمایشی)
+    for (let i = balls.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [balls[i], balls[j]] = [balls[j], balls[i]];
+    }
+
+    let totalTubes = colors + emptyTubes;
+    let state = [];
+
+    for (let i = 0; i < totalTubes; i++) {
+        state.push([]);
+    }
+
+    // پخش توپ‌ها در لوله‌ها
+    let index = 0;
+    for (let i = 0; i < colors; i++) {
+        for (let j = 0; j < 4; j++) {
+            state[i].push(balls[index++]);
+        }
+    }
+
+    // خالی‌ها
+    for (let i = colors; i < totalTubes; i++) {
+        state[i] = [];
+    }
+
+    // 🔥 فیلتر کیفیت (خیلی مهم)
+    if (isBadLevel(state)) {
+        return generateLevel(colors, emptyTubes); // دوباره بساز
+    }
+
+    return state;
+}
 
     return generateLevelRelaxed(colors, emptyTubes);
 }
