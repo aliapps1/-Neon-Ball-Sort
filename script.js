@@ -488,8 +488,8 @@ function loadLevel() {
     skipUsed = false;
     addTubeUsed = false;
 
-    let config = getLevelConfig(level);
-    tubes = generateLevel(config.colors, config.emptyTubes);
+    let config = getLevelConfigPro(level);
+tubes = generateLevelPro(config.colors, config.emptyTubes, config.reverseMoves);
 
     initialTubes = JSON.stringify(tubes);
 
