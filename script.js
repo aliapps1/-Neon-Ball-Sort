@@ -312,6 +312,7 @@ function render() {
         if (selected === i) classes.push('active');
         if (hintFrom === i) classes.push('hint-from');
         if (hintTo === i) classes.push('hint-to');
+        if (t.length === 4 && t.every(b => b === t[0])) classes.push('complete');
         div.className = classes.join(' ');
         div.onclick = () => tap(i);
 
