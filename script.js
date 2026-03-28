@@ -7,6 +7,7 @@ let undoUsed = false;
 let hintUsed = false;
 let skipUsed = false;
 let addTubeUsed = false;
+let addTubeCount = 0;
 let hintFrom = null, hintTo = null;
 let initialTubes = null;
 
@@ -23,14 +24,13 @@ function updateCoinsUI() {
 
 const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff'];
 
+// ✅ همیشه emptyTubes: 2 — با 1 لوله خالی deadlock میده
 function getLevelConfig(level) {
     if (level <= 5)        return { colors: 3, emptyTubes: 2 };
     else if (level <= 15)  return { colors: 4, emptyTubes: 2 };
     else if (level <= 30)  return { colors: 5, emptyTubes: 2 };
     else if (level <= 60)  return { colors: 6, emptyTubes: 2 };
-    else if (level <= 100) return { colors: 6, emptyTubes: 1 };
-    else if (level <= 150) return { colors: 7, emptyTubes: 2 };
-    else if (level <= 220) return { colors: 7, emptyTubes: 1 };
+    else if (level <= 120) return { colors: 7, emptyTubes: 2 };
     else                   return { colors: 8, emptyTubes: 2 };
 }
 
@@ -74,18 +74,10 @@ function countCompleteTubes(tubesState) {
 }
 
 function isBadLevel(state) {
-    let complete = 0;
-
     for (let t of state) {
-        if (t.length === 4 && t.every(b => b === t[0])) {
-            complete++;
-        }
+        if (t.length === 4 && t.every(b => b === t[0])) return true;
     }
 
-    // ❌ اگر حتی 1 لوله کامل باشد → رد
-    if (complete > 0) return true;
-
-    // ❌ اگر خیلی ساده باشد
     let easy = 0;
     for (let t of state) {
         if (t.length >= 2) {
@@ -102,43 +94,39 @@ function isBadLevel(state) {
     return easy > 2;
 }
 
-
+// ✅ loop-based — بدون recursion، بدون stack overflow
 function generateLevel(colors, emptyTubes = 2) {
-    let balls = [];
+    // ۱۰۰ بار با شرط کیفی
+    for (let attempt = 0; attempt < 100; attempt++) {
+        let balls = [];
+        for (let i = 0; i < colors; i++)
+            for (let j = 0; j < 4; j++) balls.push(COLORS[i]);
 
-    for (let i = 0; i < colors; i++) {
-        for (let j = 0; j < 4; j++) {
-            balls.push(COLORS[i]);
+        for (let i = balls.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [balls[i], balls[j]] = [balls[j], balls[i]];
         }
+
+        let state = [];
+        for (let i = 0; i < colors; i++)
+            state.push(balls.slice(i * 4, i * 4 + 4));
+        for (let i = 0; i < emptyTubes; i++) state.push([]);
+
+        if (!isBadLevel(state)) return state;
     }
 
+    // fallback — بدون شرط کیفی
+    let balls = [];
+    for (let i = 0; i < colors; i++)
+        for (let j = 0; j < 4; j++) balls.push(COLORS[i]);
     for (let i = balls.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         [balls[i], balls[j]] = [balls[j], balls[i]];
     }
-
-    let totalTubes = colors + emptyTubes;
     let state = [];
-
-    for (let i = 0; i < totalTubes; i++) {
-        state.push([]);
-    }
-
-    let index = 0;
-    for (let i = 0; i < colors; i++) {
-        for (let j = 0; j < 4; j++) {
-            state[i].push(balls[index++]);
-        }
-    }
-
-    for (let i = colors; i < totalTubes; i++) {
-        state[i] = [];
-    }
-
-    if (isBadLevel(state)) {
-        return generateLevel(colors, emptyTubes);
-    }
-
+    for (let i = 0; i < colors; i++)
+        state.push(balls.slice(i * 4, i * 4 + 4));
+    for (let i = 0; i < emptyTubes; i++) state.push([]);
     return state;
 }
 
@@ -293,6 +281,7 @@ function loadLevel() {
     hintUsed = false;
     skipUsed = false;
     addTubeUsed = false;
+    addTubeCount = 0;
 
     let config = getLevelConfig(level);
     tubes = generateLevel(config.colors, config.emptyTubes);
@@ -312,7 +301,6 @@ function render() {
         if (selected === i) classes.push('active');
         if (hintFrom === i) classes.push('hint-from');
         if (hintTo === i) classes.push('hint-to');
-        if (t.length === 4 && t.every(b => b === t[0])) classes.push('complete');
         div.className = classes.join(' ');
         div.onclick = () => tap(i);
 
@@ -415,6 +403,7 @@ function reset() {
     hintUsed = false;
     skipUsed = false;
     addTubeUsed = false;
+    addTubeCount = 0;
     startTime = Date.now();
     closeCoinPopup();
     render();
@@ -432,8 +421,10 @@ function undo() {
 
 function addTube() {
     if (tubes.length >= 12) return;
-    if (!spendCoins(COSTS.addTube)) return;
+    let cost = COSTS.addTube * (addTubeCount + 1);
+    if (!spendCoins(cost)) return;
     addTubeUsed = true;
+    addTubeCount++;
     tubes.push([]);
     render();
 }
@@ -552,4 +543,4 @@ async function shareGame() {
             showToast(LANGS[currentLang].copied);
         }
     } catch(e) {}
-}
+        }
