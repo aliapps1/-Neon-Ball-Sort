@@ -2,7 +2,7 @@
   "name": "Neon Ball Sort Pro",
   "short_name": "Neon Sort",
   "description": "Sort the colored balls into tubes!",
-  "start_url": "/",
+  "start_url": "/-Neon-Ball-Sort/",
   "display": "standalone",
   "background_color": "#090c10",
   "theme_color": "#090c10",
