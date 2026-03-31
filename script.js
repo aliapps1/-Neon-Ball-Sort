@@ -22,7 +22,7 @@ function updateCoinsUI() {
     if (el) el.innerText = coins;
 }
 
-const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff'];
+const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff','#ff6b6b','#00d4aa'];
 
 // ✅ همیشه emptyTubes: 2 — با 1 لوله خالی deadlock میده
 function getLevelConfig(level) {
