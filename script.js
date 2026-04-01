@@ -22,7 +22,7 @@ function updateCoinsUI() {
     if (el) el.innerText = coins;
 }
 
-const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff','#ff6b6b','#00d4aa'];
+const COLORS = ['#ff0055','#00f2fe','#4facfe','#fadb14','#70e000','#9b59b6','#ff8c00','#ffffff'];
 
 // ✅ همیشه emptyTubes: 2 — با 1 لوله خالی deadlock میده
 function getLevelConfig(level) {
@@ -30,10 +30,8 @@ function getLevelConfig(level) {
     else if (level <= 15)  return { colors: 4, emptyTubes: 2 };
     else if (level <= 30)  return { colors: 5, emptyTubes: 2 };
     else if (level <= 60)  return { colors: 6, emptyTubes: 2 };
-    else if (level <= 100) return { colors: 7, emptyTubes: 2 };
-    else if (level <= 150) return { colors: 8, emptyTubes: 2 };
-    else if (level <= 220) return { colors: 9, emptyTubes: 2 };
-    else                   return { colors: 10, emptyTubes: 2 };
+    else if (level <= 120) return { colors: 7, emptyTubes: 2 };
+    else                   return { colors: 8, emptyTubes: 2 };
 }
 
 function isSolved(state) {
@@ -361,6 +359,53 @@ function moveLogic(from, to) {
     return false;
 }
 
+function launchConfetti() {
+    const canvas = document.createElement('canvas');
+    canvas.id = 'confetti-canvas';
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+    document.body.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#ff0055','#00f2fe','#fadb14','#70e000','#9b59b6','#ff8c00','#4facfe','#ff6b6b','#00d4aa'];
+    const particles = [];
+
+    for (let i = 0; i < 120; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: -20,
+            r: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vx: (Math.random() - 0.5) * 6,
+            vy: Math.random() * 4 + 2,
+            alpha: 1,
+            spin: Math.random() * 0.2 - 0.1
+        });
+    }
+
+    let frame = 0;
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.1;
+            p.alpha -= 0.012;
+            ctx.globalAlpha = Math.max(0, p.alpha);
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        frame++;
+        if (frame < 120) requestAnimationFrame(draw);
+        else { canvas.remove(); }
+    }
+    draw();
+}
+
 function handleWin() {
     coins += COSTS.win;
 
@@ -381,6 +426,8 @@ function handleWin() {
     setTimeout(() => {
         document.getElementById('win-overlay').style.display = 'flex';
         playSnd(800, 0.3);
+        launchConfetti();
+        if (vibrateEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
     }, 400);
 }
 
@@ -545,4 +592,4 @@ async function shareGame() {
             showToast(LANGS[currentLang].copied);
         }
     } catch(e) {}
-        }
+}
