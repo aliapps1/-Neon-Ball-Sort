@@ -6,6 +6,7 @@ function playWinSound() {
     winSound.currentTime = 0;
     winSound.play().catch(() => {});
 }
+
 let startTime = 0;
 let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
 let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
