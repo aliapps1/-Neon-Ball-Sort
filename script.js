@@ -10,6 +10,19 @@ let addTubeUsed = false;
 let addTubeCount = 0;
 let hintFrom = null, hintTo = null;
 let initialTubes = null;
+let winSound = null;
+
+function playWinSound() {
+    if (!soundEnabled) return;
+    try {
+        if (!winSound) {
+            winSound = new Audio("win_effect.mp3");
+            winSound.volume = 0.6;
+        }
+        winSound.currentTime = 0;
+        winSound.play().catch(() => {});
+    } catch (e) {}
+}
 
 const COSTS = {
     undo: 5, hint: 8, addTube: 15, skip: 25,
@@ -427,7 +440,7 @@ function handleWin() {
 
     setTimeout(() => {
         document.getElementById('win-overlay').style.display = 'flex';
-        playSnd(800, 0.3);
+        playwinSound();
         launchConfetti();
         if (vibrateEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
     }, 400);
