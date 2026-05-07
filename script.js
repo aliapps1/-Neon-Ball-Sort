@@ -1,3 +1,11 @@
+const winSound = new Audio("win_effect.mp3");
+winSound.volume = 0.6;
+
+function playWinSound() {
+    if (!soundEnabled) return;
+    winSound.currentTime = 0;
+    winSound.play().catch(() => {});
+}
 let startTime = 0;
 let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
 let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
@@ -436,7 +444,7 @@ updateCoinsUI();
 
 setTimeout(() => {  
     document.getElementById('win-overlay').style.display = 'flex';  
-    playSnd(800, 0.3);  
+    playwinSound();  
     launchConfetti();  
     if (vibrateEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);  
 }, 400);
