@@ -445,7 +445,8 @@ updateCoinsUI();
 
 setTimeout(() => {  
     document.getElementById('win-overlay').style.display = 'flex';  
-    playwinSound();  
+alert("WIN SOUND TEST");
+playWinSound();  
     launchConfetti();  
     if (vibrateEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);  
 }, 400);
