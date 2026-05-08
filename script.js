@@ -440,7 +440,8 @@ function handleWin() {
 
     setTimeout(() => {
         document.getElementById('win-overlay').style.display = 'flex';
-        ptubWinSound();
+        playWinSound();
+
         launchConfetti();
         if (vibrateEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
     }, 400);
