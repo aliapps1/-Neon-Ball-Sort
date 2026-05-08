@@ -195,8 +195,10 @@ function getRank(lvl) {
 
 function updateStartRank() {
     setText('txt-start-level', getRank(level));
-    setText('start-level', `${LANGS[currentLang].level} ${level}`);
+    // به جای نمایش level، عدد اصلاح شده را نمایش بده
+    setText('start-level', `${LANGS[currentLang].level} ${level - 69}`);
 }
+
 
 function changeLang(lang) {
     currentLang = lang;
