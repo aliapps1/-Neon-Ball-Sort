@@ -250,8 +250,12 @@ function showToast(msg, duration = 1800) {
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
-    level = parseInt(localStorage.getItem('neon_lvl')) || 70;
+    // تغییر عدد 1 به 70 برای شروع از چالش‌های سخت‌تر
+    level = parseInt(localStorage.getItem('neon_lvl')) || 70; 
+    
     soundEnabled = localStorage.getItem('neon_snd') !== 'false';
+    // بقیه کدها دقیقاً مثل قبل بماند...
+
     vibrateEnabled = localStorage.getItem('neon_vib') !== 'false';
     currentLang = localStorage.getItem('neon_lang') || 'en';
 
