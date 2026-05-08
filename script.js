@@ -250,7 +250,7 @@ function showToast(msg, duration = 1800) {
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
-    level = parseInt(localStorage.getItem('neon_lvl')) || 1;
+    level = parseInt(localStorage.getItem('neon_lvl')) || 70;
     soundEnabled = localStorage.getItem('neon_snd') !== 'false';
     vibrateEnabled = localStorage.getItem('neon_vib') !== 'false';
     currentLang = localStorage.getItem('neon_lang') || 'en';
@@ -275,7 +275,7 @@ function startGame() {
 }
 
 function loadLevel() {
-    setText('level-num', level);
+    setText('level-num', level - 69);
     startTime = Date.now();
 
     document.getElementById('win-overlay').style.display = 'none';
