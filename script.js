@@ -573,12 +573,30 @@ function useHint() {
 }
 
 function watchCoinsReward() {
+    let btn = document.getElementById('txt-free-coins');
+    // اگر دکمه قبلاً زده شده و در حال استراحت است، کاری انجام نده
+    if (btn && (btn.style.opacity === '0.5' || btn.style.pointerEvents === 'none')) return;
+
     coins += COSTS.freeCoins;
     saveCoins();
     updateCoinsUI();
-    closeCoinPopup();
+    
+    // غیرفعال کردن موقت دکمه برای جلوگیری از سوءاستفاده
+    if (btn) {
+        btn.style.opacity = '0.5';
+        btn.style.pointerEvents = 'none';
+        
+        // بعد از ۶۰ ثانیه دکمه دوباره فعال می‌شود
+        setTimeout(() => {
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        }, 60000); 
+    }
+
     showToast(LANGS[currentLang].freeCoinsToast);
+    closeCoinPopup();
 }
+
 
 function watchAdReward() {
     if (rewardUsed) return;
