@@ -27,15 +27,18 @@ body {
 }
 
 body[dir="rtl"] { direction: rtl; }
-
 .game-container {
     width: 100%;
     max-width: 450px;
-    height: 100dvh;
+    /* این دو خط را جایگزین ارتفاع قبلی کن */
+    height: 100vh; 
+    height: 100dvh; 
     position: relative;
     display: flex;
     flex-direction: column;
 }
+
+
 
 /* ── TOP BAR ── */
 .top-bar {
