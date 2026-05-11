@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Exo+2:wght@400;700&display=swap');
+/* خط اول که لینک گوگل بود را پاک کردیم */
 
 :root {
     --bg: #090c10;
@@ -6,9 +6,11 @@
     --accent: #00f2fe;
     --btn-bg: #21262d;
     --win-color: #2ea043;
-    --font-display: 'Orbitron', sans-serif;
-    --font-body: 'Exo 2', sans-serif;
+    /* اینجا فونت‌های سیستم را جایگزین کردیم تا آفلاین کار کند */
+    --font-display: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-body: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
+
 
 * { box-sizing: border-box; }
 
