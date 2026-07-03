@@ -491,7 +491,7 @@ function undo() {
 }
 
 function addTube() {
-    if (tubes.length >= 12) return;
+    if (tubes.length >= 14) return;
     let cost = COSTS.addTube * (addTubeCount + 1);
     if (!spendCoins(cost)) return;
     addTubeUsed = true;
