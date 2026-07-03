@@ -50,9 +50,10 @@ function getLevelConfig(level) {
     else if (level <= 100) return { colors: 7, emptyTubes: 2 };
     else if (level <= 150) return { colors: 8, emptyTubes: 2 };
     else if (level <= 220) return { colors: 9, emptyTubes: 2 };
-else if (level <= 320) return { colors: 10, emptyTubes: 2 };
-else if (level <= 450) return { colors: 11, emptyTubes: 2 };
-else return { colors: 12, emptyTubes: 2 };
+    else if (level <= 320) return { colors: 10, emptyTubes: 2 };
+    else if (level <= 450) return { colors: 11, emptyTubes: 2 };
+    else return { colors: 12, emptyTubes: 2 };
+}
 
 function isSolved(state) {
     return state.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0])));
