@@ -54,17 +54,24 @@ const COLORS = [
 
 // ✅ همیشه emptyTubes: 2 — با 1 لوله خالی deadlock میده
 function getLevelConfig(level) {
-    if (level <= 5) return { colors: 3, emptyTubes: 2 };
-    else if (level <= 15) return { colors: 4, emptyTubes: 2 };
-    else if (level <= 30) return { colors: 5, emptyTubes: 2 };
-    else if (level <= 60) return { colors: 6, emptyTubes: 2 };
-    else if (level <= 100) return { colors: 7, emptyTubes: 2 };
-    else if (level <= 150) return { colors: 8, emptyTubes: 2 };
-    else if (level <= 220) return { colors: 9, emptyTubes: 2 };
-    else if (level <= 320) return { colors: 10, emptyTubes: 2 };
-    else if (level <= 450) return { colors: 11, emptyTubes: 2 };
 
-    return { colors: 12, emptyTubes: 2 };
+    if (level <= 20)
+        return { colors: 7, emptyTubes: 2 };
+
+    else if (level <= 50)
+        return { colors: 8, emptyTubes: 2 };
+
+    else if (level <= 100)
+        return { colors: 9, emptyTubes: 2 };
+
+    else if (level <= 200)
+        return { colors: 10, emptyTubes: 2 };
+
+    else if (level <= 400)
+        return { colors: 11, emptyTubes: 2 };
+
+    else
+        return { colors: 12, emptyTubes: 2 };
 }
 
 function isSolved(state) {
