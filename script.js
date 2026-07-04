@@ -47,31 +47,28 @@ function updateCoinsUI() {
 }
 
 const COLORS = [
-    '#ff0055', '#00f2fe', '#4facfe', '#fadb14',
-    '#70e000', '#9b59b6', '#ff8c00', '#ffffff',
-    '#ff6b6b', '#00d4aa', '#ff3df2', '#b6ff00'
+    '#ff4d7a', // 1
+    '#00f2fe', // 2
+    '#4facfe', // 3
+    '#fff04a', // 4
+    '#70e000', // 5
+    '#9b59b6', // 6
+    '#ff8c00', // 7
+    '#ffffff', // 8
+    '#e6004c', // 9
+    '#009688', // 10
+    '#b6ff00', // 11
+    '#ffd700'  // 12 (Gold)
 ];
 
 // ✅ همیشه emptyTubes: 2 — با 1 لوله خالی deadlock میده
 function getLevelConfig(level) {
-
-    if (level <= 20)
-        return { colors: 7, emptyTubes: 2 };
-
-    else if (level <= 50)
-        return { colors: 8, emptyTubes: 2 };
-
-    else if (level <= 100)
-        return { colors: 9, emptyTubes: 2 };
-
-    else if (level <= 200)
-        return { colors: 10, emptyTubes: 2 };
-
-    else if (level <= 400)
-        return { colors: 11, emptyTubes: 2 };
-
-    else
-        return { colors: 12, emptyTubes: 2 };
+    if (level <= 5)        return { colors: 7, emptyTubes: 2 };
+    else if (level <= 30)  return { colors: 8, emptyTubes: 2 };
+    else if (level <= 80)  return { colors: 9, emptyTubes: 2 };
+    else if (level <= 150) return { colors: 10, emptyTubes: 2 };
+    else if (level <= 300) return { colors: 11, emptyTubes: 2 };
+    else                   return { colors: 12, emptyTubes: 2 };
 }
 
 function isSolved(state) {
