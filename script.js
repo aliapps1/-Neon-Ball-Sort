@@ -221,9 +221,8 @@ function getRank(lvl) {
 function updateStartRank() {
     setText('txt-start-level', getRank(level));
     // به جای نمایش level، عدد اصلاح شده را نمایش بده
-    setText('start-level', `${LANGS[currentLang].level} ${level - 69}`);
+    setText('start-level', `${LANGS[currentLang].level} ${level}`);
 }
-
 
 function changeLang(lang) {
     currentLang = lang;
@@ -277,8 +276,8 @@ function showToast(msg, duration = 1800) {
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
-    // تغییر عدد 1 به 70 برای شروع از چالش‌های سخت‌تر
-    level = parseInt(localStorage.getItem('neon_lvl')) || 70; 
+
+    level = parseInt(localStorage.getItem('neon_lvl')) || 1; 
     
     soundEnabled = localStorage.getItem('neon_snd') !== 'false';
     // بقیه کدها دقیقاً مثل قبل بماند...
@@ -306,7 +305,7 @@ function startGame() {
 }
 
 function loadLevel() {
-    setText('level-num', level - 69);
+    setText('level-num', level);
     startTime = Date.now();
 
     document.getElementById('win-overlay').style.display = 'none';
