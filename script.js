@@ -334,32 +334,61 @@ function loadLevel() {
 }
 
 function render() {
+
     let board = document.getElementById('board');
     board.innerHTML = '';
 
+    const ballStyles = {
+        '#ff4d7a':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ff8cb2,#ff4d7a,#8a0038)',
+        '#00f2fe':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#7fffff,#00f2fe,#00838f)',
+        '#4facfe':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#8fd3ff,#4facfe,#0047ab)',
+        '#fff04a':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#fff9a8,#fff04a,#d4a600)',
+        '#70e000':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#b7ff7a,#70e000,#228b22)',
+        '#9b59b6':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#d0a8ff,#9b59b6,#5a189a)',
+        '#ff8c00':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffc266,#ff8c00,#b35a00)',
+        '#ffffff':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffffff,#e8e8e8,#bdbdbd)',
+        '#e6004c':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ff4d6d,#e6004c,#7a0028)',
+        '#009688':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#5df2dd,#009688,#005b52)',
+        '#b6ff00':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#e6ff8c,#b6ff00,#6f9d00)',
+        '#ffd700':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#fff6b3,#ffd700,#c49000)'
+    };
+
     tubes.forEach((t, i) => {
+
         let div = document.createElement('div');
+
         let classes = ['tube'];
+
         if (selected === i) classes.push('active');
         if (hintFrom === i) classes.push('hint-from');
         if (hintTo === i) classes.push('hint-to');
+
         div.className = classes.join(' ');
         div.onclick = () => tap(i);
 
         t.forEach(color => {
+
             let b = document.createElement('div');
             b.className = 'ball';
-            b.style.backgroundColor = color;
-            b.style.setProperty('--ball-color', color);
-            b.style.boxShadow = `inset -3px -3px 6px rgba(0,0,0,0.45), inset 2px 2px 5px rgba(255,255,255,0.2), 0 0 8px ${color}88`;
+
+            b.style.background = ballStyles[color] || color;
+
+            b.style.boxShadow =
+                `inset -3px -3px 6px rgba(0,0,0,.45),
+                 inset 2px 2px 5px rgba(255,255,255,.30),
+                 0 0 10px ${color}`;
+
             div.appendChild(b);
+
         });
 
         board.appendChild(div);
+
     });
 
     setText('undo-count', history.length);
     updateCoinsUI();
+
 }
 
 function tap(i) {
