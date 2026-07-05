@@ -1,4 +1,3 @@
-
 let startTime = 0;
 let level = 1, tubes = [], selected = null, history = [], audioCtx = null;
 let soundEnabled = true, vibrateEnabled = true, currentLang = 'en';
@@ -15,13 +14,11 @@ let winSound = null;
 
 function playWinSound() {
     if (!soundEnabled) return;
-
     try {
         if (!winSound) {
             winSound = new Audio("win_effect.mp3");
             winSound.volume = 0.6;
         }
-
         winSound.currentTime = 0;
         winSound.play().catch(() => {});
     } catch (e) {}
@@ -46,6 +43,7 @@ function updateCoinsUI() {
     if (el) el.innerText = coins;
 }
 
+// ۱۲ رنگ نئونی فیکس شده و هماهنگ با سی‌اس‌اس
 const COLORS = [
     '#ff4d7a', // 1
     '#00f2fe', // 2
@@ -61,12 +59,13 @@ const COLORS = [
     '#ffd700'  // 12 (Gold)
 ];
 
-// ✅ همیشه emptyTubes: 2 — با 1 لوله خالی deadlock میده
+// تنظیمات لول‌ها هماهنگ با ۱۲ رنگ و ۲ لوله خالی فیکس
 function getLevelConfig(level) {
-    if (level <= 5)        return { colors: 7, emptyTubes: 2 };
-    else if (level <= 30)  return { colors: 8, emptyTubes: 2 };
-    else if (level <= 80)  return { colors: 9, emptyTubes: 2 };
-    else if (level <= 150) return { colors: 10, emptyTubes: 2 };
+    if (level <= 5)        return { colors: 4, emptyTubes: 2 }; // برای شروع ساده‌تر، لول‌های اول را با رنگ کمتر شروع می‌کنیم
+    else if (level <= 20)  return { colors: 6, emptyTubes: 2 };
+    else if (level <= 50)  return { colors: 8, emptyTubes: 2 };
+    else if (level <= 100) return { colors: 9, emptyTubes: 2 };
+    else if (level <= 200) return { colors: 10, emptyTubes: 2 };
     else if (level <= 300) return { colors: 11, emptyTubes: 2 };
     else                   return { colors: 12, emptyTubes: 2 };
 }
@@ -75,46 +74,10 @@ function isSolved(state) {
     return state.every(t => t.length === 0 || (t.length === 4 && t.every(b => b === t[0])));
 }
 
-function countTopPairs(tubesState) {
-    let pairs = 0;
-    for (let t of tubesState) {
-        if (t.length < 2) continue;
-        let top = t[t.length - 1];
-        if (t[t.length - 2] === top) pairs++;
-    }
-    return pairs;
-}
-
-function hasEasyStack(tubesState) {
-    let pairsOnTop = 0;
-
-    for (let t of tubesState) {
-        if (t.length < 2) continue;
-
-        let top = t[t.length - 1];
-        let streak = 1;
-
-        for (let i = t.length - 2; i >= 0; i--) {
-            if (t[i] === top) streak++;
-            else break;
-        }
-
-        if (streak >= 3) return true;
-        if (streak === 2) pairsOnTop++;
-    }
-
-    return pairsOnTop > 1;
-}
-
-function countCompleteTubes(tubesState) {
-    return tubesState.filter(t => t.length === 4 && t.every(b => b === t[0])).length;
-}
-
 function isBadLevel(state) {
     for (let t of state) {
         if (t.length === 4 && t.every(b => b === t[0])) return true;
     }
-
     let easy = 0;
     for (let t of state) {
         if (t.length >= 2) {
@@ -127,17 +90,16 @@ function isBadLevel(state) {
             if (count >= 2) easy++;
         }
     }
-
     return easy > 2;
 }
 
-// ✅ loop-based — بدون recursion، بدون stack overflow
+// ساخت لول بهینه و بدون باگ برای تعداد رنگ‌های بالا
 function generateLevel(colors, emptyTubes = 2) {
-    // ۱۰۰ بار با شرط کیفی
     for (let attempt = 0; attempt < 100; attempt++) {
         let balls = [];
-        for (let i = 0; i < colors; i++)
+        for (let i = 0; i < colors; i++) {
             for (let j = 0; j < 4; j++) balls.push(COLORS[i]);
+        }
 
         for (let i = balls.length - 1; i > 0; i--) {
             let j = Math.floor(Math.random() * (i + 1));
@@ -145,24 +107,27 @@ function generateLevel(colors, emptyTubes = 2) {
         }
 
         let state = [];
-        for (let i = 0; i < colors; i++)
+        for (let i = 0; i < colors; i++) {
             state.push(balls.slice(i * 4, i * 4 + 4));
+        }
         for (let i = 0; i < emptyTubes; i++) state.push([]);
 
         if (!isBadLevel(state)) return state;
     }
 
-    // fallback — بدون شرط کیفی
+    // Fallback
     let balls = [];
-    for (let i = 0; i < colors; i++)
+    for (let i = 0; i < colors; i++) {
         for (let j = 0; j < 4; j++) balls.push(COLORS[i]);
+    }
     for (let i = balls.length - 1; i > 0; i--) {
         let j = Math.floor(Math.random() * (i + 1));
         [balls[i], balls[j]] = [balls[j], balls[i]];
     }
     let state = [];
-    for (let i = 0; i < colors; i++)
+    for (let i = 0; i < colors; i++) {
         state.push(balls.slice(i * 4, i * 4 + 4));
+    }
     for (let i = 0; i < emptyTubes; i++) state.push([]);
     return state;
 }
@@ -190,7 +155,7 @@ const LANGS = {
         level:"مرحله", settings:"تنظیمات", sound:"صدا", vibrate:"لرزش",
         contact:"تماس با ما", share:"اشتراک‌گذاری", next:"بعدی", win:"عالی",
         reward:"+10 سکه", doubleReward:"🎥 دوبرابر جایزه",
-        freeCoins:"🎥 دریافت سکه", hintBtn:"💡 راهنما", skip:"⏭️ رد کردن",
+        freeCoins:"🎥 دریافت سکه", hintBtn:"💡 راهنما", skip:"رد کردن",
         noCoins:"سکه کافی نداری", noHint:"راهنمایی پیدا نشد",
         perfect:"🔥 بی‌نقص! +20", speedBonus:"⚡ جایزه سرعت! +15",
         freeCoinsToast:"+5 سکه 💰", doubleRewardToast:"+20 سکه 💰", copied:"لینک کپی شد!"
@@ -217,7 +182,6 @@ function getRank(lvl) {
 
 function updateStartRank() {
     setText('txt-start-level', getRank(level));
-    // به جای نمایش level، عدد اصلاح شده را نمایش بده
     setText('start-level', `${LANGS[currentLang].level} ${level}`);
 }
 
@@ -273,12 +237,8 @@ function showToast(msg, duration = 1800) {
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
-
     level = parseInt(localStorage.getItem('neon_lvl')) || 1; 
-    
     soundEnabled = localStorage.getItem('neon_snd') !== 'false';
-    // بقیه کدها دقیقاً مثل قبل بماند...
-
     vibrateEnabled = localStorage.getItem('neon_vib') !== 'false';
     currentLang = localStorage.getItem('neon_lang') || 'en';
 
@@ -327,14 +287,12 @@ function loadLevel() {
 
     let config = getLevelConfig(level);
     tubes = generateLevel(config.colors, config.emptyTubes);
-
     initialTubes = JSON.stringify(tubes);
 
     render();
 }
 
 function render() {
-
     let board = document.getElementById('board');
     board.innerHTML = '';
 
@@ -354,46 +312,35 @@ function render() {
     };
 
     tubes.forEach((t, i) => {
-
         let div = document.createElement('div');
-
         let classes = ['tube'];
 
         if (selected === i) classes.push('active');
         if (hintFrom === i) classes.push('hint-from');
         if (hintTo === i) classes.push('hint-to');
+        if (t.length === 4 && t.every(b => b === t[0])) classes.push('complete');
 
         div.className = classes.join(' ');
         div.onclick = () => tap(i);
 
         t.forEach(color => {
-
             let b = document.createElement('div');
             b.className = 'ball';
-
             b.style.background = ballStyles[color] || color;
-
-            b.style.boxShadow =
-                `inset -3px -3px 6px rgba(0,0,0,.45),
-                 inset 2px 2px 5px rgba(255,255,255,.30),
-                 0 0 10px ${color}`;
-
+            b.style.boxShadow = `inset -3px -3px 6px rgba(0,0,0,.45), inset 2px 2px 5px rgba(255,255,255,.30), 0 0 10px ${color}`;
             div.appendChild(b);
-
         });
 
         board.appendChild(div);
-
     });
 
     setText('undo-count', history.length);
     updateCoinsUI();
-
 }
 
 function tap(i) {
     if (selected === null) {
-        if (tubes[i].length > 0) {
+        if (tubes[i].length > 0 && !isTubeComplete(tubes[i])) {
             selected = i;
             playSnd(400, 0.05);
         }
@@ -402,6 +349,10 @@ function tap(i) {
         selected = null;
     }
     render();
+}
+
+function isTubeComplete(tube) {
+    return tube.length === 4 && tube.every(b => b === tube[0]);
 }
 
 function moveLogic(from, to) {
@@ -426,7 +377,6 @@ function moveLogic(from, to) {
         if (isSolved(tubes)) handleWin();
         return true;
     }
-
     return false;
 }
 
@@ -497,7 +447,6 @@ function handleWin() {
     setTimeout(() => {
         document.getElementById('win-overlay').style.display = 'flex';
         playWinSound();
-
         launchConfetti();
         if (vibrateEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
     }, 400);
@@ -589,7 +538,7 @@ function spendCoins(amount) {
 function findHintMove() {
     for (let from = 0; from < tubes.length; from++) {
         let f = tubes[from];
-        if (f.length === 0) continue;
+        if (f.length === 0 || isTubeComplete(f)) continue;
 
         let color = f[f.length - 1];
 
@@ -624,19 +573,15 @@ function useHint() {
 
 function watchCoinsReward() {
     let btn = document.getElementById('txt-free-coins');
-    // اگر دکمه قبلاً زده شده و در حال استراحت است، کاری انجام نده
     if (btn && (btn.style.opacity === '0.5' || btn.style.pointerEvents === 'none')) return;
 
     coins += COSTS.freeCoins;
     saveCoins();
     updateCoinsUI();
     
-    // غیرفعال کردن موقت دکمه برای جلوگیری از سوءاستفاده
     if (btn) {
         btn.style.opacity = '0.5';
         btn.style.pointerEvents = 'none';
-        
-        // بعد از ۶۰ ثانیه دکمه دوباره فعال می‌شود
         setTimeout(() => {
             btn.style.opacity = '1';
             btn.style.pointerEvents = 'auto';
@@ -646,7 +591,6 @@ function watchCoinsReward() {
     showToast(LANGS[currentLang].freeCoinsToast);
     closeCoinPopup();
 }
-
 
 function watchAdReward() {
     if (rewardUsed) return;
