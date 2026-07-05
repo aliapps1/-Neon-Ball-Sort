@@ -45,19 +45,20 @@ function updateCoinsUI() {
 
 // ۱۲ رنگ نئونی فیکس شده و هماهنگ با سی‌اس‌اس
 const COLORS = [
-    '#ff4d7a', // 1
-    '#00f2fe', // 2
-    '#4facfe', // 3
-    '#fff04a', // 4
-    '#70e000', // 5
-    '#9b59b6', // 6
-    '#ff8c00', // 7
-    '#ffffff', // 8
-    '#e6004c', // 9
-    '#009688', // 10
-    '#b6ff00', // 11
-    '#ffd700'  // 12 (Gold)
+    '#ffb3c6', // 1. صورتی روشن نئونی (Light Pink) - اصلاح شد
+    '#00f2fe', // 2. سایان/آبی نئون (Cyan)
+    '#fff000', // 3. زرد فسفری (Neon Yellow)
+    '#70e000', // 4. سبز چمنی روشن (Lime Green)
+    '#9b59b6', // 5. بنفش ارغوانی (Purple)
+    '#ff8c00', // 6. نارنجی تند (Deep Orange)
+    '#ffffff', // 7. سفید خالص (Pure White)
+    '#4facfe', // 8. آبی کاربنی/دریایی (Electric Blue)
+    '#95a5a6', // 9. خاکستری نقره‌ای (Silver/Gray)
+    '#3d2314', // 10. قهوه‌ای شکلاتی تیره (Dark Chocolate) - اصلاح شد
+    '#009688', // 11. سبز کله‌غازی/تیل (Teal)
+    '#e6004c'  // 12. قرمز یاقوتی تند (Ruby Red)
 ];
+
 
 // تنظیمات لول‌ها هماهنگ با ۱۲ رنگ و ۲ لوله خالی فیکس
 function getLevelConfig(level) {
@@ -296,20 +297,21 @@ function render() {
     let board = document.getElementById('board');
     board.innerHTML = '';
 
-    const ballStyles = {
-        '#ff4d7a':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ff8cb2,#ff4d7a,#8a0038)',
+        const ballStyles = {
+        '#ffb3c6':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffe5ec,#ffb3c6,#ff758f)',
         '#00f2fe':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#7fffff,#00f2fe,#00838f)',
-        '#4facfe':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#8fd3ff,#4facfe,#0047ab)',
-        '#fff04a':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#fff9a8,#fff04a,#d4a600)',
+        '#fff000':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffff80,#fff000,#999000)',
         '#70e000':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#b7ff7a,#70e000,#228b22)',
         '#9b59b6':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#d0a8ff,#9b59b6,#5a189a)',
         '#ff8c00':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffc266,#ff8c00,#b35a00)',
         '#ffffff':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffffff,#e8e8e8,#bdbdbd)',
-        '#e6004c':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ff4d6d,#e6004c,#7a0028)',
+        '#4facfe':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#8fd3ff,#4facfe,#0047ab)',
+        '#95a5a6':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#bdc3c7,#95a5a6,#7f8c8d)',
+        '#3d2314':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#5c3a21,#3d2314,#1a0f08)',
         '#009688':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#5df2dd,#009688,#005b52)',
-        '#b6ff00':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#e6ff8c,#b6ff00,#6f9d00)',
-        '#ffd700':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#fff6b3,#ffd700,#c49000)'
+        '#e6004c':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ff4d6d,#e6004c,#7a0028)'
     };
+
 
     tubes.forEach((t, i) => {
         let div = document.createElement('div');
