@@ -94,40 +94,41 @@ body[dir="rtl"] { direction: rtl; }
 #board {
     flex: 1 1 0;
     display: grid;
-    /* تغییر از ۷ به ۴ یا ۵ ستون تا لوله‌ها به صورت اتوماتیک در دو یا سه ردیف شیک چیده شوند */
-    grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+    /* فیکس کردن تعداد ستون‌ها روی ۷ تا؛ با این کار لوله‌های اضافه (مثلاً از لوله ۸ به بعد) */
+    /* خود به خود و با همان سایز بزرگ به ردیف دوم منتقل می‌شوند */
+    grid-template-columns: repeat(7, 1fr);
     grid-auto-rows: auto;
-    /* کاهش gap برای اینکه ۱۴ لوله به راحتی جا شوند */
-    gap: 15px 8px;
-    padding: 10px 12px;
+    /* فاصله عمودی بین دو ردیف ۳۰ پیکسل و فاصله افقی لوله‌ها بسیار کم (۴ پیکسل) تا حداکثر فضا به لوله برسد */
+    gap: 30px 4px;
+    padding: 15px 8px;
     justify-items: center;
     align-content: center;
-    overflow-y: auto; /* اگر در گوشی‌های کوچک تعداد بالا رفت، کاربر بتواند کمی اسکرول کند */
+    overflow: hidden;
     min-height: 0;
 }
 
 /* ── TUBE ── */
 .tube {
-    /* عرض و ارتفاع را کمی بهینه‌تر کردیم تا ۱۴ لوله در دو ردیف بدون تداخل جا بگیرند */
-    width: 38px;
-    height: 125px;
+    /* بازگرداندن عرض و ارتفاع به حالت بزرگ و ایده‌آل */
+    width: 42px;
+    height: 145px;
     background: rgba(255,255,255,0.04);
     border: 2px solid rgba(255,255,255,0.15);
-    border-radius: 0 0 20px 20px;
+    border-radius: 0 0 24px 24px;
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
     padding-bottom: 5px;
-    gap: 3px;
+    gap: 2px;
     cursor: pointer;
     transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
 }
 
 /* ── BALL ── */
 .ball {
-    /* اندازه توپ‌ها را کمی متناسب با لوله جدید کوچک کردیم تا ۴ توپ کاملاً داخل لوله جا شوند */
-    width: 28px;
-    height: 28px;
+    /* بازگرداندن توپ‌ها به اندازه بزرگ و نئونی (۳۲ پیکسل) تا داخل لوله‌ی ۴۲ پیکسلی کاملاً درشت دیده شوند */
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     flex-shrink: 0;
     border: 1px solid rgba(255,255,255,0.25);
@@ -136,6 +137,7 @@ body[dir="rtl"] { direction: rtl; }
         inset -3px -3px 6px rgba(0,0,0,0.45),
         inset 2px 2px 5px rgba(255,255,255,0.2);
 }
+
 
 /* ── BOTTOM BAR ── */
 .ad-box {
