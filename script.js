@@ -297,6 +297,9 @@ function render() {
     let board = document.getElementById('board');
     board.innerHTML = '';
 
+    // بعد از اضافه شدن لوله پانزدهم
+    board.classList.toggle('board-8', tubes.length >= 15);
+
         const ballStyles = {
         '#ffb3c6':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffe5ec,#ffb3c6,#ff758f)',
         '#00f2fe':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#7fffff,#00f2fe,#00838f)',
@@ -492,12 +495,19 @@ function undo() {
 }
 
 function addTube() {
-    if (tubes.length >= 14) return;
-    let cost = COSTS.addTube * (addTubeCount + 1);
+    const maxTubes = level > 300 ? 16 : 14;
+
+    if (tubes.length >= maxTubes) return;
+
+    const cost = COSTS.addTube * (addTubeCount + 1);
+
     if (!spendCoins(cost)) return;
+
     addTubeUsed = true;
     addTubeCount++;
+
     tubes.push([]);
+
     render();
 }
 
