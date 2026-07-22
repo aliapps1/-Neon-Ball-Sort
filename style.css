@@ -489,3 +489,30 @@ body[dir="rtl"] { direction: rtl; }
     width:28px;
     height:28px;
 }
+/* ---------- PREMIUM & SUPPORT BUTTONS ---------- */
+
+.premium-btn {
+    background: linear-gradient(135deg, #ffd700, #ff8c00);
+    color: #111;
+    border: 1px solid rgba(255, 215, 0, 0.8);
+    box-shadow: 0 0 14px rgba(255, 193, 7, 0.35);
+    font-size: 14px;
+}
+
+.premium-btn:active {
+    transform: scale(0.97);
+    filter: brightness(0.9);
+}
+
+.support-btn {
+    background: linear-gradient(135deg, #e6004c, #9b59b6);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 0 14px rgba(230, 0, 76, 0.3);
+    font-size: 14px;
+}
+
+.support-btn:active {
+    transform: scale(0.97);
+    filter: brightness(0.9);
+}
