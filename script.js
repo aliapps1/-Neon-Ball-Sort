@@ -137,7 +137,7 @@ const LANGS = {
     en: {
         level:"Level", settings:"Settings", sound:"Sound", vibrate:"Vibrate",
         contact:"Contact", share:"Share", next:"NEXT", win:"FANTASTIC",
-        reward:"+10 Coins", doubleReward:"🎥 Double Reward",
+        reward:"+10 Coins", doubleReward:"💰 Double Reward",
         freeCoins:"🎥 Get Coins", hintBtn:"💡 Hint", skip:"⏭️ Skip",
         noCoins:"Not enough coins", noHint:"No hint available",
         perfect:"🔥 PERFECT! +20", speedBonus:"⚡ Speed Bonus! +15",
@@ -146,8 +146,8 @@ const LANGS = {
     ar: {
         level:"مستوى", settings:"الإعدادات", sound:"الصوت", vibrate:"اهتزاز",
         contact:"اتصل بنا", share:"مشاركة", next:"التالي", win:"رائع",
-        reward:"+10 عملات", doubleReward:"🎥 مضاعفة الجائزة",
-        freeCoins:"🎥 احصل على عملات", hintBtn:"💡 تلميح", skip:"⏭️ تخطي",
+        reward:"+10 عملات"💰 doubleReward:"💰 مضاعفة الجائزة",
+        freeCoins: احصل على عملات", hintBtn:"💡 تلميح", skip:"⏭️ تخطي",
         noCoins:"لا توجد عملات كافية", noHint:"لا يوجد تلميح متاح",
         perfect:"🔥 مثالي! +20", speedBonus:"⚡ مكافأة السرعة! +15",
         freeCoinsToast:"+5 عملات 💰", doubleRewardToast:"+20 عملة 💰", copied:"تم نسخ الرابط!"
@@ -155,8 +155,8 @@ const LANGS = {
     fa: {
         level:"مرحله", settings:"تنظیمات", sound:"صدا", vibrate:"لرزش",
         contact:"تماس با ما", share:"اشتراک‌گذاری", next:"بعدی", win:"عالی",
-        reward:"+10 سکه", doubleReward:"🎥 دوبرابر جایزه",
-        freeCoins:"🎥 دریافت سکه", hintBtn:"💡 راهنما", skip:"رد کردن",
+        reward:"+10 سکه", doubleReward:"💰 دوبرابر جایزه",
+        freeCoins:"💰 دریافت سکه", hintBtn:"💡 راهنما", skip:"رد کردن",
         noCoins:"سکه کافی نداری", noHint:"راهنمایی پیدا نشد",
         perfect:"🔥 بی‌نقص! +20", speedBonus:"⚡ جایزه سرعت! +15",
         freeCoinsToast:"+5 سکه 💰", doubleRewardToast:"+20 سکه 💰", copied:"لینک کپی شد!"
