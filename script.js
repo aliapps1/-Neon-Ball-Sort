@@ -138,7 +138,7 @@ const LANGS = {
         level:"Level", settings:"Settings", sound:"Sound", vibrate:"Vibrate",
         contact:"Contact", share:"Share", next:"NEXT", win:"FANTASTIC",
         reward:"+10 Coins", doubleReward:"💰 Double Reward",
-        freeCoins:"🎥 Get Coins", hintBtn:"💡 Hint", skip:"⏭️ Skip",
+        freeCoins:"💰 Get Coins", hintBtn:"💡 Hint", skip:"⏭️ Skip",
         noCoins:"Not enough coins", noHint:"No hint available",
         perfect:"🔥 PERFECT! +20", speedBonus:"⚡ Speed Bonus! +15",
         freeCoinsToast:"+5 Coins 💰", doubleRewardToast:"+20 Coins 💰", copied:"Link copied!"
