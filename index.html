@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Neon Ball Sort Pro</title>
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=16">
     <link rel="manifest" href="manifest.json">
-    </head>
-
+</head>
 
 <body>
 <div class="game-container">
@@ -32,7 +31,11 @@
         <button class="ad-btn" id="txt-hint-btn" onclick="useHint()">💡 Hint</button>
         <button class="ad-btn" id="txt-skip-btn" onclick="skipLevel()">⏭️ Skip</button>
         <button class="ad-btn" onclick="addTube()">+🧪</button>
-       <button class="ad-btn coin-reward-btn" id="txt-free-coins" onclick="watchCoinsReward()">💰 Coins</button> 
+
+        <button class="ad-btn coin-reward-btn" id="free-coins-btn" onclick="watchCoinsReward()">
+            <span class="coin-reward-icon" aria-hidden="true">🪙</span>
+            <span id="txt-free-coins">Get Coins</span>
+        </button>
     </div>
 
     <div id="toast" class="toast"></div>
@@ -55,40 +58,43 @@
                 <button class="close-btn" onclick="toggleSettings(false)">✖</button>
                 <h2 id="txt-settings">Settings</h2>
             </div>
+
             <div class="lang-switch">
                 <button onclick="changeLang('en')" id="btn-en">EN</button>
                 <button onclick="changeLang('ar')" id="btn-ar">AR</button>
                 <button onclick="changeLang('fa')" id="btn-fa">FA</button>
             </div>
+
             <div class="settings-grid">
                 <div class="setting-item active" id="sound-toggle" onclick="toggleOption('sound')">
                     <div class="icon">🔊</div>
                     <span id="txt-sound">Sound</span>
                 </div>
+
                 <div class="setting-item active" id="vibrate-toggle" onclick="toggleOption('vibrate')">
                     <div class="icon">📳</div>
                     <span id="txt-vibrate">Vibrate</span>
                 </div>
             </div>
+
             <div class="menu-links">
+                <button class="link-btn premium-btn" onclick="openPremiumMenu()">
+                    👑 <span id="txt-premium">Go Premium</span>
+                </button>
 
-    <button class="link-btn premium-btn" onclick="openPremiumMenu()">
-        👑 <span id="txt-premium">Go Premium</span>
-    </button>
+                <button class="link-btn support-btn" onclick="openSupportMenu()">
+                    ❤️ <span id="txt-support">Support Developer</span>
+                </button>
 
-    <button class="link-btn support-btn" onclick="openSupportMenu()">
-        ❤️ <span id="txt-support">Support Developer</span>
-    </button>
+                <button class="link-btn" id="txt-contact"
+                        onclick="window.location.href='mailto:neonsort.app@gmail.com'">
+                    Contact
+                </button>
 
-    <button class="link-btn" id="txt-contact">
-        Contact
-    </button>
-
-    <button class="link-btn" id="txt-share" onclick="shareGame()">
-        Share
-    </button>
-
-</div>
+                <button class="link-btn" id="txt-share" onclick="shareGame()">
+                    Share
+                </button>
+            </div>
         </div>
     </div>
 
@@ -96,7 +102,7 @@
         <div class="win-card">
             <div class="crown">👑</div>
             <h2 id="txt-win" class="win-title">FANTASTIC!</h2>
-            <p id="txt-reward" class="reward-text">+10 Coins</p>
+            <p id="txt-reward" class="reward-text">🪙 +10 Coins</p>
             <button class="win-next-btn" id="txt-next" onclick="nextLevel()">NEXT</button>
             <button class="link-btn" id="txt-double-reward" onclick="watchAdReward()">🎥 Double Reward</button>
         </div>
@@ -105,13 +111,18 @@
     <div id="coin-popup" class="popup">
         <div class="popup-box">
             <p id="popup-text">Not enough coins</p>
-            <button onclick="watchCoinsReward()" class="btn-ad coin-reward-btn">💰 Get Coins</button>
+
+            <button onclick="watchCoinsReward()" class="btn-ad coin-reward-btn">
+                <span class="coin-reward-icon" aria-hidden="true">🪙</span>
+                <span id="txt-popup-get-coins">Get Coins</span>
+            </button>
+
             <button onclick="closeCoinPopup()" class="btn-close">Close</button>
         </div>
-        </div>
+    </div>
+
 </div>
 
-<script src="script.js?v=14"></script>
+<script src="script.js?v=15"></script>
 </body>
 </html>
-
