@@ -516,3 +516,12 @@ body[dir="rtl"] { direction: rtl; }
     transform: scale(0.97);
     filter: brightness(0.9);
 }
+.coin-reward-btn{
+    color:#ffd700;
+    border:1px solid rgba(255,215,0,.45);
+    box-shadow:0 0 12px rgba(255,215,0,.18);
+}
+
+.coin-reward-btn:hover{
+    box-shadow:0 0 18px rgba(255,215,0,.35);
+}
