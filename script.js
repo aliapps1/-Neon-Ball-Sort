@@ -698,6 +698,9 @@ function watchAdReward() {
         btn.style.pointerEvents = 'none';
     }
     showToast(LANGS[currentLang].doubleRewardToast);
+    setTimeout(() => {
+    nextLevel();
+}, 700);
 }
 
 function showCoinPopup() {
