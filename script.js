@@ -45,7 +45,7 @@ function updateCoinsUI() {
 
 // ۱۲ رنگ نئونی فیکس شده و هماهنگ با سی‌اس‌اس
 const COLORS = [
-    '#ffb3c6', // 1. صورتی روشن نئونی (Light Pink) - اصلاح شد
+    '#ffb3c6', // 1. صورتی روشن نئونی (Light Pink)
     '#00f2fe', // 2. سایان/آبی نئون (Cyan)
     '#fff000', // 3. زرد فسفری (Neon Yellow)
     '#70e000', // 4. سبز چمنی روشن (Lime Green)
@@ -54,15 +54,14 @@ const COLORS = [
     '#ffffff', // 7. سفید خالص (Pure White)
     '#4facfe', // 8. آبی کاربنی/دریایی (Electric Blue)
     '#95a5a6', // 9. خاکستری نقره‌ای (Silver/Gray)
-    '#3d2314', // 10. قهوه‌ای شکلاتی تیره (Dark Chocolate) - اصلاح شد
+    '#3d2314', // 10. قهوه‌ای شکلاتی تیره (Dark Chocolate)
     '#009688', // 11. سبز کله‌غازی/تیل (Teal)
     '#e6004c'  // 12. قرمز یاقوتی تند (Ruby Red)
 ];
 
-
 // تنظیمات لول‌ها هماهنگ با ۱۲ رنگ و ۲ لوله خالی فیکس
 function getLevelConfig(level) {
-    if (level <= 5)        return { colors: 4, emptyTubes: 2 }; // برای شروع ساده‌تر، لول‌های اول را با رنگ کمتر شروع می‌کنیم
+    if (level <= 5)        return { colors: 4, emptyTubes: 2 };
     else if (level <= 20)  return { colors: 6, emptyTubes: 2 };
     else if (level <= 50)  return { colors: 8, emptyTubes: 2 };
     else if (level <= 100) return { colors: 9, emptyTubes: 2 };
@@ -139,13 +138,13 @@ const LANGS = {
         settings: "Settings",
         sound: "Sound",
         vibrate: "Vibrate",
-        contact: "Contact",
-        share: "Share",
+        contact: "Contact Us",
+        share: "Share App",
         next: "NEXT",
         win: "FANTASTIC",
         reward: "+10 Coins",
         doubleReward: "💰 Double Reward",
-        freeCoins: "💰 Get Coins",
+        freeCoins: "Get Coins",
         hintBtn: "💡 Hint",
         skip: "⏭️ Skip",
         noCoins: "Not enough coins",
@@ -154,7 +153,10 @@ const LANGS = {
         speedBonus: "⚡ Speed Bonus! +15",
         freeCoinsToast: "+5 Coins 💰",
         doubleRewardToast: "+20 Coins 💰",
-        copied: "Link copied!"
+        copied: "Link copied!",
+        premium: "Go Premium",
+        support: "Support Developer",
+        rate: "Rate App"
     },
 
     ar: {
@@ -163,12 +165,12 @@ const LANGS = {
         sound: "الصوت",
         vibrate: "اهتزاز",
         contact: "اتصل بنا",
-        share: "مشاركة",
+        share: "مشاركة التطبيق",
         next: "التالي",
         win: "رائع",
         reward: "+10 عملات 💰",
         doubleReward: "💰 مضاعفة الجائزة",
-        freeCoins: "💰 احصل على عملات",
+        freeCoins: "احصل على عملات",
         hintBtn: "💡 تلميح",
         skip: "⏭️ تخطي",
         noCoins: "لا توجد عملات كافية",
@@ -177,7 +179,10 @@ const LANGS = {
         speedBonus: "⚡ مكافأة السرعة! +15",
         freeCoinsToast: "+5 عملات 💰",
         doubleRewardToast: "+20 عملة 💰",
-        copied: "تم نسخ الرابط!"
+        copied: "تم نسخ الرابط!",
+        premium: "النسخة الممتازة",
+        support: "دعم المطور",
+        rate: "تقييم التطبيق"
     },
 
     fa: {
@@ -186,12 +191,12 @@ const LANGS = {
         sound: "صدا",
         vibrate: "لرزش",
         contact: "تماس با ما",
-        share: "اشتراک‌گذاری",
+        share: "اشتراک‌گذاری برنامه",
         next: "بعدی",
         win: "عالی",
         reward: "+10 سکه",
         doubleReward: "💰 دوبرابر جایزه",
-        freeCoins: "💰 دریافت سکه",
+        freeCoins: "دریافت سکه",
         hintBtn: "💡 راهنما",
         skip: "رد کردن",
         noCoins: "سکه کافی نداری",
@@ -200,7 +205,10 @@ const LANGS = {
         speedBonus: "⚡ جایزه سرعت! +15",
         freeCoinsToast: "+5 سکه 💰",
         doubleRewardToast: "+20 سکه 💰",
-        copied: "لینک کپی شد!"
+        copied: "لینک کپی شد!",
+        premium: "نسخه ویژه",
+        support: "حمایت از سازنده",
+        rate: "امتیاز به برنامه"
     }
 };
 
@@ -236,8 +244,8 @@ function changeLang(lang) {
     setText('txt-settings', t.settings);
     setText('txt-sound', t.sound);
     setText('txt-vibrate', t.vibrate);
-    setText('txt-contact', t.contact);
-    setText('txt-share', t.share);
+    setText('txt-contact', '✉️ ' + t.contact);
+    setText('txt-share', '📤 ' + t.share);
     setText('txt-win', t.win);
     setText('txt-next', t.next);
     setText('txt-reward', t.reward);
@@ -245,6 +253,9 @@ function changeLang(lang) {
     setText('txt-free-coins', t.freeCoins);
     setText('txt-skip-btn', t.skip);
     setText('txt-hint-btn', t.hintBtn);
+    setText('txt-premium', t.premium);
+    setText('txt-support', t.support);
+    setText('txt-rate', t.rate);
 
     ['en','ar','fa'].forEach(l => {
         document.getElementById('btn-' + l)?.classList.toggle('active', l === lang);
@@ -336,12 +347,12 @@ function loadLevel() {
 
 function render() {
     let board = document.getElementById('board');
+    if (!board) return;
     board.innerHTML = '';
 
-    // بعد از اضافه شدن لوله پانزدهم
     board.classList.toggle('board-8', tubes.length >= 15);
 
-        const ballStyles = {
+    const ballStyles = {
         '#ffb3c6':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffe5ec,#ffb3c6,#ff758f)',
         '#00f2fe':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#7fffff,#00f2fe,#00838f)',
         '#fff000':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ffff80,#fff000,#999000)',
@@ -355,7 +366,6 @@ function render() {
         '#009688':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#5df2dd,#009688,#005b52)',
         '#e6004c':'radial-gradient(circle at 30% 25%,#fff 0 12%,transparent 13%),linear-gradient(135deg,#ff4d6d,#e6004c,#7a0028)'
     };
-
 
     tubes.forEach((t, i) => {
         let div = document.createElement('div');
@@ -673,28 +683,28 @@ async function shareGame() {
     const text = { en:"Try this puzzle!", ar:"جرب اللعبة!", fa:"این بازی رو امتحان کن!" };
     try {
         if (navigator.share) {
-            await navigator.share({ title:"Neon Ball Sort", text:text[currentLang], url: PLAY_STORE_URL
+            await navigator.share({ title:"Neon Ball Sort", text:text[currentLang], url: PLAY_STORE_URL });
         } else {
             await navigator.clipboard.writeText(PLAY_STORE_URL);
             showToast(LANGS[currentLang].copied);
         }
     } catch(e) {}
 }
+
 // =============================
 // Google Play آماده‌سازی
 // =============================
 
-const PLAY_STORE_URL =
-"https://play.google.com/store/apps/details?id=com.aliapps1.neonballsort";
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.aliapps1.neonballsort";
 
 // ---------- Premium ----------
 
 function openPremiumMenu() {
-    document.getElementById("premium-popup").style.display = "flex";
+    document.getElementById("premium-popup").classList.add("active");
 }
 
 function closePremiumMenu() {
-    document.getElementById("premium-popup").style.display = "none";
+    document.getElementById("premium-popup").classList.remove("active");
 }
 
 function selectPremiumPlan(plan) {
@@ -712,15 +722,14 @@ function selectPremiumPlan(plan) {
 // ---------- Support ----------
 
 function openSupportMenu() {
-    document.getElementById("support-popup").style.display = "flex";
+    document.getElementById("support-popup").classList.add("active");
 }
 
 function closeSupportMenu() {
-    document.getElementById("support-popup").style.display = "none";
+    document.getElementById("support-popup").classList.remove("active");
 }
 
 function selectSupportProduct(productId) {
-
     closeSupportMenu();
 
     console.log("Support:", productId);
