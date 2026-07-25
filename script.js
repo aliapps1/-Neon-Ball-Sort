@@ -14,13 +14,23 @@ let winSound = null;
 
 function playWinSound() {
     if (!soundEnabled) return;
+
     try {
         if (!winSound) {
             winSound = new Audio("win_effect.mp3");
-            winSound.volume = 0.6;
+            winSound.volume = 0.35;
         }
+
         winSound.currentTime = 0;
         winSound.play().catch(() => {});
+
+        setTimeout(() => {
+            if (winSound) {
+                winSound.pause();
+                winSound.currentTime = 0;
+            }
+        }, 1200);
+
     } catch (e) {}
 }
 
