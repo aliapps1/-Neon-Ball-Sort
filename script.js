@@ -673,10 +673,69 @@ async function shareGame() {
     const text = { en:"Try this puzzle!", ar:"جرب اللعبة!", fa:"این بازی رو امتحان کن!" };
     try {
         if (navigator.share) {
-            await navigator.share({ title:"Neon Ball Sort", text:text[currentLang], url:window.location.href });
+            await navigator.share({ title:"Neon Ball Sort", text:text[currentLang], url: PLAY_STORE_URL
         } else {
-            await navigator.clipboard.writeText(window.location.href);
+            await navigator.clipboard.writeText(PLAY_STORE_URL);
             showToast(LANGS[currentLang].copied);
         }
     } catch(e) {}
+}
+// =============================
+// Google Play آماده‌سازی
+// =============================
+
+const PLAY_STORE_URL =
+"https://play.google.com/store/apps/details?id=com.aliapps1.neonballsort";
+
+// ---------- Premium ----------
+
+function openPremiumMenu() {
+    document.getElementById("premium-popup").style.display = "flex";
+}
+
+function closePremiumMenu() {
+    document.getElementById("premium-popup").style.display = "none";
+}
+
+function selectPremiumPlan(plan) {
+    closePremiumMenu();
+
+    showToast(
+        currentLang === "fa"
+            ? "به‌زودی در Google Play فعال می‌شود."
+            : currentLang === "ar"
+            ? "سيتوفر قريباً على Google Play."
+            : "Coming soon on Google Play."
+    );
+}
+
+// ---------- Support ----------
+
+function openSupportMenu() {
+    document.getElementById("support-popup").style.display = "flex";
+}
+
+function closeSupportMenu() {
+    document.getElementById("support-popup").style.display = "none";
+}
+
+function selectSupportProduct(productId) {
+
+    closeSupportMenu();
+
+    console.log("Support:", productId);
+
+    showToast(
+        currentLang === "fa"
+            ? "پرداخت در نسخه Google Play فعال می‌شود."
+            : currentLang === "ar"
+            ? "سيتم تفعيل الدفع في Google Play."
+            : "Payment available on Google Play."
+    );
+}
+
+// ---------- Rate ----------
+
+function rateGame() {
+    window.open(PLAY_STORE_URL, "_blank");
 }
