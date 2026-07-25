@@ -484,6 +484,9 @@ function launchConfetti() {
 }
 
 function handleWin() {
+    // ۱. ابتدا لوله‌ها را رندر می‌کنیم تا آخرین جابه‌جایی توپ‌ها روی صفحه دیده شود
+    render();
+
     coins += COSTS.win;
 
     if (!undoUsed && !hintUsed && !skipUsed && !addTubeUsed) {
@@ -501,7 +504,9 @@ function handleWin() {
     updateCoinsUI();
 
     setTimeout(() => {
-        document.getElementById('win-overlay').style.display = 'flex';
+        let winOverlay = document.getElementById('win-overlay');
+        if (winOverlay) winOverlay.style.display = 'flex';
+        
         playWinSound();
         launchConfetti();
         if (vibrateEnabled && navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
@@ -511,6 +516,15 @@ function handleWin() {
 function nextLevel() {
     level++;
     localStorage.setItem('neon_lvl', level);
+    
+    // مخفی کردن پاپ‌آپ پیروزی
+    let winOverlay = document.getElementById('win-overlay');
+    if (winOverlay) winOverlay.style.display = 'none';
+
+    // پاکسازی انیمیشن کانواس برنده شدن
+    let confetti = document.getElementById('confetti-canvas');
+    if (confetti) confetti.remove();
+
     updateStartRank();
     loadLevel();
 }
@@ -534,6 +548,17 @@ function reset() {
     closeCoinPopup();
     render();
 }
+
+function undo() {
+    if (history.length === 0) return;
+    if (!spendCoins(COSTS.undo)) return;
+    tubes = JSON.parse(history.pop());
+    hintFrom = null;
+    hintTo = null;
+    undoUsed = true;
+    render();
+}
+
 
 function undo() {
     if (history.length === 0) return;
