@@ -736,10 +736,10 @@ function selectSupportProduct(productId) {
 
     showToast(
         currentLang === "fa"
-            ? "پرداخت در نسخه Google Play فعال می‌شود."
-            : currentLang === "ar"
-            ? "سيتم تفعيل الدفع في Google Play."
-            : "Payment available on Google Play."
+    ? "پرداخت در نسخه Google Play فعال خواهد شد."
+    : currentLang === "ar"
+    ? "سيتم تفعيل الدفع في نسخة Google Play."
+    : "Payment will be available on Google Play."
     );
 }
 
