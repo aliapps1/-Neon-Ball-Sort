@@ -78,25 +78,79 @@
             </div>
 
             <div class="menu-links">
-                <button class="link-btn premium-btn" onclick="openPremiumMenu()">
-                    👑 <span id="txt-premium">Go Premium</span>
-                </button>
 
-                <button class="link-btn support-btn" onclick="openSupportMenu()">
-                    ❤️ <span id="txt-support">Support Developer</span>
-                </button>
+    <button class="link-btn premium-btn" onclick="openPremiumMenu()">
+        👑 <span id="txt-premium">Go Premium</span>
+    </button>
 
-                <button class="link-btn" id="txt-contact"
-                        onclick="window.location.href='mailto:neonsort.app@gmail.com'">
-                    Contact
-                </button>
+    <button class="link-btn support-btn" onclick="openSupportMenu()">
+        ❤️ <span id="txt-support">Support Developer</span>
+    </button>
 
-                <button class="link-btn" id="txt-share" onclick="shareGame()">
-                    Share
-                </button>
-            </div>
-        </div>
+    <button class="link-btn" onclick="rateGame()">
+        ⭐ <span id="txt-rate">Rate App</span>
+    </button>
+
+    <button class="link-btn" id="txt-share" onclick="shareGame()">
+        📤 Share App
+    </button>
+
+    <button class="link-btn" id="txt-contact"
+            onclick="window.location.href='mailto:neonsort.app@gmail.com'">
+        ✉️ Contact Us
+    </button>
+
+</div>
+            <div id="premium-popup" class="overlay">
+    <div class="popup-box premium-popup-box">
+
+        <button class="close-btn" onclick="closePremiumMenu()">✖</button>
+
+        <div class="crown-icon">👑</div>
+
+        <h2 id="txt-premium-title">Neon Premium</h2>
+
+        <p id="txt-premium-description">
+            Remove ads and unlock Premium features.
+        </p>
+
+        <button class="link-btn premium-btn"
+                onclick="selectPremiumPlan('monthly')">
+            👑 Monthly Premium
+        </button>
+
+        <button class="link-btn premium-btn"
+                onclick="selectPremiumPlan('yearly')">
+            👑 Yearly Premium
+        </button>
+
     </div>
+            </div>
+            <div id="support-popup" class="overlay">
+    <div class="popup-box support-popup-box">
+
+        <button class="close-btn" onclick="closeSupportMenu()">✖</button>
+
+        <div class="crown-icon">❤️</div>
+
+        <h2 id="txt-support-title">Support Developer</h2>
+
+        <p id="txt-support-description">
+            Thank you for supporting Neon Ball Sort.
+        </p>
+
+        <button class="link-btn support-btn"
+                onclick="selectSupportProduct('support_5')">
+            ❤️ Support $5
+        </button>
+
+        <button class="link-btn support-btn"
+                onclick="selectSupportProduct('support_10')">
+            ❤️ Support $10
+        </button>
+
+    </div>
+            </div>
 
     <div id="win-overlay" class="overlay">
         <div class="win-card">
@@ -114,7 +168,7 @@
 
             <button onclick="watchCoinsReward()" class="btn-ad coin-reward-btn">
                 <span class="coin-reward-icon">🪙</span>
-<span id="txt-free-coins">+5</span>
+<span id="txt-popup-free-coins">+5</span>
             </button>
 
             <button onclick="closeCoinPopup()" class="btn-close">Close</button>
