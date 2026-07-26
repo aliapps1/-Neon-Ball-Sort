@@ -792,3 +792,6 @@ function selectSupportProduct(productId) {
 function rateGame() {
     window.open(PLAY_STORE_URL, "_blank");
 }
+function openPrivacyPolicy() {
+    window.location.href = 'privacy-policy.html';
+}
