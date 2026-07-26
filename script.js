@@ -29,7 +29,7 @@ function playWinSound() {
                 winSound.pause();
                 winSound.currentTime = 0;
             }
-        }, 1200);
+        }, 2000);
 
     } catch (e) {}
 }
