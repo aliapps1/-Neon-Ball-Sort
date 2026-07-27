@@ -1,448 +1,65 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <title>Neon Ball Sort Pro</title>
-
-    <link rel="stylesheet" href="style.css?v=18">
-    <link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Neon Ball Sort Pro</title>
+<link rel="stylesheet" href="style.css?v=19">
+<link rel="manifest" href="manifest.json">
 </head>
-
 <body>
-
 <div class="game-container">
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-
-        <button class="icon-btn" onclick="showMainMenu()">
-            🏠
-        </button>
-
-        <button class="icon-btn" onclick="reset()">
-            🔄
-        </button>
-
-        <div class="level-tag">
-            <span id="txt-level">Level</span>&nbsp;
-            <span id="level-num">1</span>
-        </div>
-
-        <div class="coin-box">
-            💰 <span id="coins">0</span>
-        </div>
-
-        <button class="icon-btn" onclick="undo()">
-            ↩️ <small id="undo-count">0</small>
-        </button>
-
-        <button class="icon-btn" onclick="toggleSettings(true)">
-            ⚙️
-        </button>
-
-    </div>
-
-
-    <!-- Game Board -->
-    <div id="board"></div>
-
-
-    <!-- Bottom Buttons -->
-    <div class="ad-box">
-
-        <button class="ad-btn"
-                id="txt-hint-btn"
-                onclick="useHint()">
-            💡 Hint
-        </button>
-
-        <button class="ad-btn"
-                id="txt-skip-btn"
-                onclick="skipLevel()">
-            ⏭️ Skip
-        </button>
-
-        <button class="ad-btn"
-                onclick="addTube()">
-            +🧪
-        </button>
-
-        <button class="ad-btn coin-reward-btn"
-                id="free-coins-btn"
-                onclick="watchCoinsReward()">
-
-            <span class="coin-reward-icon"
-                  aria-hidden="true">
-                🪙
-            </span>
-
-            <span id="txt-free-coins">
-                Get Coins
-            </span>
-
-        </button>
-
-    </div>
-
-
-    <!-- Toast -->
-    <div id="toast" class="toast"></div>
-
-
-    <!-- Start Menu -->
-    <div id="start-menu" class="overlay">
-
-        <div class="menu-card">
-
-            <h1 class="title-text">
-                NEON SORT
-            </h1>
-
-            <div class="crown-icon">
-                👑
-            </div>
-
-            <div class="level-badge">
-
-                <span id="txt-start-level">
-                    Level
-                </span>
-
-                <span id="start-level">
-                    1
-                </span>
-
-            </div>
-
-            <button id="start-play-btn"
-                    onclick="startGame()">
-                ▶
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- Settings Panel -->
-    <div id="settings-panel" class="overlay">
-
-        <div class="settings-card">
-
-            <div class="settings-header">
-
-                <button class="close-btn"
-                        onclick="toggleSettings(false)">
-                    ✖
-                </button>
-
-                <h2 id="txt-settings">
-                    Settings
-                </h2>
-
-            </div>
-
-
-            <div class="lang-switch">
-
-                <button onclick="changeLang('en')"
-                        id="btn-en">
-                    EN
-                </button>
-
-                <button onclick="changeLang('ar')"
-                        id="btn-ar">
-                    AR
-                </button>
-
-                <button onclick="changeLang('fa')"
-                        id="btn-fa">
-                    FA
-                </button>
-
-            </div>
-
-
-            <div class="settings-grid">
-
-                <div class="setting-item active"
-                     id="sound-toggle"
-                     onclick="toggleOption('sound')">
-
-                    <div class="icon">
-                        🔊
-                    </div>
-
-                    <span id="txt-sound">
-                        Sound
-                    </span>
-
-                </div>
-
-
-                <div class="setting-item active"
-                     id="vibrate-toggle"
-                     onclick="toggleOption('vibrate')">
-
-                    <div class="icon">
-                        📳
-                    </div>
-
-                    <span id="txt-vibrate">
-                        Vibrate
-                    </span>
-
-                </div>
-
-            </div>
-
-
-           <div class="menu-links">
-
-    <button class="link-btn premium-btn"
-            onclick="openPremiumMenu()">
-
-        👑
-        <span id="txt-premium">
-            Go Premium
-        </span>
-
-    </button>
-
-
-    <button class="link-btn support-btn"
-            onclick="openSupportMenu()">
-
-        ❤️
-        <span id="txt-support">
-            Support Developer
-        </span>
-
-    </button>
-
-
-    <button class="link-btn"
-            onclick="rateGame()">
-
-        ⭐
-        <span id="txt-rate">
-            Rate App
-        </span>
-
-    </button>
-
-
-    <button class="link-btn"
-            id="txt-contact"
-            onclick="window.location.href='mailto:neonsort.app@gmail.com'">
-
-        ✉️ Contact Us
-
-    </button>
-
-
-    <button class="link-btn"
-            onclick="openPrivacyPolicy()"
-            id="txt-privacy">
-
-        🔒 Privacy Policy
-
-    </button>
-
-
-    <button class="link-btn"
-            id="txt-share"
-            onclick="shareGame()">
-
-        📤 Share App
-
-    </button>
-
-</div> 
-
-        </div>
-
-    </div>
-    <!-- End Settings Panel -->
-
-
-    <!-- Premium Popup -->
-    <div id="premium-popup" class="overlay">
-
-        <div class="popup-box premium-popup-box">
-
-            <button class="close-btn"
-                    onclick="closePremiumMenu()">
-                ✖
-            </button>
-
-            <div class="crown-icon">
-                👑
-            </div>
-
-            <h2 id="txt-premium-title">
-                Neon Premium
-            </h2>
-
-            <p id="txt-premium-description">
-                Remove ads and unlock Premium features.
-            </p>
-
-
-            <button class="link-btn premium-btn"
-                    onclick="selectPremiumPlan('monthly')">
-
-                👑 Monthly Premium — $5/month
-
-            </button>
-
-
-            <button class="link-btn premium-btn"
-                    onclick="selectPremiumPlan('yearly')">
-
-                👑 Yearly Premium — $36/year · Save 40%
-
-            </button>
-
-        </div>
-
-    </div>
-    <!-- End Premium Popup -->
-
-
-    <!-- Support Popup -->
-    <div id="support-popup" class="overlay">
-
-        <div class="popup-box support-popup-box">
-
-            <button class="close-btn"
-                    onclick="closeSupportMenu()">
-                ✖
-            </button>
-
-            <div class="crown-icon">
-                ❤️
-            </div>
-
-            <h2 id="txt-support-title">
-                Support Developer
-            </h2>
-
-            <p id="txt-support-description">
-                Thank you for supporting Neon Ball Sort.
-            </p>
-
-
-            <button class="link-btn support-btn"
-                    onclick="selectSupportProduct('support_5')">
-
-                ❤️ Support $5
-
-            </button>
-
-
-            <button class="link-btn support-btn"
-                    onclick="selectSupportProduct('support_10')">
-
-                ❤️ Support $10
-
-            </button>
-
-        </div>
-
-    </div>
-    <!-- End Support Popup -->
-
-
-    <!-- Win Overlay -->
-    <div id="win-overlay" class="overlay">
-
-        <div class="win-card">
-
-            <div class="crown">
-                👑
-            </div>
-
-            <h2 id="txt-win"
-                class="win-title">
-                FANTASTIC!
-            </h2>
-
-            <p id="txt-reward"
-               class="reward-text">
-                🪙 +10 Coins
-            </p>
-
-
-            <button class="win-next-btn"
-                    id="txt-next"
-                    onclick="nextLevel()">
-
-                NEXT
-
-            </button>
-
-
-            <button class="link-btn"
-                    id="txt-double-reward"
-                    onclick="watchAdReward()">
-
-                💰 Double Reward
-
-            </button>
-
-        </div>
-
-    </div>
-    <!-- End Win Overlay -->
-
-
-    <!-- Coin Popup -->
-    <div id="coin-popup" class="popup">
-
-        <div class="popup-box">
-
-            <p id="popup-text">
-                Not enough coins
-            </p>
-
-
-            <button onclick="watchCoinsReward()"
-                    class="btn-ad coin-reward-btn">
-
-                <span class="coin-reward-icon">
-                    🪙
-                </span>
-
-                <span id="txt-popup-free-coins">
-                    +5
-                </span>
-
-            </button>
-
-
-            <button onclick="closeCoinPopup()"
-                    class="btn-close">
-
-                Close
-
-            </button>
-
-        </div>
-
-    </div>
-    <!-- End Coin Popup -->
+<div class="top-controls">
+<button class="top-action-btn" onclick="showMainMenu()"><span class="top-action-icon">🏠</span><span id="txt-home" class="top-action-label">Home</span></button>
+<button class="top-action-btn" onclick="reset()"><span class="top-action-icon">🔄</span><span id="txt-restart" class="top-action-label">Restart</span></button>
+<div class="top-info-card level-tag"><span id="txt-level">Level</span><strong id="level-num">1</strong></div>
+<div class="top-info-card coin-box"><span>💰</span><strong id="coins">0</strong></div>
+<button class="top-action-btn" onclick="undo()"><span class="top-action-icon">↩️</span><span id="txt-undo" class="top-action-label">Undo</span><small id="undo-count">0</small></button>
+<button class="top-action-btn" onclick="toggleSettings(true)"><span class="top-action-icon">⚙️</span><span id="txt-top-settings" class="top-action-label">Settings</span></button>
+<div class="top-info-card rank-box"><span class="rank-crown">👑</span><span id="txt-rank-label">Rank</span><strong id="top-rank">Beginner</strong></div>
+</div>
+
+<div id="board"></div>
+
+<div class="bottom-controls">
+<button class="ad-btn" id="txt-hint-btn" onclick="useHint()">💡 Hint</button>
+<button class="ad-btn" id="txt-skip-btn" onclick="skipLevel()">⏭️ Skip</button>
+<button class="ad-btn" id="txt-add-tube-btn" onclick="addTube()">➕🧪 Add Tube</button>
+<button class="ad-btn coin-reward-btn" id="free-coins-btn" onclick="watchCoinsReward()"><span class="coin-reward-icon">🪙</span><span id="txt-free-coins">Get Coins</span></button>
+</div>
+
+<div id="admob-banner-space" class="admob-banner-space" aria-label="Advertisement area"><span id="txt-advertisement">Advertisement</span></div>
+<div id="toast" class="toast"></div>
+
+<div id="start-menu" class="overlay"><div class="menu-card"><h1 class="title-text">NEON SORT</h1><div class="crown-icon">👑</div><div class="level-badge"><span id="txt-start-level">Level</span><span id="start-level">1</span></div><button id="start-play-btn" onclick="startGame()">▶</button></div></div>
+
+<div id="settings-panel" class="overlay"><div class="settings-card">
+<div class="settings-header"><button class="close-btn" onclick="toggleSettings(false)">✖</button><h2 id="txt-settings">Settings</h2></div>
+<div class="lang-switch"><button onclick="changeLang('en')" id="btn-en">EN</button><button onclick="changeLang('ar')" id="btn-ar">AR</button><button onclick="changeLang('fa')" id="btn-fa">FA</button></div>
+<div class="settings-grid">
+<div class="setting-item active" id="sound-toggle" onclick="toggleOption('sound')"><div class="icon">🔊</div><span id="txt-sound">Sound</span></div>
+<div class="setting-item active" id="vibrate-toggle" onclick="toggleOption('vibrate')"><div class="icon">📳</div><span id="txt-vibrate">Vibrate</span></div>
+</div>
+<div class="menu-links">
+<button class="link-btn premium-btn" onclick="openPremiumMenu()">👑 <span id="txt-premium">Go Premium</span></button>
+<button class="link-btn support-btn" onclick="openSupportMenu()">❤️ <span id="txt-support">Support Developer</span></button>
+<button class="link-btn" onclick="rateGame()">⭐ <span id="txt-rate">Rate App</span></button>
+<button class="link-btn" id="txt-contact" onclick="window.location.href='mailto:neonsort.app@gmail.com'">✉️ Contact Us</button>
+<button class="link-btn" onclick="openPrivacyPolicy()" id="txt-privacy">🔒 Privacy Policy</button>
+<button class="link-btn" id="txt-share" onclick="shareGame()">📤 Share App</button>
+</div>
+</div></div>
+
+<div id="premium-popup" class="overlay"><div class="popup-box premium-popup-box"><button class="close-btn" onclick="closePremiumMenu()">✖</button><div class="crown-icon">👑</div><h2 id="txt-premium-title">Neon Premium</h2><p id="txt-premium-description">Remove ads and unlock Premium features.</p><button class="link-btn premium-btn" onclick="selectPremiumPlan('monthly')">👑 Monthly Premium — $5/month</button><button class="link-btn premium-btn" onclick="selectPremiumPlan('yearly')">👑 Yearly Premium — $36/year · Save 40%</button></div></div>
+
+<div id="support-popup" class="overlay"><div class="popup-box support-popup-box"><button class="close-btn" onclick="closeSupportMenu()">✖</button><div class="crown-icon">❤️</div><h2 id="txt-support-title">Support Developer</h2><p id="txt-support-description">Thank you for supporting Neon Ball Sort.</p><button class="link-btn support-btn" onclick="selectSupportProduct('support_5')">❤️ Support $5</button><button class="link-btn support-btn" onclick="selectSupportProduct('support_10')">❤️ Support $10</button></div></div>
+
+<div id="win-overlay" class="overlay"><div class="win-card"><div class="crown">👑</div><h2 id="txt-win" class="win-title">FANTASTIC!</h2><p id="txt-reward" class="reward-text">🪙 +10 Coins</p><button class="win-next-btn" id="txt-next" onclick="nextLevel()">NEXT</button><button class="link-btn" id="txt-double-reward" onclick="watchAdReward()">💰 Double Reward</button></div></div>
+
+<div id="coin-popup" class="popup"><div class="popup-box"><p id="popup-text">Not enough coins</p><button onclick="watchCoinsReward()" class="btn-ad coin-reward-btn"><span class="coin-reward-icon">🪙</span><span id="txt-popup-free-coins">+5</span></button><button onclick="closeCoinPopup()" class="btn-close">Close</button></div></div>
 
 </div>
-<!-- End Game Container -->
-
-
-<script src="script.js?v=18"></script>
-
+<script src="script.js?v=19"></script>
 </body>
 </html>
