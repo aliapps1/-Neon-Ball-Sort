@@ -7,8 +7,8 @@
 @media(max-height:700px){.top-controls{gap:5px;padding:5px 7px}.top-action-btn,.top-info-card{min-height:42px}.bottom-controls{gap:5px;padding:5px 7px}.ad-btn{min-height:40px;padding:8px 6px}.admob-banner-space{height:50px;min-height:50px;margin:0 7px 5px}.toast{bottom:165px}}@media(max-width:360px){.top-action-label{font-size:10px}.rank-box{padding-inline:8px}.rank-box strong{font-size:12px}.ad-btn{font-size:12px}}
 .crown-icon img,
 .crown img{
-    width:72px;
-    height:72px;
+    width:84px;
+    height:84px;
     object-fit:contain;
     display:block;
     margin:auto;
