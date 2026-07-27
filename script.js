@@ -26,7 +26,7 @@ function playWinSound() {
                 winSound.pause();
                 winSound.currentTime = 0;
             }
-        }, 2000);
+        }, 3000);
     } catch (e) {}
 }
 
